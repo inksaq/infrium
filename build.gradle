@@ -4,3 +4,51 @@
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/8.0.1/samples
  */
+plugins {
+	id 'java'
+	id 'com.github.johnrengelman.shadow' version '8.1.0'
+}
+
+group 'ltd.biu.infrium'
+version '1.0'
+
+dependencies {
+	compileOnly project(":api")
+	compileOnly project(":core")
+	compileOnly project(":proxy")
+}
+
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'com.github.johnrengelman.shadow'
+
+	compileJava {
+		sourceCompatibility = JavaVersion.VERSION_17
+		targetCompatibility = JavaVersion.VERSION_17
+		options.compilerArgs << '-nowarn'
+	}
+
+	repositories {
+		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
+		maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+	}
+
+	shadowJar {
+		relocate 'com.mongodb', 'ltd.bui.infrium.libs.com.mongodb'
+		relocate 'io.lettuce', 'ltd.bui.infrium.libs.io.lettuce'
+		relocate 'org.bson', 'ltd.bui.infrium.libs.org.bson'
+		//relocate 'org.slf4j', 'eu.asylum.libs.org.slf4j'
+		relocate 'org.apache.commons.lang3', 'ltd.bui.infrium.libs.org.apache.commons.lang3'
+		relocate 'org.apache.commons.text', 'ltd.bui.infrium.libs.org.apache.commons.text'
+		relocate 'org.apache.commons.collections4', 'ltd.bui.infrium.libs.org.apache.commons.collections4'
+		// relocate 'com.google.gson', 'eu.asylum.libs.com.google.gson'
+		relocate 'reactor', 'ltd.bui.infrium.libs.reactor'
+		relocate 'org.reactivestreams', 'ltd.bui.infrium.libs.org.reactivestreams'
+		relocate 'io.netty', 'ltd.bui.infrium.libs.io.netty'
+		relocate 'co.aikar.commands', 'ltd.bui.infrium.libs.acf'
+		relocate 'co.aikar.locales', 'ltd.bui.infrium.libs.locales'
+		//minimize()
+	}
+	jar.dependsOn shadowJar
+
+}

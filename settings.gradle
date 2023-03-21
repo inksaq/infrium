@@ -8,3 +8,6 @@
  */
 
 rootProject.name = 'infrium'
+include 'api'
+include 'core'
+include 'proxy'

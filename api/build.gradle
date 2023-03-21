@@ -4,3 +4,18 @@
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/8.0.1/samples
  */
+plugins {
+    id 'java'
+}
+
+group 'ltd.bui.infrium'
+version '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.mongodb:mongodb-driver-sync:4.4.0' // mongodb
+    implementation 'io.lettuce:lettuce-core:6.1.5.RELEASE' // redis client
+}

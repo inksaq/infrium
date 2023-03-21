@@ -1,2 +1,4 @@
-package ltd.bui.infrium.api;public class InfriumProvider {
+package ltd.bui.infrium.api;
+
+public class InfriumProvider {
 }
