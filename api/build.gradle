@@ -18,4 +18,11 @@ repositories {
 dependencies {
     implementation 'org.mongodb:mongodb-driver-sync:4.4.0' // mongodb
     implementation 'io.lettuce:lettuce-core:6.1.5.RELEASE' // redis client
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+    // apache common lang 3
+    implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+    // apache common text
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+    implementation 'org.hydev:HyLogger:2.1.0.378'
+
 }
