@@ -125,7 +125,7 @@ public class PlayerListener implements Listener {
     if (prfx.length() > 0) {
       after = " " + after;
     }
-    Component newMessage = MiniMessage.get().parse(apd.getRank().getPrefix());
+    Component newMessage = MiniMessage.miniMessage().deserialize(apd.getRank().getPrefix());
     newMessage = newMessage.append(LegacyComponentSerializer.legacyAmpersand().deserialize(after));
     Bukkit.broadcast(newMessage);
   }

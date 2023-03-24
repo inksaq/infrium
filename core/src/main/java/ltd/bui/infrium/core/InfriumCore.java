@@ -209,8 +209,7 @@ public class InfriumCore extends JavaPlugin {
                                         .get()
                                         .getPlayerObject()
                                         .playerListName(
-                                                MiniMessage.get()
-                                                        .parse(prefix + "<white>" + infriumPlayer.get().getUsername()));
+                                                MiniMessage.miniMessage().deserialize(prefix + "<white>" + infriumPlayer.get().getUsername()));
                             }
                         });
     }

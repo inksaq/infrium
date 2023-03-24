@@ -8,6 +8,7 @@ import ltd.bui.infrium.core.events.OnServerAddEvent;
 import ltd.bui.infrium.core.events.OnServerDeleteEvent;
 import ltd.bui.infrium.core.events.OnServerUpdateEvent;
 import ltd.bui.infrium.core.events.OnSyncEvent;
+import ltd.bui.infrium.core.item.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.apache.commons.lang3.StringUtils;

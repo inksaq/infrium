@@ -9,6 +9,7 @@ import lombok.NonNull;
 import ltd.bui.infrium.api.InfriumProvider;
 import ltd.bui.infrium.api.configuration.ConfigurationContainer;
 import ltd.bui.infrium.api.configuration.InfriumConfiguration;
+import ltd.bui.infrium.api.hive.ServerRepository;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.proxy.player.ProxyInfriumPlayer;
 
@@ -41,9 +42,9 @@ public class ProxyInfriumProvider extends InfriumProvider<Player> {
     onQuit(event.getPlayer());
   }
 
-//  @Override
-//  public ServerRepository serverRepositoryBuilder() {
-//    return new ProxyServerRepository(
-//            InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
-//  }
+  @Override
+  public ServerRepository serverRepositoryBuilder() {
+    return new ProxyServerRepository(
+            InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
+  }
 }

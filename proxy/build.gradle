@@ -17,11 +17,19 @@ repositories {
 		name 'velocity'
 		url 'https://nexus.velocitypowered.com/repository/maven-public/'
 	}
+	repositories {
+		maven {
+			setName("elytrium-repo")
+			setUrl("https://maven.elytrium.net/repo/")
+		}
+	}
 }
 
 dependencies {
 	implementation project(":api")
 	implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
-	annotationProcessor 'com.velocitypowered:velocity-api:3.0.1-SNAPSHOT'
-	compileOnly 'com.velocitypowered:velocity-api:3.0.1-SNAPSHOT'
+	annotationProcessor 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+	compileOnly 'com.velocitypowered:velocity-api:3.2.0-SNAPSHOT'
+	compileOnly("net.elytrium.limboapi:api:1.1.11")
 }
+

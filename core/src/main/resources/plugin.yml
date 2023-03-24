@@ -1,0 +1,3 @@
+main: ltd.bui.infrium.core.InfriumCore
+name: InfriumCore
+version: '1.0'

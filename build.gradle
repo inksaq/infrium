@@ -11,11 +11,15 @@ plugins {
 
 group 'ltd.biu.infrium'
 version '1.0'
+repositories{
+	mavenCentral()
+}
 
 dependencies {
 	compileOnly project(":api")
 	compileOnly project(":core")
 	compileOnly project(":proxy")
+	compileOnly project(":hive" )
 }
 
 subprojects {
@@ -31,6 +35,8 @@ subprojects {
 	repositories {
 		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 		maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
+		maven { url "https://repo.dmulloy2.net/repository/public/" }
+
 	}
 	dependencies {
 		compileOnly 'org.projectlombok:lombok:1.18.22'
@@ -57,7 +63,7 @@ subprojects {
 		relocate 'org.apache.commons.lang3', 'ltd.bui.infrium.libs.org.apache.commons.lang3'
 		relocate 'org.apache.commons.text', 'ltd.bui.infrium.libs.org.apache.commons.text'
 		relocate 'org.apache.commons.collections4', 'ltd.bui.infrium.libs.org.apache.commons.collections4'
-		// relocate 'com.google.gson', 'eu.infrium.libs.com.google.gson'
+//		 relocate 'com.google.gson', 'eu.infrium.libs.com.google.gson'
 		relocate 'reactor', 'ltd.bui.infrium.libs.reactor'
 		relocate 'org.reactivestreams', 'ltd.bui.infrium.libs.org.reactivestreams'
 		relocate 'io.netty', 'ltd.bui.infrium.libs.io.netty'

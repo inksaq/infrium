@@ -2,15 +2,20 @@ package ltd.bui.infrium.proxy.handler;
 
 import lombok.Getter;
 
+import ltd.bui.infrium.api.hive.enums.ServerType;
+import ltd.bui.infrium.proxy.Proxy;
+import ltd.bui.infrium.proxy.listener.ServerListener;
+import net.elytrium.limboapi.api.Limbo;
+import net.elytrium.limboapi.api.LimboSessionHandler;
+import net.elytrium.limboapi.api.player.LimboPlayer;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
-public class QueueLimboHandler /*implements LimboSessionHandler {
+public class QueueLimboHandler implements LimboSessionHandler {
 
   private final BossBar bossBar =
       BossBar.bossBar(
-          MiniMessage.get()
-              .parse(
+          MiniMessage.miniMessage().deserialize(
                   "<bold><gradient:#95FCFE:#C089F0>SEARCHING FOR A LOBBY SERVER</gradient></bold>"),
           1,
           BossBar.Color.BLUE,
@@ -40,4 +45,4 @@ public class QueueLimboHandler /*implements LimboSessionHandler {
     Proxy.get().unregisterQueueLimbo(player.getProxyPlayer().getUsername());
     Proxy.get().getQueueRepository().leaveQueue(player.getProxyPlayer().getUsername());
   }
-}*/{}
+}

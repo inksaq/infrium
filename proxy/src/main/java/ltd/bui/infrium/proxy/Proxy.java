@@ -7,6 +7,7 @@ import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
+import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
@@ -14,10 +15,18 @@ import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import ltd.bui.infrium.api.InfriumProvider;
+import ltd.bui.infrium.api.configuration.InfriumConfiguration;
+import ltd.bui.infrium.api.hive.ServerRepository;
+import ltd.bui.infrium.api.hive.queue.QueueRepository;
 import ltd.bui.infrium.proxy.commands.PunishmentCommand;
 import ltd.bui.infrium.proxy.commands.QueueCommand;
 import ltd.bui.infrium.proxy.configuration.TomlConfigurationContainer;
+import ltd.bui.infrium.proxy.handler.QueueLimboHandler;
 import ltd.bui.infrium.proxy.listener.ServerListener;
+import net.elytrium.limboapi.api.Limbo;
+import net.elytrium.limboapi.api.LimboFactory;
+import net.elytrium.limboapi.api.chunk.Dimension;
+import net.elytrium.limboapi.api.chunk.VirtualWorld;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.slf4j.Logger;
@@ -25,6 +34,7 @@ import org.slf4j.Logger;
 import java.io.File;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
@@ -40,14 +50,14 @@ public class Proxy {
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
-//    private final LimboFactory limboFactory;
-//    private final Map<String, QueueLimboHandler> limboPlayers = new ConcurrentHashMap<>();
+    private final LimboFactory limboFactory;
+    private final Map<String, QueueLimboHandler> limboPlayers = new ConcurrentHashMap<>();
     @Getter
     private final Map<String, RegisteredServer> queuedJoin = new ConcurrentHashMap<>();
     private InfriumProvider<Player> infriumProvider;
-//    private ServerRepository serverRepository;
-//    private QueueRepository queueRepository;
-//    private Limbo queueServer;
+    private ServerRepository serverRepository;
+    private QueueRepository queueRepository;
+    private Limbo queueServer;
 
 
     @Inject
@@ -57,13 +67,13 @@ public class Proxy {
         this.logger = logger;
         this.dataDirectory = folder;
         logger.info("Hello there! I made my first plugin with Velocity.");
-//        this.limboFactory =
-//                (LimboFactory)
-//                        this.server
-//                                .getPluginManager()
-//                                .getPlugin("limboapi")
-//                                .flatMap(PluginContainer::getInstance)
-//                                .orElseThrow();
+        this.limboFactory =
+                (LimboFactory)
+                        this.server
+                                .getPluginManager()
+                                .getPlugin("limboapi")
+                                .flatMap(PluginContainer::getInstance)
+                                .orElseThrow();
     }
 
     @SneakyThrows
@@ -85,14 +95,14 @@ public class Proxy {
 
         server.getEventManager().register(this, this.infriumProvider);
         server.getEventManager().register(this, new ServerListener());
-//        this.serverRepository =
-//                new ProxyServerRepository(
-//                        InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
-//        this.queueRepository = new ProxyQueueRepository(this.serverRepository);
+        this.serverRepository =
+                new ProxyServerRepository(
+                        InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
+        this.queueRepository = new ProxyQueueRepository(this.serverRepository);
 
-//        VirtualWorld queueWorld =
-//                this.limboFactory.createVirtualWorld(Dimension.THE_END, 0, 0, 0, 90f, 90f);
-//        this.queueServer = this.limboFactory.createLimbo(queueWorld);
+        VirtualWorld queueWorld =
+                this.limboFactory.createVirtualWorld(Dimension.THE_END, 0, 0, 0, 90f, 90f);
+        this.queueServer = this.limboFactory.createLimbo(queueWorld);
         registerCommand(new PunishmentCommand(), "ban", "mute", "tempban", "tempmute", "kick");
         registerCommand(new QueueCommand(), "queue", "join");
     }
@@ -101,12 +111,32 @@ public class Proxy {
         return instance;
     }
 
-    private void registerCommand(SimpleCommand command, String name, String... aliases) {
-        this.getServer().getCommandManager().register(name, command, aliases);
+    public void registerQueueLimbo(String username, QueueLimboHandler queueLimboHandler) {
+        if (limboPlayers.containsKey(username)) {
+            limboPlayers.replace(username, queueLimboHandler);
+        } else {
+            limboPlayers.put(username, queueLimboHandler);
+        }
+    }
+
+    public Optional<QueueLimboHandler> getQueueLimboHandler(String username) {
+        return Optional.ofNullable(limboPlayers.get(username));
+    }
+
+    public void unregisterQueueLimbo(String username) {
+        limboPlayers.remove(username);
     }
 
     public static InfriumProvider<Player> getInfriumProvider() {
         return instance.infriumProvider;
+    }
+
+    public static QueueRepository getQueueRepository() {
+        return instance.queueRepository;
+    }
+
+    private void registerCommand(SimpleCommand command, String name, String... aliases) {
+        this.getServer().getCommandManager().register(name, command, aliases);
     }
 
 }

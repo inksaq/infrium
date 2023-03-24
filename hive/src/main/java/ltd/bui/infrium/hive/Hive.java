@@ -49,7 +49,7 @@ public class Hive {
   private final ConfigurationContainer<?> configurationContainer;
   private final InfriumDB infriumDB;
   private final AtomicBoolean running = new AtomicBoolean(true);
-  private final HyLogger logger = new HyLogger("Cloud");
+  private final HyLogger logger = new HyLogger("Hive");
   @Getter private final ServerRepository repository;
 
   private final List<Server> badServersList = Collections.synchronizedList(new ArrayList<>());

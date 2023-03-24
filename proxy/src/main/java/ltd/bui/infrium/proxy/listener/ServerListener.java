@@ -11,9 +11,13 @@ import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import ltd.bui.infrium.api.hive.enums.QueueLeftReason;
+import ltd.bui.infrium.api.hive.enums.ServerType;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.api.punishments.PunishmentType;
 import ltd.bui.infrium.proxy.Proxy;
+import ltd.bui.infrium.proxy.handler.QueueLimboHandler;
+import net.elytrium.limboapi.api.event.LoginLimboRegisterEvent;
 
 
 import java.util.Optional;
@@ -62,11 +66,11 @@ public class ServerListener {
 
   @Subscribe
   public void disconnect(DisconnectEvent event) {
-//    Proxy.get().unregisterQueueLimbo(event.getPlayer().getUsername());
-//    Proxy.get().getQueuedJoin().remove(event.getPlayer().getUsername());
-//    Proxy.get()
-//        .getQueueRepository()
-//        .leaveQueue(event.getPlayer().getUsername(), QueueLeftReason.DISCONNECTED);
+    Proxy.get().unregisterQueueLimbo(event.getPlayer().getUsername());
+    Proxy.get().getQueuedJoin().remove(event.getPlayer().getUsername());
+    Proxy.get()
+        .getQueueRepository()
+        .leaveQueue(event.getPlayer().getUsername(), QueueLeftReason.DISCONNECTED);
 
     Proxy.get().getInfriumProvider().onQuit(event.getPlayer());
   }
@@ -108,51 +112,51 @@ public class ServerListener {
     event.setResult(PluginMessageEvent.ForwardResult.handled());
     String subChannel = in.readUTF();
 
-//    if (subChannel.equals("hive")) {
-//      String command = in.readUTF();
-//      if (command.equals("queue:join")) { // join queue for a server
-//        String serverType = in.readUTF();
-//        String playerName = in.readUTF();
-//        try {
-//          ServerType type = ServerType.valueOf(serverType);
-//          Proxy.get().getQueueRepository().joinQueue(playerName, type);
-//        } catch (Exception e) {
-//          // server type not found
-//        }
-//      } else if (command.equals("queue:leave")) { // leave queue for a server
-//        String playerName = in.readUTF();
-//        Proxy.get().getQueueRepository().leaveQueue(playerName);
-//      } else if (command.equals("connect:server")) { // connect to a server
-//        String serverName = in.readUTF();
-//        String playerName = in.readUTF();
-//        Proxy.get()
-//            .getServer()
-//            .getPlayer(playerName)
-//            .ifPresent(
-//                player -> {
-//                  Proxy.get()
-//                      .getServer()
-//                      .getServer(serverName)
-//                      .ifPresent(
-//                          server -> { // if server is present
-//                            Proxy.get()
-//                                .getQueueLimboHandler(player.getUsername())
-//                                .ifPresentOrElse(
-//                                    limbo -> limbo.getPlayer().disconnect(server),
-//                                    () -> player.createConnectionRequest(server).fireAndForget());
-//                          });
-//                });
-//      }
-//    }
+    if (subChannel.equals("hive")) {
+      String command = in.readUTF();
+      if (command.equals("queue:join")) { // join queue for a server
+        String serverType = in.readUTF();
+        String playerName = in.readUTF();
+        try {
+          ServerType type = ServerType.valueOf(serverType);
+          Proxy.get().getQueueRepository().joinQueue(playerName, type);
+        } catch (Exception e) {
+          // server type not found
+        }
+      } else if (command.equals("queue:leave")) { // leave queue for a server
+        String playerName = in.readUTF();
+        Proxy.get().getQueueRepository().leaveQueue(playerName);
+      } else if (command.equals("connect:server")) { // connect to a server
+        String serverName = in.readUTF();
+        String playerName = in.readUTF();
+        Proxy.get()
+            .getServer()
+            .getPlayer(playerName)
+            .ifPresent(
+                player -> {
+                  Proxy.get()
+                      .getServer()
+                      .getServer(serverName)
+                      .ifPresent(
+                          server -> { // if server is present
+                            Proxy.get()
+                                .getQueueLimboHandler(player.getUsername())
+                                .ifPresentOrElse(
+                                    limbo -> limbo.getPlayer().disconnect(server),
+                                    () -> player.createConnectionRequest(server).fireAndForget());
+                          });
+                });
+      }
+    }
   }
 
-//  @Subscribe
-//  public void onLoginLimboRegister(LoginLimboRegisterEvent event) {
-//    event.addCallback(
-//        () -> {
-//          if (event.getPlayer().isActive()) {
-//            Proxy.get().getQueueServer().spawnPlayer(event.getPlayer(), new QueueLimboHandler());
-//          }
-//        });
-//  }
+  @Subscribe
+  public void onLoginLimboRegister(LoginLimboRegisterEvent event) {
+    event.addCallback(
+        () -> {
+          if (event.getPlayer().isActive()) {
+            Proxy.get().getQueueServer().spawnPlayer(event.getPlayer(), new QueueLimboHandler());
+          }
+        });
+  }
 }

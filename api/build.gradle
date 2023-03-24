@@ -18,6 +18,7 @@ repositories {
 dependencies {
     implementation 'org.mongodb:mongodb-driver-sync:4.4.0' // mongodb
     implementation 'io.lettuce:lettuce-core:6.1.5.RELEASE' // redis client
+    implementation 'com.google.code.gson:gson:2.8.9' // google gson
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
     // apache common lang 3
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'

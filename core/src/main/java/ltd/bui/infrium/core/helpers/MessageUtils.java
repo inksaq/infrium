@@ -60,7 +60,7 @@ public class MessageUtils {
   public static void sendActionbar(@NonNull String message, Player... players) {
     message = ChatColor.translateAlternateColorCodes('&', message); // fix colors
     for (Player p : players) {
-      p.sendActionBar(MiniMessage.get().parse(message));
+      p.sendActionBar(MiniMessage.miniMessage().deserialize(message));
     }
   }
 

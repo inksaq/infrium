@@ -36,6 +36,7 @@ public class ServerRepository extends RedisPubSubAdapter<String, String> {
 
     for (CloudChannels channels : CloudChannels.values()) {
       infriumDB.getPubSubConnectionReceiver().sync().subscribe(channels.getChannel());
+      System.out.println(channels.getChannel());
     }
     this.sync();
     this.infriumDB.getPubSubConnectionReceiver().addListener(this);

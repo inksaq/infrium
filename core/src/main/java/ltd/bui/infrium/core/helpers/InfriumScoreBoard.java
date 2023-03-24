@@ -1,6 +1,7 @@
 package ltd.bui.infrium.core.helpers;
 
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -62,7 +63,7 @@ public class InfriumScoreBoard {
 
   public void setTitle(String title) {
     title = title.length() > 128 ? title.substring(0, 128) : title;
-    sidebar.displayName(MiniMessage.get().parse(title));
+    sidebar.displayName(MiniMessage.miniMessage().deserialize(title));
   }
 
   public void setSlot(int slot, String text) {
@@ -75,8 +76,8 @@ public class InfriumScoreBoard {
     if (!scoreboard.getEntries().contains(entry)) {
       sidebar.getScore(entry).setScore(slot);
     }
-    team.prefix(MiniMessage.markdown().parse(row.getPrefix()));
-    team.suffix(MiniMessage.markdown().parse(row.getSuffix()));
+    team.prefix(MiniMessage.miniMessage().deserialize(row.getPrefix()));
+    team.suffix(MiniMessage.miniMessage().deserialize(row.getSuffix()));
   }
 
   public void removeSlot(int slot) {

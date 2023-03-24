@@ -2,6 +2,8 @@ package ltd.bui.infrium.proxy.commands;
 
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.proxy.Player;
+import ltd.bui.infrium.api.hive.enums.QueueLeftReason;
+import ltd.bui.infrium.api.hive.enums.ServerType;
 import net.kyori.adventure.text.Component;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,43 +18,43 @@ public class QueueCommand implements SimpleCommand {
       var infriumPlayer = getInfriumProvider().getInfriumPlayer(player);
       player.sendMessage(Component.text("trying to join queue, but its currently disabled. go ahead"));
       if (infriumPlayer.isPresent()) {
-//        getQueueRepository().getPlayerQueue(player.getUsername()).thenAccept(optionalQueue -> {
-//                  if (optionalQueue.isPresent()) {
-//                    getQueueRepository().leaveQueue(player.getUsername(), QueueLeftReason.LEFT);
-//                    player.sendMessage(
-//                        serialize.apply(
-//                            "&6&lQueue &8"
-//                                + HEAVY_VERTICAL
-//                                + " &7You have left the queue for %s."
-//                                    .formatted(
-//                                        StringUtils.capitalize(
-//                                            optionalQueue.get().name().toLowerCase()))));
-//
-//                  } else {
-//                    if (invocation.arguments().length >= 1) {
-//                      var queue = invocation.arguments()[0];
-//                      try {
-//                        var queueType = ServerType.valueOf(queue.toUpperCase());
-//                        getQueueRepository().joinQueue(player.getUsername(), queueType).thenAccept(__ ->
-//                                    player.sendMessage(
-//                                        serialize.apply(
-//                                            "&6&lQueue &8"
-//                                                + HEAVY_VERTICAL
-//                                                + " &7You joined the queue for %s."
-//                                                    .formatted(
-//                                                        StringUtils.capitalize(
-//                                                            optionalQueue
-//                                                                .get()
-//                                                                .name()
-//                                                                .toLowerCase())))));
-//                      } catch (IllegalArgumentException e) {
-//                        player.sendMessage(
-//                            serialize.apply(
-//                                "&6&lQueue &8" + HEAVY_VERTICAL + " &7Queue not found."));
-//                      }
-//                    }
-//                  }
-//                });
+        getQueueRepository().getPlayerQueue(player.getUsername()).thenAccept(optionalQueue -> {
+                  if (optionalQueue.isPresent()) {
+                    getQueueRepository().leaveQueue(player.getUsername(), QueueLeftReason.LEFT);
+                    player.sendMessage(
+                        serialize.apply(
+                            "&6&lQueue &8"
+                                + HEAVY_VERTICAL
+                                + " &7You have left the queue for %s."
+                                    .formatted(
+                                        StringUtils.capitalize(
+                                            optionalQueue.get().name().toLowerCase()))));
+
+                  } else {
+                    if (invocation.arguments().length >= 1) {
+                      var queue = invocation.arguments()[0];
+                      try {
+                        var queueType = ServerType.valueOf(queue.toUpperCase());
+                        getQueueRepository().joinQueue(player.getUsername(), queueType).thenAccept(__ ->
+                                    player.sendMessage(
+                                        serialize.apply(
+                                            "&6&lQueue &8"
+                                                + HEAVY_VERTICAL
+                                                + " &7You joined the queue for %s."
+                                                    .formatted(
+                                                        StringUtils.capitalize(
+                                                            optionalQueue
+                                                                .get()
+                                                                .name()
+                                                                .toLowerCase())))));
+                      } catch (IllegalArgumentException e) {
+                        player.sendMessage(
+                            serialize.apply(
+                                "&6&lQueue &8" + HEAVY_VERTICAL + " &7Queue not found."));
+                      }
+                    }
+                  }
+                });
 
       } else {
         player.sendMessage(
