@@ -2,6 +2,7 @@ package ltd.bui.infrium.core.helpers;
 
 import lombok.NonNull;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -58,9 +59,9 @@ public class MessageUtils {
    * @param players to players
    */
   public static void sendActionbar(@NonNull String message, Player... players) {
-    message = ChatColor.translateAlternateColorCodes('&', message); // fix colors
+//    message = ChatColor.translateAlternateColorCodes('&', message); // fix colors
     for (Player p : players) {
-      p.sendActionBar(MiniMessage.miniMessage().deserialize(message));
+      p.sendActionBar(LegacyComponentSerializer.legacyAmpersand().deserialize(message));
     }
   }
 

@@ -151,7 +151,6 @@ public class Hive {
   private void logic() {
     logicWaiter.await();
     logicWaiter.start();
-    logger.log("Starting logic");
     // host servers if needed
     // stop laggy servers - (don't stop in game servers)
     Map<ServerType, Integer> newServers = mapOfEnum(ServerType.class, 0);
@@ -298,6 +297,7 @@ public class Hive {
               while (true) {
                 if (System.currentTimeMillis() - t > 500) {
                   if (!server.getPinger().ping() && server.getPinger().getPingVersion() == -1) {
+                    exitScreen(server);
                     cleanUpServer(server);
                     break;
                   }
@@ -314,6 +314,17 @@ public class Hive {
             TimeUnit.SECONDS);
   }
 
+  public final void exitScreen(@NonNull Server server) {
+    announceServerKill(server); // announce the server death
+    new SyncConsoleCommand(
+            "screen -XS " + server.getName() + " quit",
+            stringList -> logger.log("Server Killed result #-> " + stringList),
+            exception -> {
+              exception.printStackTrace();
+              logger.error("Can't kill the server");
+            });
+  }
+
   public final void forceKill(@NonNull Server server) {
     announceServerKill(server); // announce the server death
     new SyncConsoleCommand(
@@ -323,6 +334,7 @@ public class Hive {
           exception.printStackTrace();
           logger.error("Can't kill the server");
         });
+    exitScreen(server);
     cleanUpServer(server); // cleanup server dir & remove from the lists
   }
 

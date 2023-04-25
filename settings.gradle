@@ -12,3 +12,5 @@ include 'api'
 include 'core'
 include 'proxy'
 include 'hive'
+include 'lobby'
+

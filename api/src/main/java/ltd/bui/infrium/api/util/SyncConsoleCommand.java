@@ -31,6 +31,7 @@ public class SyncConsoleCommand {
         buffer.append("\n");
       }
       this.successCallback.call(buffer.toString());
+      System.out.println(buffer.toString());
     } catch (Exception e) {
       this.errorCallback.call(e);
     }

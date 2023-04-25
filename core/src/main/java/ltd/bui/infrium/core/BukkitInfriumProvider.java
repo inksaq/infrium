@@ -7,10 +7,7 @@ import ltd.bui.infrium.api.configuration.InfriumConfiguration;
 import ltd.bui.infrium.api.hive.ServerRepository;
 import ltd.bui.infrium.api.hive.servers.Server;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
-import ltd.bui.infrium.core.events.OnServerAddEvent;
-import ltd.bui.infrium.core.events.OnServerDeleteEvent;
-import ltd.bui.infrium.core.events.OnServerUpdateEvent;
-import ltd.bui.infrium.core.events.OnSyncEvent;
+import ltd.bui.infrium.core.events.*;
 import ltd.bui.infrium.core.player.BukkitInfriumPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -20,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,9 +68,11 @@ public class BukkitInfriumProvider extends InfriumProvider<Player> implements Li
           .runTask(InfriumCore.getInstance(), () -> Bukkit.getPluginManager().callEvent(e));
     }
 
+
     @Override
     public void onServerAdd(@NonNull Server server) {
       callEvent(new OnServerAddEvent(server));
+
     }
 
     @Override

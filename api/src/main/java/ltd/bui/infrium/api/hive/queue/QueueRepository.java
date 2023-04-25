@@ -47,7 +47,7 @@ public class QueueRepository extends RedisPubSubAdapter<String, String> {
   }
 
   public void onConnect(RedisQueueConnect queueConnect) {
-    // this method can be overridden by subclasses that need to do something on queue connect
+      // this method can be overridden by subclasses that need to do something on queue connect
   }
 
   public void onJoinQueue(RedisQueueJoin queueJoin) {
@@ -72,7 +72,7 @@ public class QueueRepository extends RedisPubSubAdapter<String, String> {
   }
 
   public CompletableFuture<Void> joinQueue(String username, ServerType serverType) {
-    var finalUsername = username.toLowerCase();
+    var finalUsername = username/*.toLowerCase()*/;
     return removePlayerFromQueues(username)
         .thenApply(
             __ -> {
@@ -86,11 +86,12 @@ public class QueueRepository extends RedisPubSubAdapter<String, String> {
   }
 
   public CompletableFuture<Void> leaveQueue(String playerName, QueueLeftReason reason) {
+      var finalUsername = playerName/*.toLowerCase()*/;
     return removePlayerFromQueues(playerName)
         .thenApply(
             __ -> {
               var queueLeft = new RedisQueueLeft();
-              queueLeft.setPlayerName(playerName);
+              queueLeft.setPlayerName(finalUsername);
               queueLeft.setReason(reason);
               this.db.publishJson(QueueChannels.PLAYER_QUEUE_LEAVE.getChannel(), queueLeft);
               return null;
@@ -102,14 +103,13 @@ public class QueueRepository extends RedisPubSubAdapter<String, String> {
   }
 
   public CompletableFuture<Optional<ServerType>> getPlayerQueue(String username) {
-    var finalUsername = username.toLowerCase();
     return CompletableFuture.supplyAsync(
         () -> {
           for (ServerType serverType : ServerType.values()) {
             if (this.db
                 .getRedisConnection()
                 .sync()
-                .sismember(serverType.getQueueName(), finalUsername)) {
+                .sismember(serverType.getQueueName(), username)) {
               return Optional.of(serverType);
             }
           }

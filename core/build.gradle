@@ -23,9 +23,12 @@ dependencies {
     compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
     implementation "co.aikar:acf-paper:0.5.0-SNAPSHOT"
     compileOnly fileTree(dir: '../libs', include: '*.jar')
-    implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
-    implementation("com.google.guava:guava:31.0.1-jre")
-
+    implementation 'net.kyori:adventure-text-minimessage:4.13.0'
+    implementation('com.google.guava:guava:31.1-jre')
+    implementation('com.fasterxml.jackson.core:jackson-core:2.14.2')
+    implementation('com.fasterxml.jackson.core:jackson-annotations:2.14.2')
+    implementation('com.fasterxml.jackson.core:jackson-databind:2.14.2')
+    implementation("com.fasterxml.jackson.module:jackson-module-afterburner:2.14.2")
 }
 
 java {

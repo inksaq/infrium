@@ -1,13 +1,16 @@
 package ltd.bui.infrium.api.hive;
 
+import com.google.gson.JsonSyntaxException;
 import ltd.bui.infrium.api.hive.enums.CloudChannels;
 import ltd.bui.infrium.api.hive.enums.ServerType;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveAdd;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveDelete;
+import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveMessage;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveUpdate;
 import ltd.bui.infrium.api.hive.servers.Server;
 import ltd.bui.infrium.api.database.InfriumDB;
 import ltd.bui.infrium.api.mongoserializer.MongoSerializer;
+import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.api.util.Constants;
 import ltd.bui.infrium.api.util.TaskWaiter;
 import io.lettuce.core.RedisURI;
@@ -20,12 +23,13 @@ import org.hydev.logger.HyLogger;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static ltd.bui.infrium.api.util.LangUtils.syncListOf;
+import static ltd.bui.infrium.api.util.LangUtils.*;
 
 public class ServerRepository extends RedisPubSubAdapter<String, String> {
 
   public static final double LAGGY_TPS = 16.0d;
-  private final Map<ServerType, List<Server>> servers = new ConcurrentHashMap<>();
+
+  private final Map<ServerType, List<Server>> servers = new HashMap<>();
   @Getter private final InfriumDB infriumDB;
   private final HyLogger logger = new HyLogger("ServerRepository");
   private TaskWaiter syncWaiter = new TaskWaiter(false);
@@ -48,22 +52,27 @@ public class ServerRepository extends RedisPubSubAdapter<String, String> {
 
     for (var st : ServerType.values()) {
       servers.put(st, syncListOf());
+      System.out.println(st.name());
     }
     // fetch servers from db
     var collection = infriumDB.getMongoCollection("infrium", "hive");
     collection
         .find()
         .forEach(
-            document -> {
-              Server server = MongoSerializer.deserialize(document, Server.class);
-              this.servers.get(server.getServerType()).add(server);
-            });
+                document -> {
+                  String json = document.toJson();
+                  Server server = Constants.get().getGson().fromJson(json, Server.class);
+                  List<Server> l = servers.get(server.getServerType());
+                  List<Server> mL = new ArrayList<>(l);
+                  mL.add(server);
+                  servers.put(server.getServerType(), mL);
+
+                });
     for (var st : ServerType.values()) {
       logger.log(
           "Loaded " + this.servers.get(st).size() + " " + st.name() + " servers from database.");
     }
-    syncWaiter.finish();
-  }
+    syncWaiter.finish();}
 
   @Override
   @Synchronized
@@ -80,6 +89,12 @@ public class ServerRepository extends RedisPubSubAdapter<String, String> {
         logger.warning(
             "ServerRepository: Received update for unknown server " + update.getServerName());
       }
+    } else if (channel.equals(CloudChannels.CONNECT.getChannel())) {
+      var connect = Constants.get().getGson().fromJson(message, RedisHiveMessage.class);
+      var server = connect.getMessage().split(":")[0];
+      var player = connect.getMessage().split(":")[1];
+      this.onServerConnect(connect.getMessage());
+      System.out.println("wanting to send " + player + " to " + server);
     } else if (channel.equals(CloudChannels.SERVER_DELETE.getChannel())) {
       var delete = Constants.get().getGson().fromJson(message, RedisHiveDelete.class);
       var c = getByName(delete.getServer().getName());
@@ -87,12 +102,23 @@ public class ServerRepository extends RedisPubSubAdapter<String, String> {
         c.ifPresent(this::onServerDelete); // call onServerDelete event
       } else {
         logger.log(
-            "ServerRepository: Server " + delete.getServer().getName() + " not deleted idk whys");
+                "ServerRepository: Server " + delete.getServer().getName() + " not deleted idk whys");
       }
     } else if (channel.equals(CloudChannels.SERVER_ADD.getChannel())) {
-      var add = Constants.get().getGson().fromJson(message, RedisHiveAdd.class);
-      servers.get(add.getServer().getServerType()).add(add.getServer());
-      this.onServerAdd(add.getServer()); // call onServerAdd event
+      try {
+        var add = Constants.get().getGson().fromJson(message, RedisHiveAdd.class);
+        System.out.println(add.getServer().getServerType());
+        System.out.println(add.getServer().getName());
+        List<Server> l = servers.get(add.getServer().getServerType());
+        List<Server> mL = new ArrayList<>(l);
+        mL.add(add.getServer());
+        servers.put(add.getServer().getServerType(), mL);
+        this.onServerAdd(add.getServer()); // call onServerAdd event
+      } catch (UnsupportedOperationException exception) {
+        exception.printStackTrace();
+        exception.printStackTrace();
+        System.out.println(message);
+      }
     } else if (channel.equals(CloudChannels.SYNC.getChannel())) {
       logger.log("--== Sync Request Received ==--");
       sync();
@@ -184,7 +210,15 @@ public class ServerRepository extends RedisPubSubAdapter<String, String> {
     // this method can be re-implemented if you want to do something on server add
   }
 
+  public void onServerConnect(@NonNull String message) {
+
+  }
+
+
   public void onSync() {
     // this method can be re-implemented if you want to do something on sync
   }
+
+
+
 }

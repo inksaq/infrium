@@ -22,6 +22,7 @@ public class LangUtils {
     return Collections.synchronizedList(listOf(vars));
   }
 
+
   public static <K extends Enum<K>, V> Map<K, V> mapOfEnum(final Class<K> k, final V defaultValue) {
     final K[] enums = k.getEnumConstants();
     return Arrays.stream(enums).collect(Collectors.toMap(type -> type, type -> defaultValue, (a, b) -> b, HashMap::new));

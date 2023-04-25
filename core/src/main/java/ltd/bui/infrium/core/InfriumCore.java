@@ -1,18 +1,24 @@
 package ltd.bui.infrium.core;
 
 import co.aikar.commands.BukkitCommandManager;
+import co.aikar.commands.PaperCommandManager;
 import io.lettuce.core.pubsub.RedisPubSubAdapter;
 import lombok.Cleanup;
 import lombok.Getter;
+import lombok.Setter;
 import ltd.bui.infrium.api.InfriumProvider;
 import ltd.bui.infrium.api.hive.enums.CloudChannels;
+import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveMessage;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveShutdown;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveUpdate;
 import ltd.bui.infrium.api.util.Constants;
+import ltd.bui.infrium.core.commands.ServerCommand;
 import ltd.bui.infrium.core.configuration.YamlConfigurationContainer;
+import ltd.bui.infrium.core.gui.ServerSelectorGUI;
 import ltd.bui.infrium.core.helpers.InfriumScoreBoard;
 import ltd.bui.infrium.core.listener.PlayerListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -28,10 +34,18 @@ import java.util.Properties;
 public class InfriumCore extends JavaPlugin {
 
     private static final RedisHiveUpdate REDIS_CLOUD_SERVER_UPDATE = new RedisHiveUpdate();
+
+    @Getter
+    @Setter
+    private static final RedisHiveMessage REDIS_HIVE_MESSAGE = new RedisHiveMessage();
     @Getter
     private static InfriumCore instance;
     private InfriumProvider<Player> infriumProvider;
     private BukkitCommandManager commandManager;
+
+    private ServerSelectorGUI serverSelectorGUI;
+
+
     @Getter private YamlConfigurationContainer configuration;
     private volatile long lastUpdate = 0;
     private String serverName;
@@ -42,7 +56,7 @@ public class InfriumCore extends JavaPlugin {
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         initServerName();
 
-        File path = new File(getDataFolder(), "InfriumCommon.yml");
+        File path = new File(getDataFolder(), "InfriumAPI.yml");
         try {
             if (!path.exists()) {
                 getDataFolder().mkdirs();
@@ -65,7 +79,11 @@ public class InfriumCore extends JavaPlugin {
 
         this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         this.getServer().getPluginManager().registerEvents((Listener) infriumProvider, this);
-        this.commandManager = new BukkitCommandManager(this);
+        this.commandManager = new PaperCommandManager(this);
+        commandManager.registerCommand(new ServerCommand());
+
+        this.serverSelectorGUI = new ServerSelectorGUI(LegacyComponentSerializer.legacyAmpersand().deserialize("Shard Selector"),
+                this);
 
         this.getServer()
                 .getScheduler()
@@ -216,6 +234,14 @@ public class InfriumCore extends JavaPlugin {
 
     public String getMotd() {
         return MinecraftServer.getServer().server.getMotd();
+    }
+
+    public static void info(String message) {
+        InfriumCore.getInstance().getLogger().info("[" + (Bukkit.isPrimaryThread() ? "-" : "+") + "] " + message);
+    }
+
+    public static void warning(String message) {
+        InfriumCore.getInstance().getLogger().warning("[X] " + "[" + (Bukkit.isPrimaryThread() ? "-" : "+") + "] " + message);
     }
 
 }

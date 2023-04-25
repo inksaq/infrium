@@ -1,6 +1,7 @@
 package ltd.bui.infrium.proxy.listener;
 
 import com.google.common.io.ByteArrayDataInput;
+import com.google.inject.Inject;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
@@ -18,6 +19,8 @@ import ltd.bui.infrium.api.punishments.PunishmentType;
 import ltd.bui.infrium.proxy.Proxy;
 import ltd.bui.infrium.proxy.handler.QueueLimboHandler;
 import net.elytrium.limboapi.api.event.LoginLimboRegisterEvent;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 
 import java.util.Optional;
@@ -30,15 +33,16 @@ public class ServerListener {
   public static final char BAR_CHAR = '\u2588'; // full block character
   public static final char HEAVY_VERTICAL = '\u2503'; // box drawings heavy vertical character
   private static final LegacyChannelIdentifier LEGACY_BUNGEE_CHANNEL =
-      new LegacyChannelIdentifier("BungeeCord");
+          new LegacyChannelIdentifier("BungeeCord");
   private static final MinecraftChannelIdentifier MODERN_BUNGEE_CHANNEL =
-      MinecraftChannelIdentifier.create("bungeecord", "main");
+          MinecraftChannelIdentifier.create("bungeecord", "main");
 
   public ServerListener() {
+    System.out.println("register registrar");
     Proxy.get()
-        .getServer()
-        .getChannelRegistrar()
-        .register(LEGACY_BUNGEE_CHANNEL, MODERN_BUNGEE_CHANNEL);
+            .getServer()
+            .getChannelRegistrar()
+            .register(LEGACY_BUNGEE_CHANNEL, MODERN_BUNGEE_CHANNEL);
   }
 
   public static boolean checkPunishments(Player player2) {
@@ -87,18 +91,14 @@ public class ServerListener {
   @Subscribe
   public void onPostConnect(ServerConnectedEvent event) {
     var message =
-        "&b&lTeleporter &8"
-            + HEAVY_VERTICAL
-            + " &7Connected to &a"
-            + event.getServer().getServerInfo().getName();
-    if (event.getPreviousServer().isPresent()) {
-      message += " &7from &6" + event.getPreviousServer().get().getServerInfo().getName();
-    }
+        "\n                       &eLoading Shard - &l&e " + event.getServer().getServerInfo().getName() + " ... \n&7&oYour current game session has been paused while you are transferred.\n "
+            + event.getServer().getServerInfo().getName() + "\n";
     event.getPlayer().sendMessage(serialize.apply(message));
   }
 
   @Subscribe
   public void pluginMessageEvent(final PluginMessageEvent event) {
+    System.out.println(event.dataAsDataStream().readUTF());
     if (!event.getIdentifier().equals(LEGACY_BUNGEE_CHANNEL)
         && !event.getIdentifier().equals(MODERN_BUNGEE_CHANNEL)) {
       return;
@@ -107,19 +107,22 @@ public class ServerListener {
     if (!(event.getSource() instanceof ServerConnection)) {
       return;
     }
-
     ByteArrayDataInput in = event.dataAsDataStream();
     event.setResult(PluginMessageEvent.ForwardResult.handled());
     String subChannel = in.readUTF();
 
     if (subChannel.equals("hive")) {
       String command = in.readUTF();
+      if (command == "test"){
+        Proxy.get().getServer().sendMessage(Component.text("test"));
+      }
       if (command.equals("queue:join")) { // join queue for a server
         String serverType = in.readUTF();
         String playerName = in.readUTF();
         try {
           ServerType type = ServerType.valueOf(serverType);
           Proxy.get().getQueueRepository().joinQueue(playerName, type);
+
         } catch (Exception e) {
           // server type not found
         }
@@ -127,6 +130,8 @@ public class ServerListener {
         String playerName = in.readUTF();
         Proxy.get().getQueueRepository().leaveQueue(playerName);
       } else if (command.equals("connect:server")) { // connect to a server
+        System.out.println("connect:server");
+        System.out.println(command);
         String serverName = in.readUTF();
         String playerName = in.readUTF();
         Proxy.get()
@@ -146,6 +151,7 @@ public class ServerListener {
                                     () -> player.createConnectionRequest(server).fireAndForget());
                           });
                 });
+        System.out.println("send player to server");
       }
     }
   }

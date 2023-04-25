@@ -2,6 +2,8 @@ package ltd.bui.infrium.core.item;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
@@ -53,6 +55,7 @@ public class ItemBuilder {
     return this;
   }
 
+
   public Material getMaterial() {
     return material;
   }
@@ -71,13 +74,17 @@ public class ItemBuilder {
     return this;
   }
 
-  public ItemStack build() {
+  public ItemStack build(boolean glow) {
     ItemStack itemStack = new ItemStack(material, size);
     var meta = itemStack.getItemMeta();
 
     meta.displayName(this.name);
     meta.lore(this.lore);
     meta.setUnbreakable(unbreakable);
+    if (glow) {
+      meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+      meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+    }
 
     itemStack.setItemMeta(meta);
     return itemStack;

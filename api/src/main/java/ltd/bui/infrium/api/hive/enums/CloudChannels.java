@@ -8,6 +8,7 @@ public enum CloudChannels {
   SERVER_UPDATE("infrium:hive:server:update"),
   SERVER_SHUTDOWN("infrium:hive:server:shutdown"),
   MESSAGE("infrium:hive:message"),
+  CONNECT("infrium:hive:server:connect"),
   SYNC("infrium:hive:sync"),
   ;
 

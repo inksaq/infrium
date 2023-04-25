@@ -1,0 +1,138 @@
+{
+  "main": {
+    "id": "5506476fdc62b188",
+    "type": "split",
+    "children": [
+      {
+        "id": "dacb2436fca86769",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "brainstorm/Party mechanics.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "d8aa57c220074e9b",
+    "type": "split",
+    "children": [
+      {
+        "id": "8f275d84301e8804",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "674bce6e06d1f1d9",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "c51b7fe8b77a664b",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2cde4997c616b0b7",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e8e4aeee897cb0b1",
+    "type": "split",
+    "children": [
+      {
+        "id": "18f0a0a0bd63be72",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "88a809b665451422",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "brainstorm/Party mechanics.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "20fc86ba1260b196",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "brainstorm/Party mechanics.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "b490b75e51dfda81",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "1214eabb83caae93",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "brainstorm/Party mechanics.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "dacb2436fca86769",
+  "lastOpenFiles": [
+    "2022-10-27.md",
+    "brainstorm/Party mechanics.md",
+    "brainstorm/corperation & states.md",
+    "items/Game Items/NET-PAD.md"
+  ]
+}

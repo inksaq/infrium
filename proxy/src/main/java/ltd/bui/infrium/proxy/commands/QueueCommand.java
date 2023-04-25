@@ -16,7 +16,6 @@ public class QueueCommand implements SimpleCommand {
     if (invocation.source() instanceof Player) {
       Player player = (Player) invocation.source();
       var infriumPlayer = getInfriumProvider().getInfriumPlayer(player);
-      player.sendMessage(Component.text("trying to join queue, but its currently disabled. go ahead"));
       if (infriumPlayer.isPresent()) {
         getQueueRepository().getPlayerQueue(player.getUsername()).thenAccept(optionalQueue -> {
                   if (optionalQueue.isPresent()) {
@@ -28,7 +27,7 @@ public class QueueCommand implements SimpleCommand {
                                 + " &7You have left the queue for %s."
                                     .formatted(
                                         StringUtils.capitalize(
-                                            optionalQueue.get().name().toLowerCase()))));
+                                            optionalQueue.get().name()))));
 
                   } else {
                     if (invocation.arguments().length >= 1) {
@@ -45,8 +44,7 @@ public class QueueCommand implements SimpleCommand {
                                                         StringUtils.capitalize(
                                                             optionalQueue
                                                                 .get()
-                                                                .name()
-                                                                .toLowerCase())))));
+                                                                .name())))));
                       } catch (IllegalArgumentException e) {
                         player.sendMessage(
                             serialize.apply(

@@ -11,6 +11,8 @@ import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
+import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -18,6 +20,7 @@ import ltd.bui.infrium.api.InfriumProvider;
 import ltd.bui.infrium.api.configuration.InfriumConfiguration;
 import ltd.bui.infrium.api.hive.ServerRepository;
 import ltd.bui.infrium.api.hive.queue.QueueRepository;
+import ltd.bui.infrium.proxy.commands.HubCommand;
 import ltd.bui.infrium.proxy.commands.PunishmentCommand;
 import ltd.bui.infrium.proxy.commands.QueueCommand;
 import ltd.bui.infrium.proxy.configuration.TomlConfigurationContainer;
@@ -60,6 +63,7 @@ public class Proxy {
     private Limbo queueServer;
 
 
+
     @Inject
     public Proxy(ProxyServer server, Logger logger, @DataDirectory final Path folder) {
         Proxy.instance = this;
@@ -95,6 +99,7 @@ public class Proxy {
 
         server.getEventManager().register(this, this.infriumProvider);
         server.getEventManager().register(this, new ServerListener());
+        server.getChannelRegistrar().register(new LegacyChannelIdentifier("Bungeecord"));
         this.serverRepository =
                 new ProxyServerRepository(
                         InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
@@ -105,6 +110,7 @@ public class Proxy {
         this.queueServer = this.limboFactory.createLimbo(queueWorld);
         registerCommand(new PunishmentCommand(), "ban", "mute", "tempban", "tempmute", "kick");
         registerCommand(new QueueCommand(), "queue", "join");
+        registerCommand(new HubCommand(), "hub");
     }
 
     public static Proxy get() {
@@ -112,11 +118,17 @@ public class Proxy {
     }
 
     public void registerQueueLimbo(String username, QueueLimboHandler queueLimboHandler) {
+        System.out.println("regstered: " + username);
+
+        System.out.println("still: " + queueLimboHandler.getPlayer().getProxyPlayer().getUsername());
         if (limboPlayers.containsKey(username)) {
             limboPlayers.replace(username, queueLimboHandler);
+            System.out.println("as replacement");
         } else {
             limboPlayers.put(username, queueLimboHandler);
+            System.out.println("as put");
         }
+        System.out.println("now:" + limboPlayers.keySet());
     }
 
     public Optional<QueueLimboHandler> getQueueLimboHandler(String username) {

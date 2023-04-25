@@ -121,7 +121,7 @@ public class PlayerListener implements Listener {
     // pretty format the chat
     this.lastMessage.replace(event.getPlayer(), msg); // update last message, leave at the end.
     String prfx = apd.getRank().getPrefix();
-    String after = "&e" + oap.get().getUsername() + "&7 " + msg;
+    String after = (apd.getRank().isDefault() ? "&7" : "&f") + oap.get().getUsername() + "&7: " + MiniMessage.miniMessage().escapeTags(msg);
     if (prfx.length() > 0) {
       after = " " + after;
     }

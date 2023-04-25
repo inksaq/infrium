@@ -18,7 +18,7 @@ public class QueueLimboHandler implements LimboSessionHandler {
           MiniMessage.miniMessage().deserialize(
                   "<bold><gradient:#95FCFE:#C089F0>SEARCHING FOR A LOBBY SERVER</gradient></bold>"),
           1,
-          BossBar.Color.BLUE,
+          BossBar.Color.PURPLE,
           BossBar.Overlay.PROGRESS);
   @Getter private LimboPlayer player;
 
@@ -31,7 +31,7 @@ public class QueueLimboHandler implements LimboSessionHandler {
 
     if (!ServerListener.checkPunishments(player.getProxyPlayer())) {
       Proxy.get().registerQueueLimbo(player.getProxyPlayer().getUsername(), this);
-      Proxy.get()
+      Proxy
           .getQueueRepository()
           .joinQueue(player.getProxyPlayer().getUsername(), ServerType.LOBBY);
     }

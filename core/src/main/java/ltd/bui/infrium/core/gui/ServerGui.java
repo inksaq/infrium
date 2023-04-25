@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class ServerGui extends AbstractGui {
 
   private void rebuildUI() {
     this.inventory.clear();
-    this.fill(inventory, new ItemStack(Material.BLACK_STAINED_GLASS_PANE, 1), 0, this.size);
+    this.fill(inventory, ItemBuilder.builder().setMaterial(Material.LIGHT_GRAY_STAINED_GLASS_PANE).setName(Component.empty()).build(false), 0, this.size);
 
     var servers =
         new ArrayList<>(
@@ -66,9 +67,9 @@ public class ServerGui extends AbstractGui {
 
   @Override
   protected void onItemClick(Player player, ItemStack clickedItem, Inventory inventory) {
-    if (clickedItem.getType().name().contains("TERRACOTTA")) {
-      String itemName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName());
-      Teleporter.connect(player, itemName);
+    if (clickedItem.getType().name().contains("WOOL") && clickedItem.getType() != Material.RED_WOOL) {
+      String itemName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName().split(" ")[0]);
+      Teleporter.connect(player.getName(), itemName);
     } else {
       player.playSound(player.getLocation(), Sound.BLOCK_ANVIL_PLACE, 5, -20);
     }
@@ -77,13 +78,19 @@ public class ServerGui extends AbstractGui {
   public ItemStack craftItem(Server server) {
     var mat =
         (server.getServerStatus().getOnlinePlayers() >= server.getServerType().getMaxPlayers() / 2
-            ? Material.ORANGE_TERRACOTTA
-            : Material.GREEN_TERRACOTTA);
-    var dn =
-        LegacyComponentSerializer.legacySection()
+            ? Material.ORANGE_WOOL
+            : Material.GREEN_WOOL);
+
+    var dn = (server.getServerStatus().getOnlinePlayers() >= server.getServerType().getMaxPlayers() / 2
+            ? LegacyComponentSerializer.legacySection()
             .deserialize(
-                ChatColor.YELLOW
-                    + StringUtils.capitalize(server.getName().toLowerCase(Locale.ROOT)));
+                    ChatColor.YELLOW
+                            + StringUtils.capitalize(server.getName()) + " &7" + server.getServerStatus().getOnlinePlayers() + "&8/&7" + server.getServerType().getMaxPlayers())
+            : LegacyComponentSerializer.legacySection()
+            .deserialize(
+                    ChatColor.GREEN
+                            + StringUtils.capitalize(server.getName()) + " &7" + server.getServerStatus().getOnlinePlayers() + "&8/&7" + server.getServerType().getMaxPlayers()));
+
     var empty = LegacyComponentSerializer.legacySection().deserialize("");
 
     return ItemBuilder.builder()
@@ -95,12 +102,9 @@ public class ServerGui extends AbstractGui {
                 empty,
                 legacyAmpersand()
                     .deserialize(
-                        "&7Players &e&l"
-                            + server.getServerStatus().getOnlinePlayers()
-                            + "&7/&e&l"
-                            + server.getServerType().getMaxPlayers()),
+                        "&7Click to join this shard"),
                 empty))
-        .build();
+        .build(false);
   }
 
   @EventHandler

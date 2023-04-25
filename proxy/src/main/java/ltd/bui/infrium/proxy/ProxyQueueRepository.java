@@ -7,11 +7,14 @@ import ltd.bui.infrium.api.hive.pubsub.queue.RedisQueueJoin;
 import ltd.bui.infrium.api.hive.pubsub.queue.RedisQueueLeft;
 import ltd.bui.infrium.api.hive.queue.QueueRepository;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import static ltd.bui.infrium.proxy.Proxy.get;
 import static ltd.bui.infrium.proxy.Proxy.serialize;
 
 public class ProxyQueueRepository extends QueueRepository {
@@ -78,7 +81,7 @@ public class ProxyQueueRepository extends QueueRepository {
                     optionalPlayer
                         .get()
                         .createConnectionRequest(optionalServer.get())
-                        .fireAndForget())
+                        .connectWithIndication().obtrudeException(new Exception(new Exception("Not working"))))
             .schedule();
       }
     }
@@ -86,6 +89,8 @@ public class ProxyQueueRepository extends QueueRepository {
 
   @Override
   public void onJoinQueue(RedisQueueJoin queueJoin) {
+    System.out.println(playerQueue.size());
+    System.out.println(get().getLimboPlayers().entrySet());
     Proxy.get()
         .getServer()
         .getPlayer(queueJoin.getPlayerName())

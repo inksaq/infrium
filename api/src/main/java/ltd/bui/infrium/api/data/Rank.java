@@ -4,10 +4,12 @@ import lombok.Getter;
 
 @Getter
 public enum Rank {
-  OWNER("OWNER", "<bold><gradient:#7D3FB1:#E55554:#F8821D>OWNER</gradient></bold>", 0),
-  ADMIN("ADMIN", "&4&lADMIN", 1),
-  MODERATOR("MODERATOR", "&b&lMODERATOR", 2),
-  DEFAULT("DEFAULT", "", 3),
+  OPERATOR("OPERATOR", "<bold><dark_aqua>OP</dark_aqua></bold><reset>", 0),
+  CARETAKER("CARETAKER", "<bold><red>#</red></bold><reset>", 1),
+  TRUSTED("TRUSTED", "<dark_purple>#</dark_purple><reset>", 5),
+  VIP("VIP", "<gold>#</gold><reset>", 7),
+  WHITELISTED("WHITELISTED", "<white>#</white><reset>", 9),
+  DEFAULT("DEFAULT", "", 10),
   ;
 
   private final String prefix;
@@ -21,14 +23,16 @@ public enum Rank {
   }
 
   public boolean isStaff() {
-    return this.ladder <= 2;
+    return this.ladder <= 5;
   }
 
   public boolean isDefault() {
-    return this.ladder == 3;
+    return this.ladder == 10;
   }
 
-  public boolean isOwnerOrAdmin() {
+  public boolean isWhitelisted() { return this.ladder == 9 ;}
+
+  public boolean isOpOrCaretaker() {
     return this.ladder <= 1;
   }
 }

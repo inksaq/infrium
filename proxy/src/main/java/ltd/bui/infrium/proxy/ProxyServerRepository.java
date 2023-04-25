@@ -1,5 +1,6 @@
 package ltd.bui.infrium.proxy;
 
+import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
 import ltd.bui.infrium.api.hive.ServerRepository;
@@ -20,9 +21,15 @@ public class ProxyServerRepository extends ServerRepository {
     this.onSync();
   }
 
+    @Override
+    public void onServerConnect(String message) {
+      var server = message.split(":")[0];
+      var player = message.split(":")[1];
+      Proxy.get().getServer().getPlayer(player).get().createConnectionRequest(Proxy.get().getServer().getServer(server).orElseThrow()).fireAndForget();
+    }
+
   @Override
   public void onServerAdd(@NonNull Server server) {
-
     proxyServerMap.computeIfAbsent(
         server,
         s -> {
@@ -30,7 +37,7 @@ public class ProxyServerRepository extends ServerRepository {
               new ServerInfo(
                   server.getName(), new InetSocketAddress(server.getIp(), server.getPort()));
           return Proxy.get().getServer().registerServer(info);
-        });
+        });;
   }
 
   @Override
@@ -42,6 +49,7 @@ public class ProxyServerRepository extends ServerRepository {
             new ServerInfo(
                 server.getName(), new InetSocketAddress(server.getIp(), server.getPort())));
   }
+
 
   @Override
   public void onSync() {
