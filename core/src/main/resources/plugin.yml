@@ -1,0 +1,7 @@
+name: InfriumCore
+main: ltd.bui.infrium.core.InfriumCore
+version: '1.0'
+api-version: 1.13
+load: STARTUP
+loadbefore: [ InfriumLobby ]
+authors: [ inksaq ]
