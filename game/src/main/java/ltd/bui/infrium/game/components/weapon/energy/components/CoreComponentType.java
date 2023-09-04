@@ -4,5 +4,6 @@ public enum CoreComponentType {
     CHARGE_CELL,
     FOCAL_CONDUIT,
     CORE_PROCESSOR,
-    ENERGY_CORE
+    ENERGY_CORE,
+    FRAME_BODY
 }
