@@ -13,6 +13,7 @@ public abstract class ComponentUpgrade {
     protected Grade grade;
     @Getter @Setter
     protected Tier tier;
+
     @Getter @Setter
     protected ComponentUpgradeType componentUpgradeType;
 

@@ -2,8 +2,8 @@ package ltd.bui.infrium.game.components.weapon.energy.components.core.components
 
 import lombok.Getter;
 import lombok.Setter;
-import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
@@ -14,12 +14,11 @@ public class OverCharge extends ComponentUpgrade {
     @Setter
     private boolean overCharge; //unlocks superclock,supervolt,superload
 
+    private double heatRateMultiplier = tier.getHeatRate();
+
     public OverCharge(Rarity rarity, Grade grade, Tier tier, ComponentUpgradeType componentUpgradeType) {
-        super(rarity, grade, tier, componentUpgradeType);
+        super(rarity, grade, tier, ComponentUpgradeType.OVERCHARGE);
     }
-
-
-
 
 
 

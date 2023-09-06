@@ -3,20 +3,28 @@ package ltd.bui.infrium.game.components.weapon.energy.components;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.attachments.FrameAttachment;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.CoreProcessor;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LenseConduit;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
-import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
+import ltd.bui.infrium.game.item.Grade;
+import ltd.bui.infrium.game.item.IGrade;
 
 import java.util.Set;
 
-public class FrameBody{
+public class FrameBody implements IGrade {
 
     @Getter @Setter
     private FrameBody frameBody;
+    @Getter
+    private Grade bodyGrade;
+    @Getter
+    private double lifespan;
+    @Getter
+    private int maxFrameAttachments;
     @Getter @Setter
     private Set<FrameAttachment> frameAttachments;
     @Getter @Setter
@@ -30,7 +38,10 @@ public class FrameBody{
 
 
 
-    public FrameBody(){
+    public FrameBody(Grade grade){
+        this.bodyGrade = grade;
+        this.lifespan = grade.getLifespan();
+        this.maxFrameAttachments = 3;//todo
         frameBody = this;
 
     }
