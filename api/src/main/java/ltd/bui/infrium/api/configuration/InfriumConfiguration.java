@@ -3,8 +3,8 @@ package ltd.bui.infrium.api.configuration;
 import lombok.Getter;
 
 public enum InfriumConfiguration implements IConfigurationEnum {
-  MONGODB_URI("mongo_uri", "mongodb://192.168.1.38:27017"),
-  REDIS_URI("redis_uri", "redis://default:data123@192.168.1.40:6379/0"),;
+  MONGODB_URI("mongo_uri", "mongodb://192.168.1.31:27017"),
+  REDIS_URI("redis_uri", "redis://sentry:data123@192.168.1.32:6379/0"),;
 
   private static ConfigurationContainer<?> configurationContainer;
 
