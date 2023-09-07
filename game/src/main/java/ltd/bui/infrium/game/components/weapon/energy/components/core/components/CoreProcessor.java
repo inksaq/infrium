@@ -43,29 +43,8 @@ public class CoreProcessor extends CoreComponent {
         return componentUpgrades.size() >= upgradeLimit;
     }
 
-    public boolean addUpgrade(ComponentUpgrade componentUpgrade) {
-        if (hasHitUpgradeLimit()) {
-            System.out.println("upgrade limit hit");
-            return false;
-        }
-        calculateFormula(componentUpgrade, componentUpgrades);
-        componentUpgrades.add(componentUpgrade);
-        System.out.println("added " + componentUpgrade.getComponentUpgradeType().name() + " to " + componentUpgrade.getComponentUpgradeType().getCoreComponentType().name());
-        //display stats with increased stats showing difference
-        return true;
-    }
 
-    public boolean removeUpgrade(ComponentUpgrade componentUpgrade){
-        if (componentUpgrades.size() == 0) {
-            System.out.println("you have no more upgrades to remove");
-            return false;
-        }
-        calculateFormula(componentUpgrade, componentUpgrades);
-        componentUpgrades.remove(componentUpgrade);
-        System.out.println("component " + componentUpgrade.getComponentUpgradeType().name() + " removed from " + componentUpgrade.getComponentUpgradeType().getCoreComponentType().name() + "");
-        //display stats with removal of upgrade difference
-        return true;
-    }
+
 
     public void calculateFormula(ComponentUpgrade componentUpgrade, Collection<ComponentUpgrade> existingUpgrades) {
 

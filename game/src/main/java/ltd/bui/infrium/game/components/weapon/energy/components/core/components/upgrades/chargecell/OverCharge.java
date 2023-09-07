@@ -14,9 +14,12 @@ public class OverCharge extends ComponentUpgrade {
     @Setter
     private boolean overCharge; //unlocks superclock,supervolt,superload
 
-    private double heatRateMultiplier = tier.getHeatRate();
+    @Getter @Setter
+    private double heatRateMultiplier = rarity.getThresholdMultiplier();
+    @Getter
+    private double capacitanceMultiplier = grade.getGradeLadder() > 1 ? grade.getGradeLadder() * rarity.getCapacitanceMultiplier() * tier.getLadder() : 0.00;
 
-    public OverCharge(Rarity rarity, Grade grade, Tier tier, ComponentUpgradeType componentUpgradeType) {
+    public OverCharge(Rarity rarity, Grade grade, Tier tier) {
         super(rarity, grade, tier, ComponentUpgradeType.OVERCHARGE);
     }
 

@@ -7,13 +7,16 @@ import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 
-public class ConstantCharge extends ComponentUpgrade {
+public class OverVolt extends ComponentUpgrade {
 
     @Getter
-    private final double constantChargeRate;
+    private final double voltageMultiplier;
+    @Getter
+    private final double heatRate;
 
-    public ConstantCharge(Rarity rarity, Grade grade, Tier tier) {
-        super(rarity, grade, tier, ComponentUpgradeType.FAST_CHARGE);
-        this.constantChargeRate = tier.getEnergyOutputRate();
+    public OverVolt(Rarity rarity, Grade grade, Tier tier) {
+        super(rarity, grade, tier, ComponentUpgradeType.OVERVOLT);
+        voltageMultiplier = rarity.getThresholdMultiplier() * tier.getLadder();
+        heatRate = super.componentUpgradeType.getHeatRate();
     }
 }
