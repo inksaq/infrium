@@ -23,13 +23,12 @@ public class GetWeaponCC extends BaseCommand {
         }
         if (args.getArgs(0).equalsIgnoreCase("f")){
             FrameBody frameBody = new FrameBody(Grade.FACTORY);
-            EnergyCore energyCore = new EnergyCore(frameBody, Rarity.PRIME, Grade.PRIMED, Tier.II);
+//            EnergyCore energyCore = new EnergyCore(frameBody, Rarity.MASS, Grade.SHATTERED, Tier.I);
 
-            ChargeCell cg = new ChargeCell(frameBody, Rarity.MASS, Grade.FACTORY, Tier.II);
+            ChargeCell cg = new ChargeCell(frameBody, Rarity.MASS, Grade.SHATTERED, Tier.I);
 
             frameBody.addChargeCell(cg);
-            frameBody.addEnergyCore(energyCore);
-            cg.addUpgrade(new OverCharge(Rarity.MASS, Grade.FACTORY, Tier.II));
+//            frameBody.addEnergyCore(energyCore);
             frameBody.tickFrameBody(frameBody);
             frameBody.debug();
             WeaponComponent.getInstance().getFramebodies().put(frameBody.getFrameUUID(), frameBody);
@@ -43,7 +42,7 @@ public class GetWeaponCC extends BaseCommand {
         if (args.getArgs(0).equalsIgnoreCase("a")) {
 
             FrameBody fb = WeaponComponent.getInstance().getFrameBody(Integer.valueOf(args.getArgs(1)));
-            var cvoerCharge = new OverCharge(Rarity.PRIME, Grade.CHIPPED, Tier.I);
+            var cvoerCharge = new OverCharge(Rarity.MASS, Grade.SHATTERED, Tier.I);
             if (fb.getChargeCell().addUpgrade(cvoerCharge)) {
                 args.getSender().sendMessage("upgrade complete " + fb.getChargeCell().getUpgrades().size() + " / " + fb.getChargeCell().getUpgradeLimit());               ;
             } else {
@@ -51,22 +50,28 @@ public class GetWeaponCC extends BaseCommand {
             }
         }
         if (args.getArgs(0).equalsIgnoreCase("e")) {
-
             FrameBody fb = WeaponComponent.getInstance().getFrameBody(Integer.valueOf(args.getArgs(1)));
-            EnergyCore energyCore = new EnergyCore(fb, Rarity.PRIME, Grade.PRIMED, Tier.II);
-            fb.addEnergyCore(energyCore);
+            if (args.getArgs(1).equalsIgnoreCase("a")){
+                EnergyCore energyCore1 = new EnergyCore(Rarity.PRIME, Grade.PRIMED, Tier.II);
+                fb.addEnergyCore(energyCore1);
+                return;
+            }
+
+            var energyCore = fb.getEnergyCore();
+            if (energyCore == null) return;
+
+
+
             fb.debug();
-            energyCore.onTick();
             energyCore.expendEnergy();
             energyCore.onTick();
-            fb.debug();
             args.getSender().sendMessage("simulation complete of :" + fb.getFrameUUID());
             WeaponComponent.getInstance().getFramebodies().put(fb.getFrameUUID(), fb);
         }
         if (args.getArgs(0).equalsIgnoreCase("r")) {
 
             FrameBody fb = WeaponComponent.getInstance().getFrameBody(Integer.valueOf(args.getArgs(1)));
-            EnergyCore energyCore = new EnergyCore(fb, Rarity.PRIME, Grade.PRIMED, Tier.II);
+            EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.PRIMED, Tier.II);
             fb.getChargeCell().chargeCore();
             fb.debug();
             energyCore.onTick();

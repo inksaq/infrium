@@ -5,7 +5,7 @@ import lombok.Getter;
 public enum Grade {
     //Grade Multiplier effects Lifespan
     SHATTERED(-3, 31000000,1.8),
-    FRAGMENTED(-2, 900,1.40),
+    FRAGMENTED(-2, 61000000,1.40),
     CHIPPED(-1,     1100,1.38),
     REFURBISHED(0, 1200, 1.25),
     FACTORY(1,      2400,1.15),
@@ -17,7 +17,7 @@ public enum Grade {
     QUANTUM(7,      7.00,0.10);
 
     @Getter private int gradeLadder;
-    @Getter private double lifespan;
+    @Getter private int lifespan;
     @Getter private double stabilityMultiplier;
 
 
@@ -26,5 +26,14 @@ public enum Grade {
         this.gradeLadder = gradeLadder;
         this.lifespan = lifespan;
         this.stabilityMultiplier = stabilityMultiplier;
+    }
+
+    public static Grade getGradeLadder(int gradeLadder) {
+        for (Grade grade : Grade.values()) {
+            if (grade.gradeLadder == gradeLadder) {
+                return grade;
+            }
+        }
+        return Grade.SHATTERED;
     }
 }

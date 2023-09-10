@@ -3,12 +3,12 @@ package ltd.bui.infrium.game.components.weapon.energy.components.core;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.CoreProcessor;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
-import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LenseConduit;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LensConduit;
 
 public enum CoreComponentType {
     EMPTY(null),
     CHARGE_CELL(ChargeCell.class),
-    LENSE_CONDUIT(LenseConduit.class),
+    LENS_CONDUIT(LensConduit.class),
     CORE_PROCESSOR(CoreProcessor.class),
     ENERGY_CORE(EnergyCore.class);
 

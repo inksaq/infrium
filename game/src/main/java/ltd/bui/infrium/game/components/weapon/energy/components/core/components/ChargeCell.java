@@ -14,16 +14,18 @@ import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 
+import java.util.Set;
+
 public class ChargeCell extends CoreComponent {
 
     @Getter @Setter private double lifespan; // lifespan of chargecell(total chargeRate throughput x total outputRate + capacity) //TODO
 
-    private FrameBody frameBodyParent;
+    @Getter private final FrameBody frameBodyParent;
     @Getter @Setter private double capacity; //total capacity for chargeCell(Tier based + component upgrade)
     @Getter @Setter private double currentChargeRate; // Charge rate of Cell per second,
     @Getter @Setter private double currentOutputRate; // energy output per second when able to recharge energy core
     @Getter @Setter private double heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
-//    @Getter @Setter private Set<ComponentUpgrade> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
+    @Getter @Setter private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
     @Getter @Setter private Integer upgradeLimit;
 
 
@@ -36,9 +38,6 @@ public class ChargeCell extends CoreComponent {
         this.upgradeLimit = rarity.getComponentUpgradeLimit();
     }
 
-    public FrameBody getFrameBodyParent() {
-        return this.frameBodyParent;
-    }
 
     public boolean addUpgrade(ComponentUpgrade<? super CoreComponent> upgrade) {
         if (componentUpgrades.size() >= upgradeLimit)
@@ -56,7 +55,10 @@ public class ChargeCell extends CoreComponent {
     public void onTick(){
         computeAttributes();
         applyDegredation();
-        chargeCore();
+        if (getFrameBodyParent().getEnergyCore() != null) {
+            chargeCore();
+            System.out.println("Core Charged");
+        }
     }
 
     private void computeAttributes() {
@@ -69,11 +71,12 @@ public class ChargeCell extends CoreComponent {
 
     private void applyDegredation() {
         // Reduce the capacity based on the current output rate
-        capacity -= currentOutputRate;
+        capacity = currentOutputRate / capacity;
 
         // Apply degradation to lifespan
         // Assuming some degradation factor (e.g., 0.01 for 1% per tick)
-        double degradationFactor = 0.01;
+
+        double degradationFactor = frameBodyParent.getCoreProcessor() != null ? frameBodyParent.getCoreProcessor().getGigaHertz() / tier.getLadder() : 1;
         lifespan -= (lifespan * degradationFactor);
 
         // Ensure the values don't drop below zero
@@ -89,26 +92,31 @@ public class ChargeCell extends CoreComponent {
         System.out.println("Initial energyToTransfer: " + energyToTransfer);
 
         // Ensure we don't exceed the ChargeCell's current capacity
-        if (energyToTransfer > capacity) {
-            energyToTransfer = capacity;
-            System.out.println("EnergyToTransfer capped by current capacity to: " + energyToTransfer);
-        }
 
-        // Charge the EnergyCore
-        double energyCoreCurrentCapacitance = frameBodyParent.getEnergyCore().getCoreEnergyCapacitance();
-        System.out.println("EnergyCore current capacitance before charge: " + energyCoreCurrentCapacitance);
+        if (frameBodyParent.getEnergyCore() != null) {
 
-        frameBodyParent.getEnergyCore().setCoreEnergyCapacitance(energyCoreCurrentCapacitance + energyToTransfer);
-        System.out.println("EnergyCore capacitance after charge: " + frameBodyParent.getEnergyCore().getCoreEnergyCapacitance());
+            if (energyToTransfer > capacity) {
+                energyToTransfer = capacity;
+                System.out.println("EnergyToTransfer capped by current capacity to: " + energyToTransfer);
+            }
+            // Charge the EnergyCore
+            double energyCoreCurrentCapacitance = frameBodyParent.getEnergyCore().getCoreEnergyCapacitance();
+            System.out.println("EnergyCore current capacitance before charge: " + energyCoreCurrentCapacitance);
 
-        // Reduce the ChargeCell's capacity
-        capacity -= energyToTransfer;
-        System.out.println("ChargeCell's remaining capacity: " + capacity);
+            frameBodyParent.getEnergyCore().setCoreEnergyCapacitance(energyCoreCurrentCapacitance + energyToTransfer);
+            System.out.println("EnergyCore capacitance after charge: " + frameBodyParent.getEnergyCore().getCoreEnergyCapacitance());
 
-        // Ensure values don't go negative
-        if (capacity < 0) {
-            capacity = 0;
-            System.out.println("Corrected negative ChargeCell capacity.");
+            // Reduce the ChargeCell's capacity
+            capacity -= energyToTransfer;
+            System.out.println("ChargeCell's remaining capacity: " + capacity);
+
+            // Ensure values don't go negative
+            if (capacity < 0) {
+                capacity = 0;
+                System.out.println("Corrected negative ChargeCell capacity.");
+            }
+        } else {
+            System.out.println("No EnergyCore Equiped.");
         }
 
         // TODO: You can add logic here to handle heat generation and any other effects as a result of charging
@@ -121,9 +129,11 @@ public class ChargeCell extends CoreComponent {
         lifespan *= rarity.getLifespanMultiplier();
 
         // Adjust for each component upgrade:
+        if (componentUpgrades != null){
         for(ComponentUpgrade<?> upgrade : componentUpgrades) {
             // Sample: lifespan -= upgrade.getLifespanReduction();
 
+        }
         }
     }
 
@@ -131,6 +141,7 @@ public class ChargeCell extends CoreComponent {
         capacity *= rarity.getCapacitanceMultiplier();
 
         // Adjust for each component upgrade:
+if (componentUpgrades == null) return;
         for(ComponentUpgrade<?> upgrade : componentUpgrades) {
             // Sample: capacity += upgrade.getCapacityBonus();
             switch (upgrade.getComponentUpgradeType()){
@@ -144,6 +155,8 @@ public class ChargeCell extends CoreComponent {
 
     private void computeOutputRate() {
         currentOutputRate = tier.getEnergyOutputRate() * rarity.getOutputRateMultiplier();
+        if (componentUpgrades == null) return;
+
         for (ComponentUpgrade<?> upgrade : componentUpgrades) {
             switch (upgrade.getComponentUpgradeType()) {
                 //voltages
@@ -158,6 +171,8 @@ public class ChargeCell extends CoreComponent {
 //        var componentHeatRate = calculateComponentsHeatRate(componentUpgrades);
 //        System.out.println(componentHeatRate + " - total comp heat Rates");
         heatRate = tier.getHeatRate();
+        if (componentUpgrades == null) return;
+
         for (ComponentUpgrade<?> upgrade : componentUpgrades) {
             heatRate += upgrade.getTier().getHeatRate();
         }
@@ -165,6 +180,8 @@ public class ChargeCell extends CoreComponent {
 
     private void computeChargeRate(){
         currentChargeRate = tier.getRechargeRate() * rarity.getChargeRateMultiplier();
+        if (componentUpgrades == null) return;
+
         for (ComponentUpgrade<?> upgrade : componentUpgrades) {
             switch (upgrade.getComponentUpgradeType()) {
                 case FAST_CHARGE -> {
