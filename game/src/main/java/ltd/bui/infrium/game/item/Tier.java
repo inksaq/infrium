@@ -3,27 +3,27 @@ package ltd.bui.infrium.game.item;
 import lombok.Getter;
 
 public enum Tier {
-    I(1,30.00, 300.00,1, 38.00, 7, 1, 2),
-    II(2,45.00, 750.00,1, 50.00, 9, 2, 3),
-    III(3,60.00, 2450.00,2, 65.00, 13, 3, 4),
-    IV(4,75.00, 4500.00, 2,79.00, 18, 4, 5),
-    V(5,120.00, 6850.00, 3,135.00, 22, 5, 6), //blueprint
-    VI(6,30.00, 300.00, 3, 132.00, 28, 6, 7),
-    IX(9,30.00, 300.00, 0, 38.00, 30, 10, 20),
-    XV(15,30.00, 300.00, 0, 38.00, 40, 20, 40),
-    LCX(160,6666.00, 9999.00, 0, 7777.00, 55, 22, 222); // eldertech
+    I(1,30, 300,1, 38, 7, 1, 2),
+    II(2,45, 750,1, 50, 9, 2, 3),
+    III(3,60, 2450,2, 65, 13, 3, 4),
+    IV(4,75, 4500, 2,79, 18, 4, 5),
+    V(5,120, 6850, 3,135, 22, 5, 6), //blueprint
+    VI(6,30, 300, 3, 132, 28, 6, 7),
+    IX(9,30, 300, 0, 38, 30, 10, 20),
+    XV(15,30, 300, 0, 38, 40, 20, 40),
+    LCX(160,6666, 9999, 0, 7777, 55, 22, 222); // eldertech
 
     @Getter private final int ladder;
-    @Getter private final double rechargeRate;
-    @Getter private final double capacitance;
+    @Getter private final int rechargeRate;
+    @Getter private final int capacitance;
 
     @Getter private final int gigahertzUpgradeRequirement;
-    @Getter private final double energyOutputRate;
-    @Getter private final double gigaHertz;
+    @Getter private final int energyOutputRate;
+    @Getter private final int gigaHertz;
     @Getter private final int idleDraw;
     @Getter private final int heatRate;
 
-    Tier(int ladder,double rechargeRate, double capacitance,int gigahertzUpgradeRequirement, double energyOutputRate, double gigaHertz, int idleDraw, int heatRate) {
+    Tier(int ladder,int rechargeRate, int capacitance,int gigahertzUpgradeRequirement, int energyOutputRate, int gigaHertz, int idleDraw, int heatRate) {
         this.ladder = ladder;
         this.rechargeRate = rechargeRate;
         this.capacitance = capacitance;
@@ -32,5 +32,13 @@ public enum Tier {
         this.gigaHertz = gigaHertz;
         this.idleDraw = idleDraw;
         this.heatRate = heatRate;
+    }
+    public static Tier getTierLadder(int tierLadder) {
+        for (Tier tier : Tier.values()) {
+            if (tier.getLadder() == tierLadder) {
+                return tier;
+            }
+        }
+        return Tier.I;
     }
 }

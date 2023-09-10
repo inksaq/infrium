@@ -32,4 +32,13 @@ public enum Rarity {
         this.lifespanMultiplier = lifespanMultiplier;
         this.componentUpgradeLimit = componentUpgradeLimit;
     }
+
+    public static Rarity getRarityLadder(int rarityLadder) {
+        for (Rarity rarity : Rarity.values()) {
+            if (rarity.getLadder() == rarityLadder) {
+                return rarity;
+            }
+        }
+        return Rarity.MASS;
+    }
 }

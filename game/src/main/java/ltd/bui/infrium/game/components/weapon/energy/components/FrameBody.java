@@ -7,7 +7,7 @@ import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreCompone
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.CoreProcessor;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
-import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LenseConduit;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LensConduit;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
 import ltd.bui.infrium.game.item.Grade;
@@ -36,8 +36,15 @@ public class FrameBody {
     @Getter @Setter
     private CoreProcessor coreProcessor;
     @Getter @Setter
-    private LenseConduit lenseConduit;
+    private LensConduit lensConduit;
 
+    public FrameBody() {
+        frameBody = this;
+        this.frameUUID = UUID.randomUUID();
+        this.bodyGrade = null;
+        this.lifespan = 0;
+        this.maxFrameAttachments = 0;
+    }
 
 
     public FrameBody(Grade grade){
@@ -55,14 +62,16 @@ public class FrameBody {
     }
 
     public void addEnergyCore(EnergyCore energyCore) {
+        energyCore.setFrameBodyParent(this);
         this.energyCore = energyCore;
     }
 
     public void tickFrameBody(FrameBody frameBody) {
         EnergyCore ec = frameBody.getEnergyCore();
-        ec.onTick();
+        if (ec != null) ec.onTick();
         ChargeCell cc = frameBody.getChargeCell();
-        cc.onTick();
+        if (cc != null) cc.onTick();
+
     }
 
 
@@ -179,7 +188,7 @@ public class FrameBody {
 
         // Debugging LenseConduit (Just an example. You can expand upon this)
         System.out.println("\n--- LenseConduit ---");
-        if (lenseConduit != null) {
+        if (lensConduit != null) {
             // Add properties of LenseConduit that you want to debug here.
         } else {
             System.out.println("No LenseConduit attached.");
