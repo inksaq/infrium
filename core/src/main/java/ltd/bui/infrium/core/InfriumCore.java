@@ -19,7 +19,6 @@ import ltd.bui.infrium.core.helpers.InfriumScoreBoard;
 import ltd.bui.infrium.core.listener.PlayerListener;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -232,9 +231,9 @@ public class InfriumCore extends JavaPlugin {
                         });
     }
 
-    public String getMotd() {
-        return MinecraftServer.getServer().server.getMotd();
-    }
+//    public String getMotd() {
+//        return MinecraftServer.getServer().server.getMotd();
+//    }
 
     public static void info(String message) {
         InfriumCore.getInstance().getLogger().info("[" + (Bukkit.isPrimaryThread() ? "-" : "+") + "] " + message);
