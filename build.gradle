@@ -18,8 +18,10 @@ repositories{
 dependencies {
 	compileOnly project(":api")
 	compileOnly project(":core")
+	compileOnly project(":lobby")
 	compileOnly project(":proxy")
 	compileOnly project(":hive" )
+	compileOnly project(":game")
 }
 
 subprojects {
