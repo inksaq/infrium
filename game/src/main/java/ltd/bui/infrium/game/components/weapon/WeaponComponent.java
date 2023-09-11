@@ -6,16 +6,30 @@ import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.testing.commands.TestCommand;
 import ltd.bui.infrium.game.components.testing.listeners.TestListener;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
+import ltd.bui.infrium.game.components.weapon.energy.components.gui.EnergyCoreDataType;
+import ltd.bui.infrium.game.components.weapon.energy.components.gui.FrameBodyDataType;
 import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
 import ltd.bui.infrium.game.components.weapon.gun.commands.GetWeaponCC;
+import org.bukkit.NamespacedKey;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 public class WeaponComponent extends Component<Settlements> {
     private static WeaponComponent instance;
     private final SCAR90 scar90; // Your gun
+
+    private JavaPlugin plugin = Settlements.getInstance();
+
+    @Getter
+    private final FrameBodyDataType frameBodyDataType;
+    @Getter
+    private final EnergyCoreDataType energyCoreDataType;
+
+    @Getter
+    private final NamespacedKey weaponKey;
 
     @Getter
     private final HashMap<UUID, FrameBody> framebodies;
@@ -24,6 +38,9 @@ public class WeaponComponent extends Component<Settlements> {
     public WeaponComponent() {
         instance = this;
         framebodies = new HashMap<>();
+        this.weaponKey = new NamespacedKey(Settlements.getInstance(), "ergwp");
+        this.frameBodyDataType = new FrameBodyDataType(plugin);
+        this.energyCoreDataType = new EnergyCoreDataType(plugin);
         scar90 = new SCAR90("scar90");
 //        WeaponRegistry.registerWeapons();
     }

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class EnergyCore extends CoreComponent {
 
     @Getter private FrameBody frameBodyParent;
-    @Getter @Setter private final UUID uuid;
+    @Getter @Setter private UUID uuid;
 
     @Getter @Setter private int lifespan; /*Base lifespan is 2 years(in seconds),
      each added component to the Body reduces the lifespan on each component with lifespan(processor and chargecell(with different lifespans)
@@ -41,13 +41,17 @@ public class EnergyCore extends CoreComponent {
     @Getter @Setter private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
     @Getter @Setter private Integer upgradeLimit;
 
+
     public EnergyCore(Rarity rarity, Grade grade, Tier tier) {
         super(rarity, grade, tier, CoreComponentType.ENERGY_CORE);
         this.uuid = UUID.randomUUID();
         if (lifespan == 0) lifespan = grade.getLifespan();
         this.upgradeLimit = rarity.getComponentUpgradeLimit();
-        this.idleDrawRate = 0;
-        this.coreEnergyCapacitance = 0;
+        this.idleDrawRate = tier.getIdleDraw();
+        this.coreEnergyCapacitance = tier.getCapacitance();
+        this.heatRate = tier.getHeatRate();
+        this.outputEnergyRate = tier.getEnergyOutputRate();
+        this.rechargeRate = tier.getRechargeRate();
         this.upgradeLimit = 2;
 //        this.sustainTime = 0;
 //        this.stabilityRating = 100;
@@ -258,7 +262,7 @@ public class EnergyCore extends CoreComponent {
 //    }
 
     private void computeOutputEnergyRate() {
-        outputEnergyRate = tier.getEnergyOutputRate() * rarity.getOutputRateMultiplier() * rarity.getThresholdMultiplier();
+        outputEnergyRate = tier.getEnergyOutputRate() * (int) (rarity.getOutputRateMultiplier() * rarity.getThresholdMultiplier());
     }
 
     private void computeCoreEnergyCapacitance() {

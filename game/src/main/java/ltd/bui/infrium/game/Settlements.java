@@ -5,6 +5,7 @@ import lombok.Getter;
 import ltd.bui.infrium.core.api.command.CommandFramework;
 import ltd.bui.infrium.core.api.components.Component;
 import ltd.bui.infrium.core.api.handlers.Handler;
+import ltd.bui.infrium.core.gui.UUIDDataType;
 import ltd.bui.infrium.game.chat.ChatComponent;
 import ltd.bui.infrium.game.components.testing.Test;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
@@ -20,6 +21,8 @@ public class Settlements extends JavaPlugin {
 
     @Getter
     public static Settlements instance;
+
+    public static final UUIDDataType uuidTagType = new UUIDDataType();
 
     @Getter
     private CommandFramework commandFramework;

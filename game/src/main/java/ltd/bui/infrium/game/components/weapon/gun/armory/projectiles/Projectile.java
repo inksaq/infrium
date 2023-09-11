@@ -1,4 +1,4 @@
-package ltd.bui.infrium.game.components.weapon.gun.projectiles;
+package ltd.bui.infrium.game.components.weapon.gun.armory.projectiles;
 
 import ltd.bui.infrium.core.InfriumCore;
 import org.bukkit.Location;

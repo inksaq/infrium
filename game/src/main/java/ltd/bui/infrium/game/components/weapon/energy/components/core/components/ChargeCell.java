@@ -21,10 +21,10 @@ public class ChargeCell extends CoreComponent {
     @Getter @Setter private double lifespan; // lifespan of chargecell(total chargeRate throughput x total outputRate + capacity) //TODO
 
     @Getter private final FrameBody frameBodyParent;
-    @Getter @Setter private double capacity; //total capacity for chargeCell(Tier based + component upgrade)
-    @Getter @Setter private double currentChargeRate; // Charge rate of Cell per second,
-    @Getter @Setter private double currentOutputRate; // energy output per second when able to recharge energy core
-    @Getter @Setter private double heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
+    @Getter @Setter private int capacity; //total capacity for chargeCell(Tier based + component upgrade)
+    @Getter @Setter private int currentChargeRate; // Charge rate of Cell per second,
+    @Getter @Setter private int currentOutputRate; // energy output per second when able to recharge energy core
+    @Getter @Setter private int heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
     @Getter @Setter private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
     @Getter @Setter private Integer upgradeLimit;
 
@@ -88,7 +88,7 @@ public class ChargeCell extends CoreComponent {
         System.out.println("--- Starting chargeCore ---");
 
         // Determine the amount of energy to transfer - this is based on the ChargeCell's output rate
-        double energyToTransfer = currentOutputRate;
+        int energyToTransfer = currentOutputRate;
         System.out.println("Initial energyToTransfer: " + energyToTransfer);
 
         // Ensure we don't exceed the ChargeCell's current capacity
@@ -100,7 +100,7 @@ public class ChargeCell extends CoreComponent {
                 System.out.println("EnergyToTransfer capped by current capacity to: " + energyToTransfer);
             }
             // Charge the EnergyCore
-            double energyCoreCurrentCapacitance = frameBodyParent.getEnergyCore().getCoreEnergyCapacitance();
+            int energyCoreCurrentCapacitance = frameBodyParent.getEnergyCore().getCoreEnergyCapacitance();
             System.out.println("EnergyCore current capacitance before charge: " + energyCoreCurrentCapacitance);
 
             frameBodyParent.getEnergyCore().setCoreEnergyCapacitance(energyCoreCurrentCapacitance + energyToTransfer);
@@ -154,7 +154,7 @@ if (componentUpgrades == null) return;
     }
 
     private void computeOutputRate() {
-        currentOutputRate = tier.getEnergyOutputRate() * rarity.getOutputRateMultiplier();
+        currentOutputRate = (int) (tier.getEnergyOutputRate() * rarity.getOutputRateMultiplier());
         if (componentUpgrades == null) return;
 
         for (ComponentUpgrade<?> upgrade : componentUpgrades) {
@@ -179,7 +179,7 @@ if (componentUpgrades == null) return;
     }
 
     private void computeChargeRate(){
-        currentChargeRate = tier.getRechargeRate() * rarity.getChargeRateMultiplier();
+        currentChargeRate = (int) (tier.getRechargeRate() * rarity.getChargeRateMultiplier());
         if (componentUpgrades == null) return;
 
         for (ComponentUpgrade<?> upgrade : componentUpgrades) {

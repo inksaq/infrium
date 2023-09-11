@@ -8,18 +8,27 @@ import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.chargecell.OverCharge;
-import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GetWeaponCC extends BaseCommand {
 
 
     @Command(name = "wp", description = "get weapon")
     public void onCommand(CommandArgs args) throws Exception {
-        if (args.getArgs(0).equalsIgnoreCase("scar90")) {
-            GunRegistry.giveGunToPlayer(args.getPlayer(), "scar90");
+        Player player = (Player) args.getSender();
+
+        if (args.getArgs(0).equalsIgnoreCase("fb")) {
+//            GunRegistry.giveGunToPlayer(args.getPlayer(), "scar90");
+            FrameBody facFB = new FrameBody(Grade.FACTORY);
+            EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.FACTORY, Tier.II);
+            facFB.addEnergyCore(energyCore);
+            player.getInventory().addItem(facFB.set(new ItemStack(Material.DIAMOND_HOE, 1), facFB));
+//            player.getInventory().addItem(EnergyWeaponBuilder.builder(Grade.FACTORY).setFrameBody(facFB).recompute().build(true));
         }
         if (args.getArgs(0).equalsIgnoreCase("f")){
             FrameBody frameBody = new FrameBody(Grade.FACTORY);

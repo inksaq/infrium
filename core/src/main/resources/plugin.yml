@@ -1,7 +1,7 @@
-name: InfriumCore
+name: ICore
 main: ltd.bui.infrium.core.InfriumCore
 version: '1.0'
 api-version: 1.13
 load: STARTUP
-loadbefore: [ InfriumLobby ]
+loadbefore: [ ILobby, Settlements ]
 authors: [ inksaq ]

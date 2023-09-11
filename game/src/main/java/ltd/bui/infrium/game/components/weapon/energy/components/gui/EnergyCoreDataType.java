@@ -1,6 +1,6 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.gui;
 
-import ltd.bui.infrium.core.gui.UUIDDataType;
+import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
@@ -9,13 +9,18 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 
 public class EnergyCoreDataType implements PersistentDataType<PersistentDataContainer, EnergyCore> {
 
 
-    private static final UUIDDataType uuidTagType = new UUIDDataType();
+    private JavaPlugin plugin;
+
+    public EnergyCoreDataType(JavaPlugin javaPlugin) {
+        this.plugin = javaPlugin;
+    }
 
     @Override
     public @NotNull Class<PersistentDataContainer> getPrimitiveType() {
@@ -30,15 +35,15 @@ public class EnergyCoreDataType implements PersistentDataType<PersistentDataCont
     @Override
     public @NotNull PersistentDataContainer toPrimitive(@NotNull EnergyCore energyCore, @NotNull PersistentDataAdapterContext context) {
         PersistentDataContainer persistentDataContainer = context.newPersistentDataContainer();
-        persistentDataContainer.set(key("uuid"), uuidTagType, energyCore.getUuid());
+        persistentDataContainer.set(key("uuid"), Settlements.uuidTagType, energyCore.getUuid());
         persistentDataContainer.set(key("tier"), INTEGER, energyCore.getTier().getLadder());
         persistentDataContainer.set(key("grade"), INTEGER, energyCore.getGrade().getGradeLadder());
         persistentDataContainer.set(key("rarity"), INTEGER, energyCore.getRarity().getLadder());
-        persistentDataContainer.set(key("capacitance"), PersistentDataType.INTEGER, energyCore.getCoreEnergyCapacitance());
-        persistentDataContainer.set(key("idleDrawRate"), PersistentDataType.INTEGER, energyCore.getIdleDrawRate());
-        persistentDataContainer.set(key("rechargeRate"), PersistentDataType.INTEGER, energyCore.getRechargeRate());
-        persistentDataContainer.set(key("outputRate"), PersistentDataType.INTEGER, energyCore.getOutputEnergyRate());
-        persistentDataContainer.set(key("heatRate"), PersistentDataType.INTEGER, energyCore.getHeatRate());
+        persistentDataContainer.set(key("capacitance"), INTEGER, energyCore.getCoreEnergyCapacitance());
+        persistentDataContainer.set(key("idleDrawRate"), INTEGER, energyCore.getIdleDrawRate());
+        persistentDataContainer.set(key("rechargeRate"), INTEGER, energyCore.getRechargeRate());
+        persistentDataContainer.set(key("outputRate"), INTEGER, energyCore.getOutputEnergyRate());
+        persistentDataContainer.set(key("heatRate"), INTEGER, energyCore.getHeatRate());
 //        writeAttachments(persistentDataContainer, weaponData.getAttachments());
         return persistentDataContainer;
     }
@@ -50,6 +55,7 @@ public class EnergyCoreDataType implements PersistentDataType<PersistentDataCont
         var grade = primitive.get(key("grade"), INTEGER);
         var tier = primitive.get(key("tier"), INTEGER);
         EnergyCore energyCore = new EnergyCore(Rarity.getRarityLadder(rarity), Grade.getGradeLadder(grade), Tier.getTierLadder(tier));
+        energyCore.setUuid(primitive.get(key("uuid"), Settlements.uuidTagType));
         energyCore.setCoreEnergyCapacitance(primitive.get(key("capacitance"), INTEGER));
         energyCore.setIdleDrawRate(primitive.get(key("idleDrawRate"), INTEGER));
         energyCore.setRechargeRate(primitive.get(key("rechargeRate"), INTEGER));
@@ -60,7 +66,7 @@ public class EnergyCoreDataType implements PersistentDataType<PersistentDataCont
 
 
     private NamespacedKey key(String key) {
-        return new NamespacedKey(javaPlugin, key);
+        return new NamespacedKey(plugin, key);
     }
 
     private int getOrDefault(Integer integer, int defaultValue) {

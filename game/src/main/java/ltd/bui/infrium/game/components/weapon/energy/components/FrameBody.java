@@ -2,6 +2,7 @@ package ltd.bui.infrium.game.components.weapon.energy.components;
 
 import lombok.Getter;
 import lombok.Setter;
+import ltd.bui.infrium.game.components.weapon.WeaponComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.attachments.FrameAttachment;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
@@ -11,11 +12,15 @@ import ltd.bui.infrium.game.components.weapon.energy.components.core.components.
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
 import ltd.bui.infrium.game.item.Grade;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 
 import java.util.Set;
 import java.util.UUID;
 
 public class FrameBody {
+
 
     @Getter @Setter
     private UUID frameUUID;
@@ -24,9 +29,9 @@ public class FrameBody {
     @Getter
     private final Grade bodyGrade;
     @Getter
-    private final double lifespan;
-    @Getter
-    private final int maxFrameAttachments;
+    private final int lifespan;
+    @Getter @Setter
+    private int maxFrameAttachments;
     @Getter @Setter
     private Set<FrameAttachment> frameAttachments;
     @Getter @Setter
@@ -38,23 +43,25 @@ public class FrameBody {
     @Getter @Setter
     private LensConduit lensConduit;
 
-    public FrameBody() {
-        frameBody = this;
-        this.frameUUID = UUID.randomUUID();
-        this.bodyGrade = null;
-        this.lifespan = 0;
-        this.maxFrameAttachments = 0;
-    }
-
 
     public FrameBody(Grade grade){
         frameBody = this;
-        this.frameUUID = UUID.randomUUID();
+        if (this.frameUUID == null) {
+            this.frameUUID = UUID.randomUUID();
+        }
         this.bodyGrade = grade;
         this.lifespan = grade.getLifespan();
         this.maxFrameAttachments = 3;//todo
 
 
+    }
+
+    public ItemStack set(ItemStack itemStack, FrameBody weaponData) {
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        PersistentDataContainer customItemTagContainer = itemMeta.getPersistentDataContainer();
+        customItemTagContainer.set(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType(), weaponData);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
     }
 
     public void addChargeCell(ChargeCell chargeCell) {
