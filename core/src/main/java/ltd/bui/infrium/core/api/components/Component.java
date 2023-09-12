@@ -1,7 +1,5 @@
 package ltd.bui.infrium.core.api.components;
 
-import ltd.bui.infrium.game.ComponentNotEnabledException;
-
 public abstract class Component<T> implements IComponent<T> {
 
 
