@@ -1,5 +1,8 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
@@ -15,6 +18,7 @@ import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class ChargeCell extends CoreComponent {
 
@@ -228,4 +232,13 @@ if (componentUpgrades == null) return;
     }
 
 
+    @Override
+    public NBTCompound serializeToNBT() {
+        return null;
+    }
+
+    @Override
+    public ChargeCell deserializeFromNBT(NBTCompound nbt) {
+        return null;
+    }
 }

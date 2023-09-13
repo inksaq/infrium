@@ -1,5 +1,6 @@
 package ltd.bui.infrium.game.components.weapon;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.Getter;
 import ltd.bui.infrium.core.api.components.Component;
 import ltd.bui.infrium.game.Settlements;
@@ -12,7 +13,10 @@ import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
 import ltd.bui.infrium.game.components.weapon.gun.commands.GetWeaponCC;
+import net.kyori.adventure.text.NBTComponent;
+import net.kyori.adventure.text.NBTComponentBuilder;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
@@ -52,6 +56,12 @@ public class WeaponComponent extends Component<Settlements> {
         List<Map.Entry<UUID, FrameBody>> entries = new ArrayList<>(framebodies.entrySet());
         return entries.get(numberStored - 1).getValue();
     }
+
+//    public FrameBody getItemFrameBody(ItemStack itemStack) {
+//        var fbNBT = NBT.itemStackToNBT(itemStack);
+////        fbNBT.
+//        return
+//    }
 
     public void setFrameBody(UUID key, FrameBody frameBody) {
         framebodies.put(key, frameBody);

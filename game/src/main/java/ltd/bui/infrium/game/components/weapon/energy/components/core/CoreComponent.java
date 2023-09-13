@@ -24,6 +24,8 @@ public abstract class CoreComponent implements ICoreComponent {
 
     protected Set<ComponentUpgrade<? extends CoreComponent>> componentUpgrades = new HashSet<>();
 
+
+
     public Collection<ComponentUpgrade<? extends CoreComponent>> getUpgrades() {
         return componentUpgrades;
     }

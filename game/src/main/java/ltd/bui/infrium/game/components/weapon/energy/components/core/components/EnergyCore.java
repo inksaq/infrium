@@ -1,5 +1,10 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.*;
+import de.tr7zw.changeme.nbtapi.handler.NBTHandlers;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
@@ -12,6 +17,7 @@ import ltd.bui.infrium.game.item.Tier;
 
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 public class EnergyCore extends CoreComponent {
 
@@ -314,6 +320,89 @@ public class EnergyCore extends CoreComponent {
         }
         componentUpgrades.remove(upgrade);
         computeAttributes();  // Recompute after removing an upgrade
+    }
+
+    /**
+     * Serialize this EnergyCore into an NBTCompound.
+     *
+     * @return the serialized NBTCompound.
+     */
+    public NBTCompound serializeToNBT() {
+
+        NBTCompound nbt = (NBTCompound) NBT.createNBTObject().get("energyCore", NBTHandlers.STORE_READABLE_TAG);
+        nbt.setString("uuid", uuid.toString());
+        nbt.setInteger("lifespan", lifespan);
+        nbt.setInteger("coreEnergyCapacitance", coreEnergyCapacitance);
+        nbt.setInteger("idleDrawRate", idleDrawRate);
+        nbt.setInteger("rechargeRate", rechargeRate);
+        nbt.setInteger("outputEnergyRate", outputEnergyRate);
+        nbt.setInteger("heatRate", heatRate);
+
+        // For enums and other complex attributes, you can further serialize them.
+        nbt.setString("rarity", rarity.name());
+        nbt.setString("grade", grade.name());
+        nbt.setString("tier", tier.name());
+
+        // Serialize componentUpgrades (assuming you have a way to serialize/deserialize each ComponentUpgrade)
+//        ReadWriteNBTCompoundList upgrades = (ReadWriteNBTCompoundList) nbt.getOrCreateCompound("componentUpgrades");
+//        componentUpgrades.forEach(componentUpgrade -> upgrades.addCompound().mergeCompound(componentUpgrade.serialize()));
+//        nbt.set("componentUpgrades", upgrades);
+
+        return nbt;
+    }
+
+
+    /**
+     * Deserialize an EnergyCore from an NBTCompound.
+     *
+     * @param nbt the source NBTCompound.
+     * @return a new EnergyCore constructed from the given NBT data.
+     */
+    public EnergyCore deserializeFromNBT(NBTCompound nbt) {
+        Rarity rarity = Rarity.valueOf(nbt.getString("rarity"));
+        Grade grade = Grade.valueOf(nbt.getString("grade"));
+        Tier tier = Tier.valueOf(nbt.getString("tier"));
+
+        EnergyCore core = new EnergyCore(rarity, grade, tier);
+        core.setUuid(UUID.fromString(nbt.getString("uuid")));
+        core.setLifespan(nbt.getInteger("lifespan"));
+        core.setCoreEnergyCapacitance(nbt.getInteger("coreEnergyCapacitance"));
+        core.setIdleDrawRate(nbt.getInteger("idleDrawRate"));
+        core.setRechargeRate(nbt.getInteger("rechargeRate"));
+        core.setOutputEnergyRate(nbt.getInteger("outputEnergyRate"));
+        core.setHeatRate(nbt.getInteger("heatRate"));
+
+        // Deserialize componentUpgrades
+//        ReadWriteNBTCompoundList upgrades = nbt.getCompoundList("componentUpgrades");
+//        upgrades.forEach(readWriteNBT -> core.componentUpgrades.add(ComponentUpgrade.deserialize(readWriteNBT)));
+//        for (ReadWriteNBT upgradeNBT : upgrades) {
+//            ComponentUpgrade<?> upgrade = ComponentUpgrade.deserialize(upgradeNBT); // Assumes ComponentUpgrade has a static deserialize method
+//            core.componentUpgrades.add(upgrade);
+//        }
+
+        return core;
+    }
+
+    public static class NBTHandler {
+
+        // Keys for EnergyCore's NBT data
+        private static final String CAPACITY_KEY = "capacity";
+        private static final String CURRENT_ENERGY_KEY = "currentEnergy";
+
+        public static ReadWriteNBT serializeToNBT(EnergyCore energyCore) {
+            ReadWriteNBT nbt = NBT.createNBTObject();
+            nbt.setInteger(CAPACITY_KEY, energyCore.getCoreEnergyCapacitance());
+            nbt.setInteger(CURRENT_ENERGY_KEY, energyCore.getOutputEnergyRate());
+            return nbt;
+        }
+
+        public static EnergyCore deserializeFromNBT(ReadWriteNBT nbt) {
+            var tier = nbt.getInteger("grade");
+            EnergyCore energyCore = new EnergyCore();
+            energyCore.setCoreEnergyCapacitance(nbt.getInteger(CAPACITY_KEY));
+            energyCore.setOutputEnergyRate(nbt.getInteger(CURRENT_ENERGY_KEY));
+            return energyCore;
+        }
     }
 
 }

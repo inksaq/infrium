@@ -21,6 +21,10 @@ repositories {
         url = "https://oss.sonatype.org/content/repositories/snapshots"
         url = "https://oss.sonatype.org/content/repositories/central"
     }
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
 
 }
 
@@ -31,6 +35,7 @@ dependencies {
     compileOnly "org.spigotmc:spigot-api:1.20.1-R0.1-SNAPSHOT"
     implementation "co.aikar:acf-paper:0.5.1-SNAPSHOT"
     compileOnly fileTree(dir: '../libs', include: '*.jar')
+    implementation("de.tr7zw:item-nbt-api:2.12.0-RC1")
     implementation 'net.kyori:adventure-text-minimessage:4.13.0'
     implementation('com.google.guava:guava:31.1-jre')
     implementation('com.fasterxml.jackson.core:jackson-core:2.14.2')
@@ -42,3 +47,4 @@ dependencies {
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
+jar.dependsOn shadowJar

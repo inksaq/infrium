@@ -32,6 +32,8 @@ public class Settlements extends JavaPlugin {
     @Getter
     private ArrayList<Handler<Settlements>> handlers;
 
+
+
     private Logger logger;
 
     @Override

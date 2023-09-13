@@ -38,6 +38,10 @@ subprojects {
 		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 		maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
 		maven { url "https://repo.dmulloy2.net/repository/public/" }
+		maven {
+			name = "CodeMC"
+			url = uri("https://repo.codemc.io/repository/maven-public/")
+		}
 
 	}
 	dependencies {
@@ -61,6 +65,7 @@ subprojects {
 		relocate 'com.mongodb', 'ltd.bui.infrium.libs.com.mongodb'
 		relocate 'io.lettuce', 'ltd.bui.infrium.libs.io.lettuce'
 		relocate 'org.bson', 'ltd.bui.infrium.libs.org.bson'
+//		relocate("de.tr7zw.changeme.nbtapi", "ltd.bui.infrium.libs.de.trzw.changeme.nbtapi")
 		//relocate 'org.slf4j', 'ltd.bui.infrium.libs.org.slf4j'
 		relocate 'org.apache.commons.lang3', 'ltd.bui.infrium.libs.org.apache.commons.lang3'
 		relocate 'org.apache.commons.text', 'ltd.bui.infrium.libs.org.apache.commons.text'

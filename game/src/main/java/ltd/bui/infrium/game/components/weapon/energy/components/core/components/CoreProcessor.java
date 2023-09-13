@@ -1,5 +1,8 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.NBTCompound;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
@@ -12,6 +15,7 @@ import ltd.bui.infrium.game.item.Tier;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class CoreProcessor extends CoreComponent {
     @Getter @Setter private double lifespan; // lifespan of chargecell(lifespan - ghz*componentCount) //TODO
@@ -42,4 +46,13 @@ public class CoreProcessor extends CoreComponent {
         componentUpgrades = new HashSet<>();
     }
 
+    @Override
+    public NBTCompound serializeToNBT() {
+        return null;
+    }
+
+    @Override
+    public CoreProcessor deserializeFromNBT(NBTCompound nbt) {
+        return null;
+    }
 }

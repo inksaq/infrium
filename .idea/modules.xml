@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/infrium.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api/infrium.api.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/infrium.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/infrium.core.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/game/infrium.game.main.iml" filepath="$PROJECT_DIR$/.idea/modules/game/infrium.game.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/hive/infrium.hive.main.iml" filepath="$PROJECT_DIR$/.idea/modules/hive/infrium.hive.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lobby/infrium.lobby.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lobby/infrium.lobby.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/proxy/infrium.proxy.main.iml" filepath="$PROJECT_DIR$/.idea/modules/proxy/infrium.proxy.main.iml" />
+    </modules>
+  </component>
+</project>
