@@ -1,0 +1,9 @@
+hub:
+  location:
+    ==: org.bukkit.Location
+    world: world
+    x: -2.5
+    y: 103.0
+    z: 87.5
+    pitch: 0
+    yaw: 90
