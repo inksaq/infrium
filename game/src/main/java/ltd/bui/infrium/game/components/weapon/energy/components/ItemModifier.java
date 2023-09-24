@@ -20,7 +20,7 @@ public class ItemModifier {
     // Retrieve a UUID from the item's NBT
     public UUID getUUID(String key) {
         // NBT operations
-
+        return null;
     }
 
 }

@@ -37,8 +37,8 @@ public class FrameBody {
     private FrameBody frameBody;
     @Getter
     private final Grade bodyGrade;
-    @Getter
-    private final int lifespan;
+    @Getter @Setter
+    private int lifespan;
     @Getter @Setter
     private int maxFrameAttachments;
     @Getter @Setter
@@ -71,10 +71,10 @@ public class FrameBody {
         nbtContainer.setCompound(energyCore.serializeToNBT());
 
         NBT.modify(itemStack, nbt -> {
-            nbt.setnbtContainer.getCompound();
+//            nbt.set.getCompound();
 //            nbt.getOrCreateCompound("framebody").set.setUUID("uuid", weaponData.getFrameUUID());
 //            nbt.setInteger("lifespan", weaponData.getLifespan());
-
+            nbt.setUUID("frameUUID", weaponData.getFrameUUID());
 
         });
 //        PersistentDataContainer customItemTagContainer = itemMeta.getPersistentDataContainer();
@@ -241,51 +241,51 @@ public class FrameBody {
 //        coreProcessor.addUpgrade(componentUpgrade);
 //        return true;
 //    }
-
-    public static class NBTHandler implements de.tr7zw.changeme.nbtapi.iface.NBTHandler {
-
-        // Keys for FrameBody's NBT data
-        private static final String FRAME_UUID_KEY = "frameUUID";
-        private static final String LIFESPAN_KEY = "lifespan";
-        private static final String ENERGY_CORE_KEY = "energyCore";  // This is for nested EnergyCore data
-
-        public void setNBTData(ItemStack itemStack, FrameBody frameBody) {
-            NBT.modify(itemStack, nbt -> {
-                nbt.setUUID(FRAME_UUID_KEY, frameBody.getFrameUUID());
-                nbt.setInteger(LIFESPAN_KEY, frameBody.getLifespan());
-
-                // Nested EnergyCore data
-                ReadWriteNBT energyCoreNBT = EnergyCore.NBTHandler.serializeToNBT(frameBody.getEnergyCore());
-                nbt.set(ENERGY_CORE_KEY, energyCoreNBT, this);
-            });
-        }
-
-        public FrameBody getNBTData(ItemStack itemStack) {
-            FrameBody frameBody = new FrameBody();
-
-            UUID frameUUID = NBT.get(itemStack, (Function<ReadableItemNBT, UUID>) nbt -> nbt.getUUID(FRAME_UUID_KEY));
-            int lifespan = NBT.get(itemStack, (Function<ReadableItemNBT, Integer>) nbt -> nbt.getOrDefault(LIFESPAN_KEY, 0));
-
-            // Get nested EnergyCore data
-            ReadWriteNBT energyCoreNBT = NBT.get(itemStack, (Function<ReadableItemNBT, ReadWriteNBT>) nbt -> nbt.get(ENERGY_CORE_KEY));
-            EnergyCore energyCore = EnergyCore.NBTHandler.deserializeFromNBT(energyCoreNBT);
-
-            frameBody.setFrameUUID(frameUUID);
-            frameBody.setLifespan(lifespan);
-            frameBody.setEnergyCore(energyCore);
-
-            return frameBody;
-        }
-
-        @Override
-        public void set(@NotNull ReadWriteNBT nbt, @NotNull String key, @NotNull Object value) {
-
-        }
-
-        @Override
-        public Object get(@NotNull ReadableNBT nbt, @NotNull String key) {
-            return null;
-        }
-    }
+//
+//    public static class NBTHandler implements de.tr7zw.changeme.nbtapi.iface.NBTHandler {
+//
+//        // Keys for FrameBody's NBT data
+//        private static final String FRAME_UUID_KEY = "frameUUID";
+//        private static final String LIFESPAN_KEY = "lifespan";
+//        private static final String ENERGY_CORE_KEY = "energyCore";  // This is for nested EnergyCore data
+//
+//        public void setNBTData(ItemStack itemStack, FrameBody frameBody) {
+//            NBT.modify(itemStack, nbt -> {
+//                nbt.setUUID(FRAME_UUID_KEY, frameBody.getFrameUUID());
+//                nbt.setInteger(LIFESPAN_KEY, frameBody.getLifespan());
+//
+//                // Nested EnergyCore data
+//                ReadWriteNBT energyCoreNBT = EnergyCore.NBTHandler.serializeToNBT(frameBody.getEnergyCore());
+//                nbt.set(ENERGY_CORE_KEY, energyCoreNBT, this);
+//            });
+//        }
+//
+//        public FrameBody getNBTData(ItemStack itemStack) {
+//            FrameBody frameBody = new FrameBody();
+//
+//            UUID frameUUID = NBT.get(itemStack, (Function<ReadableItemNBT, UUID>) nbt -> nbt.getUUID(FRAME_UUID_KEY));
+//            int lifespan = NBT.get(itemStack, (Function<ReadableItemNBT, Integer>) nbt -> nbt.getOrDefault(LIFESPAN_KEY, 0));
+//
+//            // Get nested EnergyCore data
+//            ReadWriteNBT energyCoreNBT = NBT.get(itemStack, (Function<ReadableItemNBT, ReadWriteNBT>) nbt -> nbt.get(ENERGY_CORE_KEY));
+//            EnergyCore energyCore = EnergyCore.NBTHandler.deserializeFromNBT(energyCoreNBT);
+//
+//            frameBody.setFrameUUID(frameUUID);
+//            frameBody.setLifespan(lifespan);
+//            frameBody.setEnergyCore(energyCore);
+//
+//            return frameBody;
+//        }
+//
+//        @Override
+//        public void set(@NotNull ReadWriteNBT nbt, @NotNull String key, @NotNull Object value) {
+//
+//        }
+//
+//        @Override
+//        public Object get(@NotNull ReadableNBT nbt, @NotNull String key) {
+//            return null;
+//        }
+//    }
 
 }
