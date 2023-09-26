@@ -5,4 +5,3 @@ api-version: 1.13
 load: STARTUP
 loadbefore: [ ILobby, Settlements ]
 authors: [ inksaq ]
-depend: [NBTAPI]

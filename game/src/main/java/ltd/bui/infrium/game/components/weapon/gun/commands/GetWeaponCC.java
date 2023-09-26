@@ -27,7 +27,7 @@ public class GetWeaponCC extends BaseCommand {
             FrameBody facFB = new FrameBody(Grade.FACTORY);
             EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.FACTORY, Tier.II);
             facFB.addEnergyCore(energyCore);
-            player.getInventory().addItem(facFB.set(new ItemStack(Material.DIAMOND_HOE, 1), facFB));
+            facFB.set(new ItemStack(Material.DIAMOND_HOE, 1), facFB, player);
 //            player.getInventory().addItem(EnergyWeaponBuilder.builder(Grade.FACTORY).setFrameBody(facFB).recompute().build(true));
         }
         if (args.getArgs(0).equalsIgnoreCase("f")){

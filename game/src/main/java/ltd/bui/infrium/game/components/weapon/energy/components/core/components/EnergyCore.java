@@ -383,26 +383,28 @@ public class EnergyCore extends CoreComponent {
         return core;
     }
 
-    public static class NBTHandler {
-
-        // Keys for EnergyCore's NBT data
-        private static final String CAPACITY_KEY = "capacity";
-        private static final String CURRENT_ENERGY_KEY = "currentEnergy";
-
-        public static ReadWriteNBT serializeToNBT(EnergyCore energyCore) {
-            ReadWriteNBT nbt = NBT.createNBTObject();
-            nbt.setInteger(CAPACITY_KEY, energyCore.getCoreEnergyCapacitance());
-            nbt.setInteger(CURRENT_ENERGY_KEY, energyCore.getOutputEnergyRate());
-            return nbt;
-        }
-
-        public static EnergyCore deserializeFromNBT(ReadWriteNBT nbt) {
-            var tier = nbt.getInteger("grade");
-            EnergyCore energyCore = new EnergyCore();
-            energyCore.setCoreEnergyCapacitance(nbt.getInteger(CAPACITY_KEY));
-            energyCore.setOutputEnergyRate(nbt.getInteger(CURRENT_ENERGY_KEY));
-            return energyCore;
-        }
-    }
+//    public static class NBTHandler {
+//
+//        // Keys for EnergyCore's NBT data
+//        private static final String CAPACITY_KEY = "capacity";
+//        private static final String CURRENT_ENERGY_KEY = "currentEnergy";
+//
+//        public static ReadWriteNBT serializeToNBT(EnergyCore energyCore) {
+//            ReadWriteNBT nbt = NBT.createNBTObject();
+//            nbt.setInteger(CAPACITY_KEY, energyCore.getCoreEnergyCapacitance());
+//            nbt.setInteger(CURRENT_ENERGY_KEY, energyCore.getOutputEnergyRate());
+//            return nbt;
+//        }
+//
+//        public static EnergyCore deserializeFromNBT(ReadWriteNBT nbt) {
+//            var tier = nbt.getInteger("tier");
+//            var grade = nbt.getInteger("grade");
+//            var rarity = nbt.getInteger("rarity");
+//            EnergyCore energyCore = new EnergyCore();
+//            energyCore.setCoreEnergyCapacitance(nbt.getInteger(CAPACITY_KEY));
+//            energyCore.setOutputEnergyRate(nbt.getInteger(CURRENT_ENERGY_KEY));
+//            return energyCore;
+//        }
+//    }
 
 }
