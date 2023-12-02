@@ -1,5 +1,6 @@
 # Ignore Gradle project-specific cache directory
 .gradle
+.idea
 
 # Ignore Gradle build output directory
 build
@@ -10,3 +11,4 @@ gradle/
 /rapidlocalhost/libraries/
 /rapidlocalhost/versions/
 /rapidlocalhost/logs/
+/rapidlocalhost/world/
