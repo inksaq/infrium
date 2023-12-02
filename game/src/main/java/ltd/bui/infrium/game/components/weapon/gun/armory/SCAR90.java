@@ -26,7 +26,7 @@ public class SCAR90 extends InfantryWeapon {
     public SCAR90(String name) {
         super(ItemBuilder.builder().setMaterial(Material.DIAMOND_HOE).setName(Component.text(name)).build(true), 5.0,30, 30); // Example item and damage
         this.name = name;
-        this.projectile = new VillagerParticleProjectile(15, 5.0, 0, false); // example speed, damage, bullet drop, penetration
+        this.projectile = new VillagerParticleProjectile(200, 5.0, 0.005, false); // example speed, damage, bullet drop, penetration
         this.magazineSize = 30;
         this.bulletsLeft = magazineSize;
         this.bulletSpeed = 1.5;

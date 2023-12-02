@@ -13,24 +13,33 @@ import org.bukkit.util.Vector;
 public class VillagerParticleProjectile extends Projectile {
     private double traveled = 0; // distance traveled by the projectile
     private final double range = 100; // replace with the desired range
-    private final double bulletDropFactor = 0.0005; // adjust for more/less drop
+    private final double bulletDropFactor = 0.025; // adjust for more/less drop
 
     public VillagerParticleProjectile(double speed, double damage, double bulletdrop, boolean penetration) {
-        super(Particle.VILLAGER_HAPPY, speed, damage, bulletdrop, penetration); // example particle type
+        super(Particle.CRIMSON_SPORE, speed, damage, bulletdrop, penetration); // example particle type
     }
 
     @Override
     public void launch(Location from, Vector direction) {
         new BukkitRunnable() {
             Location location = from.add(direction.normalize().multiply(0.5));
-            double travelDistancePerTick = speed / 5; // Assuming 20 ticks per second for Minecraft
+            double travelDistancePerTick = speed / 7; // Assuming 20 ticks per second for Minecraft
 
             @Override
             public void run() {
                 location.add(direction);
                 for (int i = 0; i < speed; i++) {  // "speed" iterations per tick
                     location.add(direction);
-                    direction.setY(direction.getY() - 0);  // Apply bullet drop
+                    if (traveled <= 30) {
+                        direction.setY(direction.getY() - 0.0005);
+                    } else if (traveled <= 50) {
+                        direction.setY(direction.getY() - 0.0009);
+                    } else if (traveled <= 80) {
+                        direction.setY(direction.getY() - 0.001);
+                    } else {
+                        direction.setY(direction.getY() - 0.003);
+                    }
+
 
                     Block block = location.getBlock();
                     if (!block.isPassable()) {  // Bullet hits a block
@@ -47,6 +56,7 @@ public class VillagerParticleProjectile extends Projectile {
                     if (traveled >= range || hitPlayer()) {
                         cancel();
                     }
+
 
                     traveled += travelDistancePerTick;
                 }

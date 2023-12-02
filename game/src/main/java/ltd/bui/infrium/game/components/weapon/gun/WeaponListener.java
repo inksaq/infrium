@@ -3,11 +3,11 @@ package ltd.bui.infrium.game.components.weapon.gun;
 import com.destroystokyo.paper.event.player.PlayerAttackEntityCooldownResetEvent;
 import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 import ltd.bui.infrium.game.Settlements;
+import ltd.bui.infrium.game.components.testing.ui.WorkbenchGUI;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
-import org.bukkit.Material;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -22,8 +22,18 @@ import org.bukkit.util.Vector;
 public class WeaponListener implements Listener {
 
 
+    private WorkbenchGUI gui;
+
+
     public WeaponListener(Settlements plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        this.gui = new WorkbenchGUI(LegacyComponentSerializer.legacyAmpersand().deserialize("Shard Selector"), plugin);
+    }
+
+
+    @EventHandler
+    public void onPlayerScope(PlayerStopUsingItemEvent event) {
+        event.getPlayer().sendMessage("held " + event.getItem().getType().name()+ " for " + event.getTicksHeldFor());
 
     }
 
@@ -35,6 +45,7 @@ public class WeaponListener implements Listener {
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (getFrameBody(heldItem) != null){
                 FrameBody fb = getFrameBody(heldItem);
+                fb.updateLoreNBT(heldItem, fb);
                 player.sendMessage("UUID:" + fb.getFrameUUID());
                 player.sendMessage("Lifespan: " + fb.getLifespan());
                 player.sendMessage("EnergyCore:" + (fb.getEnergyCore() != null ? "installed" : "not installed"));
@@ -52,14 +63,6 @@ public class WeaponListener implements Listener {
                 InfantryWeapon gun = (InfantryWeapon) GunRegistry.getGunByName(heldItem.getItemMeta().getDisplayName());
                 gun.shoot(player);
             }
-
-            if (heldItem.getType() == Material.GOAT_HORN) {
-                event.setUseItemInHand(Event.Result.ALLOW);
-                if (event.getAction().isLeftClick()) {
-                    player.sendMessage("goat");
-                    new PlayerStopUsingItemEvent(player, heldItem, 200);
-                }
-            }
         }
     }
 
@@ -67,6 +70,10 @@ public class WeaponListener implements Listener {
         ItemMeta itemMeta = itemStack.getItemMeta();
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
         return pdc.get(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType());
+    }
+
+    public FrameBody getFrameBody(ItemStack itemstack, FrameBody weaponData) {
+        return null;
     }
 
     public void onHornSound(PlayerStopUsingItemEvent event) {

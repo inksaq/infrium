@@ -1,12 +1,10 @@
 package ltd.bui.infrium.game.components.weapon.energy.components;
 
 import de.tr7zw.changeme.nbtapi.*;
-import de.tr7zw.changeme.nbtapi.handler.NBTHandlers;
 import de.tr7zw.changeme.nbtapi.iface.*;
 import de.tr7zw.changeme.nbtapi.wrapper.NBTProxy;
 import lombok.Getter;
 import lombok.Setter;
-import ltd.bui.infrium.game.components.weapon.WeaponComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.attachments.FrameAttachment;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
@@ -15,25 +13,17 @@ import ltd.bui.infrium.game.components.weapon.energy.components.core.components.
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LensConduit;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
+import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.item.Grade;
-import ltd.bui.infrium.game.item.Rarity;
-import ltd.bui.infrium.game.item.Tier;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.attribute.Attribute;
-import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataContainer;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.OutputStream;
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class FrameBody implements NBTProxy {
 
@@ -82,6 +72,51 @@ public class FrameBody implements NBTProxy {
         this.lifespan = 0;
     }
 
+    private void updateWeaponLore() {
+        // Iterate over all online players and their inventories
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (item != null && item.hasItemMeta() && GunRegistry.isGun(item)) {
+                    FrameBody frameBody = getFrameBody(); // Assuming this method extracts FrameBody data from the item
+                    if (frameBody != null) {
+                        frameBody.tickFrameBody(item, frameBody);
+                        frameBody.generateDebugLore(frameBody); // Update the lore of the item
+                    }
+                }
+            }
+        }
+    }
+
+    public List<String> generateDebugLore(FrameBody weaponData) {
+        List<String> lore = new ArrayList<>();
+        if (weaponData.getEnergyCore() != null) {
+            EnergyCore ec = weaponData.getEnergyCore();
+            lore.add(ChatColor.GRAY+"--EnergyCore--");
+            lore.add(ChatColor.GRAY+"UUID: " + ec.getUuid());
+            lore.add(ChatColor.GRAY + "Tier: " + ec.getTier().getTierFormat());
+            lore.add(ChatColor.GRAY + "Grade: " + ec.getGrade().getGradeFormat());
+            lore.add(ChatColor.GRAY+"Rarity: " + ec.getRarity().getRarityFormat());
+            lore.add(ChatColor.GRAY + "OutputRate: " + ec.getOutputEnergyRate());
+            lore.add(ChatColor.GRAY + "CoreCapacitance: " + ec.getCoreEnergyCapacitance());
+            lore.add(ChatColor.GRAY + "RechargeRate: " + ec.getRechargeRate());
+            lore.add(ChatColor.GRAY + "HeatRate: " + ec.getHeatRate());
+            lore.add(ChatColor.GRAY+"Grade: " + ec.getIdleDrawRate());
+            if (ec.getComponentUpgrades() != null && !ec.getComponentUpgrades().isEmpty()) {
+                lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
+                for (ComponentUpgrade<?> comp : ec.getComponentUpgrades()) {
+                    lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
+                    lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                    lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
+                }
+            }
+            lore.add(ChatColor.GRAY + "Lifespan:" + ec.getLifespan());
+        }
+        lore.add(ChatColor.GRAY+"Attachments: " + (weaponData.getFrameAttachments().isEmpty() ? 0 : weaponData.getFrameAttachments().size()) + "/" + weaponData.getFrameBody().getMaxFrameAttachments());
+        lore.add(ChatColor.GRAY+"Lifespan:" + weaponData.getFrameBody().getLifespan());
+        lore.add(ChatColor.GRAY+"UUID:" + weaponData.getFrameBody().getFrameUUID());
+        return lore;
+    }
+
     public ItemStack set(ItemStack itemStack, FrameBody weaponData, Player player) {
         ItemMeta itemMeta = itemStack.getItemMeta();
 //        NBTContainer nbtContainer = new NBTContainer();
@@ -89,12 +124,40 @@ public class FrameBody implements NBTProxy {
 //        nbtContainer.setCompound(weaponData.getEnergyCore().serializeToNBT());
 
 
-        itemStack = NBT.itemStackFromNBT(NBT.itemStackToNBT(itemStack));
+//        itemStack = NBT.itemStackFromNBT(NBT.itemStackToNBT(itemStack));
 
 //        itemStack = NBT.itemStackFromNBT(weaponData.serializeToNBT());
+//        assert itemStack != null;
         NBT.modify(itemStack, readWriteItemNBT -> {
             readWriteItemNBT.clearNBT();
-            readWriteItemNBT.setUUID("uuid", weaponData.getFrameUUID());
+            readWriteItemNBT.setString("uuid", weaponData.getFrameUUID().toString());
+            readWriteItemNBT.setInteger("lifespan", weaponData.getLifespan());
+            readWriteItemNBT.modifyMeta((readableNBT, itemMeta1) -> {
+                itemMeta1.setDisplayName(weaponData.getFrameBody().bodyGrade.getGradeFormat() + " FrameBody");
+
+                itemMeta1.setLore(generateDebugLore(weaponData));
+                itemMeta1.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_ENCHANTS, ItemFlag.HIDE_ITEM_SPECIFICS);
+            });
+            readWriteItemNBT.getOrCreateCompound("test");
+        });
+
+        player.getInventory().addItem(itemStack);
+
+
+//            nbt.getOrCreateCompound("framebody").set.setUUID("uuid", weaponData.getFrameUUID());
+//            nbt.setInteger("lifespan", weaponData.getLifespan());
+
+
+//        PersistentDataContainer customItemTagContainer = itemMeta.getPersistentDataContainer();
+//        customItemTagContainer.set(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType(), weaponData);
+        itemStack.setItemMeta(itemMeta);
+        return itemStack;
+    }
+
+    public ItemStack updateLoreNBT(ItemStack itemstack, FrameBody weaponData) {
+        NBT.modify(itemstack, readWriteItemNBT -> {
+            readWriteItemNBT.clearNBT();
+            readWriteItemNBT.setString("uuid", weaponData.getFrameUUID().toString());
             readWriteItemNBT.setInteger("lifespan", weaponData.getLifespan());
             readWriteItemNBT.modifyMeta((readableNBT, itemMeta1) -> {
                 itemMeta1.setDisplayName(weaponData.getFrameBody().bodyGrade.getGradeFormat() + " FrameBody");
@@ -130,17 +193,7 @@ public class FrameBody implements NBTProxy {
             readWriteItemNBT.getOrCreateCompound("test");
         });
 
-        player.getInventory().addItem(itemStack);
-
-
-//            nbt.getOrCreateCompound("framebody").set.setUUID("uuid", weaponData.getFrameUUID());
-//            nbt.setInteger("lifespan", weaponData.getLifespan());
-
-
-//        PersistentDataContainer customItemTagContainer = itemMeta.getPersistentDataContainer();
-//        customItemTagContainer.set(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType(), weaponData);
-        itemStack.setItemMeta(itemMeta);
-        return itemStack;
+        return itemstack;
     }
 
     public void addChargeCell(ChargeCell chargeCell) {
@@ -158,6 +211,25 @@ public class FrameBody implements NBTProxy {
         ChargeCell cc = frameBody.getChargeCell();
         if (cc != null) cc.onTick();
 
+    }
+
+    public void tickFrameBody(ItemStack itemstack, FrameBody frameBody) {
+        EnergyCore ec = frameBody.getEnergyCore();
+        if (ec != null) ec.onTick();
+        frameBody.energyCore = ec;
+        ChargeCell cc = frameBody.getChargeCell();
+        if (cc != null) cc.onTick();
+        frameBody.chargeCell = cc;
+        updateLoreNBT(itemstack, frameBody);
+        debug();
+
+    }
+
+    public boolean isOperational() {
+        if (this.chargeCell != null && this.energyCore != null && this.coreProcessor != null && this.lensConduit != null) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -294,10 +366,10 @@ public class FrameBody implements NBTProxy {
     }
 
     public ReadWriteNBT serializeToNBT() {
-
+//        String uuid = NBT.get(itemstack, (Function<ReadableItemNBT, String>) nbt -> nbt.getString("uuid"));
         ReadWriteNBT nbt = NBT.createNBTObject();
         nbt.getOrCreateCompound("frameBody");
-        nbt.setUUID("uuid", frameBody.getFrameUUID() != null ? frameBody.getFrameUUID() : UUID.randomUUID());
+        nbt.setString("uuid", frameBody.getFrameUUID().toString() != null ? frameBody.getFrameUUID().toString() : UUID.randomUUID().toString());
         nbt.setInteger("lifespan", frameBody.getLifespan());
 
         // For enums and other complex attributes, you can further serialize them.

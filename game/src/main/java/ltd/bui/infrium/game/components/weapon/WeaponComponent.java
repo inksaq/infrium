@@ -13,6 +13,7 @@ import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
 import ltd.bui.infrium.game.components.weapon.gun.commands.GetWeaponCC;
+import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
 import net.kyori.adventure.text.NBTComponent;
 import net.kyori.adventure.text.NBTComponentBuilder;
 import org.bukkit.NamespacedKey;
@@ -36,12 +37,12 @@ public class WeaponComponent extends Component<Settlements> {
     private final NamespacedKey weaponKey;
 
     @Getter
-    private final HashMap<UUID, FrameBody> framebodies;
+    private WeaponRegistry weaponRegistry;
 
 
     public WeaponComponent() {
         instance = this;
-        framebodies = new HashMap<>();
+        weaponRegistry = new WeaponRegistry();
         this.weaponKey = new NamespacedKey(Settlements.getInstance(), "ergwp");
         this.frameBodyDataType = new FrameBodyDataType(plugin);
         this.energyCoreDataType = new EnergyCoreDataType(plugin);
@@ -49,13 +50,6 @@ public class WeaponComponent extends Component<Settlements> {
 //        WeaponRegistry.registerWeapons();
     }
 
-    public FrameBody getFrameBody(int numberStored) {
-        if (numberStored <= 0 || numberStored > framebodies.size()) {
-            throw new IllegalArgumentException("Invalid numberStored value.");
-        }
-        List<Map.Entry<UUID, FrameBody>> entries = new ArrayList<>(framebodies.entrySet());
-        return entries.get(numberStored - 1).getValue();
-    }
 
 //    public FrameBody getItemFrameBody(ItemStack itemStack) {
 //        var fbNBT = NBT.itemStackToNBT(itemStack);
@@ -63,9 +57,6 @@ public class WeaponComponent extends Component<Settlements> {
 //        return
 //    }
 
-    public void setFrameBody(UUID key, FrameBody frameBody) {
-        framebodies.put(key, frameBody);
-    }
 
 
     public static WeaponComponent getInstance() {

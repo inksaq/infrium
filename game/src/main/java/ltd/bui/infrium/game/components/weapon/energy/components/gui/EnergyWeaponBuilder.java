@@ -1,5 +1,6 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.gui;
 
+import lombok.Getter;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
@@ -83,10 +84,15 @@ public class EnergyWeaponBuilder {
         return this;
     }
 
+    @Getter
     private int size;
+    @Getter
     private Component name;
+    @Getter
     private List<Component> lore;
+    @Getter
     private Material material;
+    @Getter
     private boolean unbreakable;
 
 
@@ -94,26 +100,14 @@ public class EnergyWeaponBuilder {
         return new EnergyWeaponBuilder(grade);
     }
 
-    public int getSize() {
-        return size;
-    }
-
     public EnergyWeaponBuilder setSize(int size) {
         this.size = size;
         return this;
     }
 
-    public Component getName() {
-        return name;
-    }
-
     public EnergyWeaponBuilder setName(Component name) {
         this.name = name;
         return this;
-    }
-
-    public List<Component> getLore() {
-        return lore;
     }
 
     public EnergyWeaponBuilder setLore(List<Component> lore) {
@@ -122,17 +116,9 @@ public class EnergyWeaponBuilder {
     }
 
 
-    public Material getMaterial() {
-        return material;
-    }
-
     public EnergyWeaponBuilder setMaterial(Material material) {
         this.material = material;
         return this;
-    }
-
-    public boolean isUnbreakable() {
-        return unbreakable;
     }
 
     public EnergyWeaponBuilder setUnbreakable(boolean unbreakable) {
@@ -143,7 +129,7 @@ public class EnergyWeaponBuilder {
     public ItemStack build(boolean glow) {
         ItemStack itemStack = new ItemStack(material, size);
         var meta = itemStack.getItemMeta();
-
+        this.recompute();
         meta.displayName(this.name);
         meta.lore(this.lore);
         meta.setUnbreakable(unbreakable);

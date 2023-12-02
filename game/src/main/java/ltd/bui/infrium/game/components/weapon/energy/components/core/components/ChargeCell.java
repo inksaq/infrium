@@ -75,12 +75,12 @@ public class ChargeCell extends CoreComponent {
 
     private void applyDegredation() {
         // Reduce the capacity based on the current output rate
-        capacity = currentOutputRate / capacity;
+        capacity = currentOutputRate - capacity;
 
         // Apply degradation to lifespan
         // Assuming some degradation factor (e.g., 0.01 for 1% per tick)
 
-        double degradationFactor = frameBodyParent.getCoreProcessor() != null ? frameBodyParent.getCoreProcessor().getGigaHertz() / tier.getLadder() : 1;
+        double degradationFactor = frameBodyParent.getCoreProcessor() != null ? frameBodyParent.getCoreProcessor().getGigaHertz() * tier.getLadder() : 1;
         lifespan -= (lifespan * degradationFactor);
 
         // Ensure the values don't drop below zero
