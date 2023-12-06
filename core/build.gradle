@@ -48,3 +48,11 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 jar.dependsOn shadowJar
+
+def rapiddevPluginsDir = "${parent.projectDir}/rapidlocalhost/plugins"
+task copyJar(type: Copy) {
+    from shadowJar
+    into rapiddevPluginsDir
+}
+
+build.dependsOn(copyJar)

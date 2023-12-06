@@ -13,12 +13,13 @@ import ltd.bui.infrium.api.hive.ServerRepository;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.proxy.player.ProxyInfriumPlayer;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProxyInfriumProvider extends InfriumProvider<Player> {
 
-  public ProxyInfriumProvider(@NonNull ConfigurationContainer<?> configurationContainer) {
+  public ProxyInfriumProvider(@NonNull ConfigurationContainer<?> configurationContainer) throws IOException {
     super(configurationContainer);
   }
 

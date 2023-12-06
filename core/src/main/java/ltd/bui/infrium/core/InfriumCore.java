@@ -7,12 +7,14 @@ import lombok.Cleanup;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.api.InfriumProvider;
+import ltd.bui.infrium.api.configuration.InfriumConfiguration;
 import ltd.bui.infrium.api.hive.enums.CloudChannels;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveMessage;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveShutdown;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveUpdate;
 import ltd.bui.infrium.api.util.Constants;
 import ltd.bui.infrium.core.commands.ServerCommand;
+import ltd.bui.infrium.core.configuration.CoreConfiguration;
 import ltd.bui.infrium.core.configuration.YamlConfigurationContainer;
 import ltd.bui.infrium.core.gui.ServerSelectorGUI;
 import ltd.bui.infrium.core.helpers.InfriumScoreBoard;
@@ -55,7 +57,7 @@ public class InfriumCore extends JavaPlugin {
         Bukkit.getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         initServerName();
 
-        File path = new File(getDataFolder(), "InfriumAPI.yml");
+        File path = new File(getDataFolder(), "core.yml");
         try {
             if (!path.exists()) {
                 getDataFolder().mkdirs();
@@ -63,6 +65,22 @@ public class InfriumCore extends JavaPlugin {
             }
             YamlConfiguration yamlConfig = new YamlConfiguration();
             yamlConfig.load(path);
+
+            // Set defaults if not present
+            for (InfriumConfiguration config : InfriumConfiguration.values()) {
+                if (!yamlConfig.contains(config.getKey())) {
+                    yamlConfig.set(config.getKey(), config.getDefaultValue());
+                }
+            }
+            for (CoreConfiguration config : CoreConfiguration.values()) {
+                if (!yamlConfig.contains(config.getKey())) {
+                    yamlConfig.set(config.getKey(), config.getDefaultValue());
+                }
+            }
+
+            // Save the configuration
+            yamlConfig.save(path);
+
             this.configuration = new YamlConfigurationContainer(yamlConfig, path);
             infriumProvider = new BukkitInfriumProvider(this.configuration);
         } catch (Exception e) {

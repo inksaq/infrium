@@ -19,12 +19,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BukkitInfriumProvider extends InfriumProvider<Player> implements Listener {
 
-  public BukkitInfriumProvider(ConfigurationContainer<YamlConfiguration> configurationContainer) {
+  public BukkitInfriumProvider(ConfigurationContainer<YamlConfiguration> configurationContainer) throws IOException {
     super(configurationContainer);
   }
 

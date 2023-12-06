@@ -5,6 +5,7 @@ import ltd.bui.infrium.api.configuration.IConfigurationEnum;
 import ltd.bui.infrium.core.InfriumCore;
 import lombok.Getter;
 
+@Getter
 public enum CoreConfiguration implements IConfigurationEnum {
   CHAT_ENABLED("chat.enabled", true), // is chat enabled ?
   CHAT_FILTER_REPETITION("chat.filter.repetition", true), // anti cheat repetition
@@ -14,8 +15,8 @@ public enum CoreConfiguration implements IConfigurationEnum {
   CHAT_GLOBAL_PREFIX("chat.global.prefix", "-"), // global chat prefix
   ;
 
-  @Getter private final String key;
-  @Getter private final Object defaultValue;
+  private final String key;
+  private final Object defaultValue;
 
   CoreConfiguration(String key, Object defaultValue) {
     this.key = key;

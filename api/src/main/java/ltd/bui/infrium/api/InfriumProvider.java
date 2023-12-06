@@ -17,6 +17,7 @@ import ltd.bui.infrium.api.util.Constants;
 import ltd.bui.infrium.api.util.TaskWaiter;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,9 +36,11 @@ public abstract class InfriumProvider<T> {
     @Getter private final PunishmentManager punishmentManager;
     private ServerRepository repository = null;
 
-    public InfriumProvider(@NonNull ConfigurationContainer<?> configurationContainer) {
+    public InfriumProvider(@NonNull ConfigurationContainer<?> configurationContainer) throws IOException {
         this.configurationContainer = configurationContainer;
+
         InfriumConfiguration.setConfigurationContainer(this.configurationContainer);
+        this.configurationContainer.save( "api.yml");
         RedisURI redisURI = RedisURI.create(InfriumConfiguration.REDIS_URI.getString());
         redisURI.setDatabase(0);
         this.infriumDB = new InfriumDB(redisURI, InfriumConfiguration.MONGODB_URI.getString());

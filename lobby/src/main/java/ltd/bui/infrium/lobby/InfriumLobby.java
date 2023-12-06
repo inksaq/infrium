@@ -76,7 +76,7 @@ public class InfriumLobby extends JavaPlugin {
     this.commandManager = new BukkitCommandManager(this);
     this.commandManager.registerCommand(new LobbyManagerCommand());
     this.commandManager.registerCommand(new BuildCommand());
-    File path = new File(getDataFolder(), "InfriumLobby.yml");
+    File path = new File(getDataFolder(), "lobby.yml");
 
     try {
       if (!path.exists()) {
@@ -85,6 +85,14 @@ public class InfriumLobby extends JavaPlugin {
       }
       YamlConfiguration yamlConfiguration = new YamlConfiguration();
       yamlConfiguration.load(path);
+
+      for (LobbyConfiguration config : LobbyConfiguration.values()) {
+        if (!yamlConfiguration.contains(config.getKey())) {
+          yamlConfiguration.set(config.getKey(), config.getDefaultValue());
+
+        }
+      }
+      yamlConfiguration.save(path);
       this.configuration = new YamlConfigurationContainer(yamlConfiguration, path);
     } catch (Exception e) {
       throw new RuntimeException(e); // re throw exception so the plugin will be disabled
