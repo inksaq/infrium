@@ -2,8 +2,10 @@ package ltd.bui.infrium.game.components.weapon.energy.components.gui;
 
 import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import ltd.bui.infrium.game.item.Grade;
+import ltd.bui.infrium.game.item.Rarity;
+import ltd.bui.infrium.game.item.Tier;
 import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -33,7 +35,7 @@ public class FrameBodyDataType implements PersistentDataType<PersistentDataConta
     public @NotNull PersistentDataContainer toPrimitive(@NotNull FrameBody frameBody, @NotNull PersistentDataAdapterContext context) {
         PersistentDataContainer persistentDataContainer = context.newPersistentDataContainer();
         persistentDataContainer.set(key("uuid"), Settlements.uuidTagType, frameBody.getFrameUUID());
-        persistentDataContainer.set(key("grade"), INTEGER, frameBody.getBodyGrade().getGradeLadder());
+        persistentDataContainer.set(key("grade"), INTEGER, frameBody.getGrade().getGradeLadder());
         persistentDataContainer.set(key("rarity"), INTEGER, frameBody.getLifespan());
         if (frameBody.getEnergyCore() != null) {
             persistentDataContainer.set(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType(), frameBody.getEnergyCore());
@@ -56,7 +58,9 @@ public class FrameBodyDataType implements PersistentDataType<PersistentDataConta
     @Override
     public FrameBody fromPrimitive(@NotNull PersistentDataContainer primitive, @NotNull PersistentDataAdapterContext context) {
         var grade = primitive.get(key("grade"), INTEGER);
-        FrameBody frameBody = new FrameBody(Grade.getGradeLadder(grade));
+        var rarity = primitive.get(key("rarity"), INTEGER);
+        var tier = primitive.get(key("tier"), INTEGER);
+        FrameBody frameBody = new FrameBody(Grade.getGradeLadder(grade), Rarity.getRarityLadder(rarity), Tier.getTierLadder(tier));
         frameBody.setFrameUUID(primitive.get(key("uuid"), Settlements.uuidTagType));
         frameBody.setMaxFrameAttachments(primitive.get(key("maxFrameAttachments"), INTEGER));
         if (primitive.get(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType()) != null) {

@@ -9,6 +9,7 @@ import ltd.bui.infrium.game.item.Tier;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public abstract class CoreComponent implements ICoreComponent {
@@ -29,6 +30,7 @@ public abstract class CoreComponent implements ICoreComponent {
     public Collection<ComponentUpgrade<? extends CoreComponent>> getUpgrades() {
         return componentUpgrades;
     }
+
 
 
     public CoreComponent(Rarity rarity, Grade grade, Tier tier, CoreComponentType componentType) {

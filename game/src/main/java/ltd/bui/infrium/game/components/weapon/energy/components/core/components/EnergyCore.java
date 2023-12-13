@@ -2,12 +2,10 @@ package ltd.bui.infrium.game.components.weapon.energy.components.core.components
 
 import de.tr7zw.changeme.nbtapi.*;
 import de.tr7zw.changeme.nbtapi.handler.NBTHandlers;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
 import lombok.Getter;
 import lombok.Setter;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
@@ -17,11 +15,10 @@ import ltd.bui.infrium.game.item.Tier;
 
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class EnergyCore extends CoreComponent {
 
-    @Getter private FrameBody frameBodyParent;
+    @Getter @Setter private FrameBody frameBodyParent;
     @Getter @Setter private UUID uuid;
 
     @Getter @Setter private int lifespan; /*Base lifespan is 2 years(in seconds),
@@ -344,9 +341,9 @@ public class EnergyCore extends CoreComponent {
         nbt.setString("tier", tier.name());
 
         // Serialize componentUpgrades (assuming you have a way to serialize/deserialize each ComponentUpgrade)
-//        ReadWriteNBTCompoundList upgrades = (ReadWriteNBTCompoundList) nbt.getOrCreateCompound("componentUpgrades");
-//        componentUpgrades.forEach(componentUpgrade -> upgrades.addCompound().mergeCompound(componentUpgrade.serialize()));
-//        nbt.set("componentUpgrades", upgrades);
+        ReadWriteNBTCompoundList upgrades = (ReadWriteNBTCompoundList) nbt.getOrCreateCompound("componentUpgrades");
+        componentUpgrades.forEach(componentUpgrade -> upgrades.addCompound().mergeCompound(componentUpgrade.serialize()));
+        nbt.set("componentUpgrades", upgrades, );
 
         return nbt;
     }

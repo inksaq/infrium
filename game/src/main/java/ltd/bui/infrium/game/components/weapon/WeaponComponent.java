@@ -1,12 +1,10 @@
 package ltd.bui.infrium.game.components.weapon;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import lombok.Getter;
 import ltd.bui.infrium.core.api.components.Component;
 import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.testing.commands.TestCommand;
 import ltd.bui.infrium.game.components.testing.listeners.TestListener;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.gui.EnergyCoreDataType;
 import ltd.bui.infrium.game.components.weapon.energy.components.gui.FrameBodyDataType;
 import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
@@ -14,13 +12,8 @@ import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
 import ltd.bui.infrium.game.components.weapon.gun.commands.GetWeaponCC;
 import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
-import net.kyori.adventure.text.NBTComponent;
-import net.kyori.adventure.text.NBTComponentBuilder;
 import org.bukkit.NamespacedKey;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.*;
 
 public class WeaponComponent extends Component<Settlements> {
     private static WeaponComponent instance;

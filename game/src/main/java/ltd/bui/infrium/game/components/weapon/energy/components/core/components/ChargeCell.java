@@ -1,11 +1,8 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
 import de.tr7zw.changeme.nbtapi.NBTCompound;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import lombok.Getter;
 import lombok.Setter;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
@@ -18,13 +15,15 @@ import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 
 import java.util.Set;
-import java.util.function.Consumer;
+import java.util.UUID;
 
 public class ChargeCell extends CoreComponent {
 
+
+    @Getter @Setter private FrameBody frameBodyParent;
+    @Getter @Setter private UUID uuid;
     @Getter @Setter private double lifespan; // lifespan of chargecell(total chargeRate throughput x total outputRate + capacity) //TODO
 
-    @Getter private final FrameBody frameBodyParent;
     @Getter @Setter private int capacity; //total capacity for chargeCell(Tier based + component upgrade)
     @Getter @Setter private int currentChargeRate; // Charge rate of Cell per second,
     @Getter @Setter private int currentOutputRate; // energy output per second when able to recharge energy core
@@ -34,12 +33,15 @@ public class ChargeCell extends CoreComponent {
 
 
 
-    public ChargeCell(FrameBody frameBody, Rarity rarity, Grade grade, Tier tier) {
-        super(rarity, grade, tier, CoreComponentType.CHARGE_CELL);
-        this.frameBodyParent = frameBody;
+    public ChargeCell(Rarity rarity, Grade grade, Tier tier) {
+        super(rarity, grade, tier, CoreComponentType.ENERGY_CORE);
+        this.uuid = UUID.randomUUID();
         if (capacity == 0) capacity = tier.getCapacitance();
         if (lifespan == 0) lifespan = grade.getLifespan();
         this.upgradeLimit = rarity.getComponentUpgradeLimit();
+        this.currentChargeRate = tier.getRechargeRate();
+        this.currentOutputRate = tier.getEnergyOutputRate();
+        this.heatRate = tier.getHeatRate();
     }
 
 
@@ -232,13 +234,4 @@ if (componentUpgrades == null) return;
     }
 
 
-    @Override
-    public NBTCompound serializeToNBT() {
-        return null;
-    }
-
-    @Override
-    public ChargeCell deserializeFromNBT(NBTCompound nbt) {
-        return null;
-    }
 }

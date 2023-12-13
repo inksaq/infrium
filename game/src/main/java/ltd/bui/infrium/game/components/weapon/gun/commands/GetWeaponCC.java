@@ -5,19 +5,25 @@ import de.tr7zw.changeme.nbtapi.iface.ReadableItemNBT;
 import ltd.bui.infrium.core.api.command.Command;
 import ltd.bui.infrium.core.api.command.CommandArgs;
 import ltd.bui.infrium.game.BaseCommand;
+import ltd.bui.infrium.game.Settlements;
+import ltd.bui.infrium.game.components.testing.ui.WorkbenchGUI;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.chargecell.OverCharge;
 import ltd.bui.infrium.game.components.weapon.energy.components.gui.EnergyWeaponBuilder;
+import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
+import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
 import java.util.function.Function;
 
 public class GetWeaponCC extends BaseCommand {
@@ -32,37 +38,42 @@ public class GetWeaponCC extends BaseCommand {
 
         if (args.getArgs(0).equalsIgnoreCase("fb")) {
 //            GunRegistry.giveGunToPlayer(args.getPlayer(), "scar90");
-            FrameBody facFB = new FrameBody(Grade.FACTORY);
+            FrameBody facFB = new FrameBody(Grade.FACTORY, Rarity.BLACKMARKET, Tier.IV);
             EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.FACTORY, Tier.II);
+            ChargeCell chargeCell = new ChargeCell(Rarity.PRIME, Grade.PRIMED, Tier.IV);
+
             facFB.addEnergyCore(energyCore);
+            facFB.getEnergyCore().addUpgrade(new OverCharge(Rarity.BLACKMARKET, Grade.PRIMED, Tier.IV));
+            facFB.getEnergyCore().onTick();
+            facFB.addChargeCell(chargeCell);
             WeaponComponent.getInstance().getWeaponRegistry().registerWeapon(facFB);
-//            facFB.set(new ItemStack(Material.DIAMOND_HOE, 1), facFB, player);
-            player.getInventory().addItem(EnergyWeaponBuilder.builder(Grade.FACTORY).setFrameBody(facFB).build(true));
+            facFB.set(EnergyWeaponBuilder.builder().setFrameBody(facFB).build(true), facFB, player);
+//            player.getInventory().addItem(EnergyWeaponBuilder.builder(Grade.FACTORY).setFrameBody(facFB).build(true));
         }
         if (args.getArgs(0).equalsIgnoreCase("f")){
-            FrameBody frameBody = new FrameBody(Grade.FACTORY);
+            FrameBody frameBody = new FrameBody(Grade.FACTORY, Rarity.BLACKMARKET, Tier.II);
 //            EnergyCore energyCore = new EnergyCore(frameBody, Rarity.MASS, Grade.SHATTERED, Tier.I);
 
-            ChargeCell cg = new ChargeCell(frameBody, Rarity.MASS, Grade.SHATTERED, Tier.I);
+            ChargeCell cg = new ChargeCell(Rarity.MASS, Grade.SHATTERED, Tier.I);
 
             frameBody.addChargeCell(cg);
 //            frameBody.addEnergyCore(energyCore);
-            frameBody.tickFrameBody(frameBody);
+            frameBody.tickFrameBody();
             frameBody.debug();
             WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().put(frameBody.getFrameUUID(), frameBody);
 
         }
         if (args.getArgs(0).equalsIgnoreCase("tick")) {
             ;
-            WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().forEach((uuid, frameBody) -> frameBody.tickFrameBody(frameBody));
+            WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().forEach((uuid, frameBody) -> frameBody.tickFrameBody());
             WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().forEach((uuid, frameBody) -> frameBody.debug());
         }
-        if (args.getArgs(0).equalsIgnoreCase("a")) {
-
-            EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.FACTORY, Tier.II);
-
-            EnergyWeaponBuilder.builder(Grade.PRIMED).setEnergyCore(new EnergyCore(Rarity.BLACKMARKET, Grade.PRIMED, Tier.II)).build(true);
-        }
+//        if (args.getArgs(0).equalsIgnoreCase("a")) {
+//
+//            EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.FACTORY, Tier.II);
+//
+//            EnergyWeaponBuilder.builder().setEnergyCore(energyCore).build(true);
+//        }
 
         if (args.getArgs(0).equalsIgnoreCase("ra")) {
             ItemStack mainHand = player.getInventory().getItemInMainHand();
@@ -76,6 +87,14 @@ public class GetWeaponCC extends BaseCommand {
             }
 
         }
+        if (args.getArgs(0).equalsIgnoreCase("rb")) {
+            WeaponRegistry.getInstance().getFramebodies().forEach((uuid, frameBody) -> {System.out.println(uuid.toString() + "\n");
+            frameBody.debug();});
+        }
+        if (args.getArgs(0).equalsIgnoreCase("rc")) {
+            var gui = new WorkbenchGUI(LegacyComponentSerializer.legacyAmpersand().deserialize("Weapon"), Settlements.getInstance());
+            gui.openInventory(player);
+        }
 
         if (args.getArgs(0).equalsIgnoreCase("rf")) {
             ItemStack itemstack = player.getInventory().getItemInMainHand();
@@ -85,11 +104,13 @@ public class GetWeaponCC extends BaseCommand {
             WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().forEach((uuidd, fb) -> System.out.println(uuid + " : " + fb.getFrameUUID()));
         }
             if (args.getArgs(0).equalsIgnoreCase("r")) {
-
-            FrameBody fb = WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().get(UUID.fromString(NBT.readNbt(player.getInventory().getItemInMainHand()).getString("uuid")));;
-            EnergyCore energyCore = new EnergyCore(Rarity.PRIME, Grade.PRIMED, Tier.II);
-            fb.getChargeCell().chargeCore();
+                ItemStack itemstack = player.getInventory().getItemInMainHand();
+                String uuid = NBT.get(itemstack, (Function<ReadableItemNBT, String>) nbt -> nbt.getString("uuid"));
+            FrameBody fb = WeaponComponent.getInstance().getWeaponRegistry().getFramebodies().get(uuid);;
+            EnergyCore energyCore = fb.getEnergyCore();
+            ChargeCell chargeCell = fb.getChargeCell();
             fb.debug();
+            chargeCell.chargeCore();
             energyCore.onTick();
             energyCore.expendEnergy();
             energyCore.onTick();

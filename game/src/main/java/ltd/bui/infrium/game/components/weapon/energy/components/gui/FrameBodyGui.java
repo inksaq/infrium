@@ -1,12 +1,10 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.gui;
 
-import lombok.NonNull;
 import ltd.bui.infrium.core.gui.AbstractGui;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;

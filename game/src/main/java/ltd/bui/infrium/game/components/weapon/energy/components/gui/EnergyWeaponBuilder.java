@@ -2,12 +2,14 @@ package ltd.bui.infrium.game.components.weapon.energy.components.gui;
 
 import lombok.Getter;
 import ltd.bui.infrium.game.components.weapon.WeaponComponent;
-import ltd.bui.infrium.game.components.weapon.energy.components.FrameBody;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.ChargeCell;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.CoreProcessor;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.EnergyCore;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.LensConduit;
 import ltd.bui.infrium.game.item.Grade;
+import ltd.bui.infrium.game.item.Rarity;
+import ltd.bui.infrium.game.item.Tier;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -27,9 +29,8 @@ public class EnergyWeaponBuilder {
 
     private boolean active;
 
-    EnergyWeaponBuilder(Grade grade) {
+    EnergyWeaponBuilder() {
         this.size = 1;
-        this.frameBody = new FrameBody(grade);
         this.active = false;
         this.name = null;
         this.lore = null;
@@ -96,8 +97,8 @@ public class EnergyWeaponBuilder {
     private boolean unbreakable;
 
 
-    public static EnergyWeaponBuilder builder(Grade grade) {
-        return new EnergyWeaponBuilder(grade);
+    public static EnergyWeaponBuilder builder() {
+        return new EnergyWeaponBuilder();
     }
 
     public EnergyWeaponBuilder setSize(int size) {
