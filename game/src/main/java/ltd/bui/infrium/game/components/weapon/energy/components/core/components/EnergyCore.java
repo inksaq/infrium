@@ -3,6 +3,7 @@ package ltd.bui.infrium.game.components.weapon.energy.components.core.components
 import de.tr7zw.changeme.nbtapi.*;
 import de.tr7zw.changeme.nbtapi.handler.NBTHandlers;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
 import lombok.Getter;
 import lombok.Setter;
@@ -341,9 +342,11 @@ public class EnergyCore extends CoreComponent {
         nbt.setString("tier", tier.name());
 
         // Serialize componentUpgrades (assuming you have a way to serialize/deserialize each ComponentUpgrade)
-        ReadWriteNBTCompoundList upgrades = (ReadWriteNBTCompoundList) nbt.getOrCreateCompound("componentUpgrades");
-        componentUpgrades.forEach(componentUpgrade -> upgrades.addCompound().mergeCompound(componentUpgrade.serialize()));
-        nbt.set("componentUpgrades", upgrades, );
+
+        NBTCompoundList nbts = nbt.getCompoundList("componentUpgrades");
+        componentUpgrades.forEach(componentUpgrade -> nbts.addCompound().mergeCompound(componentUpgrade.serialize()));
+        nbt.mergeCompound((ReadWriteNBT) nbts);
+
 
         return nbt;
     }
@@ -370,12 +373,12 @@ public class EnergyCore extends CoreComponent {
         core.setHeatRate(nbt.getInteger("heatRate"));
 
         // Deserialize componentUpgrades
-//        ReadWriteNBTCompoundList upgrades = nbt.getCompoundList("componentUpgrades");
-//        upgrades.forEach(readWriteNBT -> core.componentUpgrades.add(ComponentUpgrade.deserialize(readWriteNBT)));
-//        for (ReadWriteNBT upgradeNBT : upgrades) {
-//            ComponentUpgrade<?> upgrade = ComponentUpgrade.deserialize(upgradeNBT); // Assumes ComponentUpgrade has a static deserialize method
-//            core.componentUpgrades.add(upgrade);
-//        }
+        ReadWriteNBTCompoundList upgrades = nbt.getCompoundList("componentUpgrades");
+        upgrades.forEach(readWriteNBT -> core.componentUpgrades.add(ComponentUpgrade.deserialize(readWriteNBT)));
+        for (ReadWriteNBT upgradeNBT : upgrades) {
+            ComponentUpgrade<?> upgrade = ComponentUpgrade.deserialize(upgradeNBT); // Assumes ComponentUpgrade has a static deserialize method
+            core.componentUpgrades.add(upgrade);
+        }
 
         return core;
     }

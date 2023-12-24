@@ -1,0 +1,11 @@
+mongo_uri: mongodb://192.168.1.31:27017
+redis_uri: redis://sentry:data123@192.168.1.32:6379/0
+chat:
+  enabled: true
+  filter:
+    repetition: true
+    swear: true
+    only-staff: false
+  global:
+    enabled: true
+    prefix: '-'
