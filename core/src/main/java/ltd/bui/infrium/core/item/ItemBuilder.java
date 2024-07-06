@@ -82,7 +82,7 @@ public class ItemBuilder {
     meta.lore(this.lore);
     meta.setUnbreakable(unbreakable);
     if (glow) {
-      meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+      meta.addEnchant(Enchantment.CHANNELING, 1, true);
       meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
     }
 

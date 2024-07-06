@@ -11,6 +11,7 @@ import ltd.bui.infrium.api.hive.enums.ServerType;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveAdd;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveDelete;
 import ltd.bui.infrium.api.hive.pubsub.hive.RedisHiveShutdown;
+import ltd.bui.infrium.api.hive.servers.Pinger;
 import ltd.bui.infrium.api.hive.servers.Server;
 import ltd.bui.infrium.api.configuration.InfriumConfiguration;
 import ltd.bui.infrium.api.configuration.ConfigurationContainer;
@@ -274,6 +275,37 @@ public class Hive {
       e.printStackTrace();
     }
     logger.error("Failed to host server, cant' work with folders");
+    this.occupiedNames.remove(name);
+    return Optional.empty();
+  }
+
+  public Optional<Server> addRDEV0(Server server) {
+    AtomicBoolean success = new AtomicBoolean(false);
+    {
+      logger.log("Server Executed.");
+      infriumDB.publishJson(
+              CloudChannels.SERVER_ADD.getChannel(),
+              new RedisHiveAdd(server)); // announcing that the server is started
+      infriumDB
+              .getMongoCollection("infrium", "hive")
+              .insertOne(MongoSerializer.serialize(server)); // saving the server in the database
+      success.set(true); // server was successfully hosted
+    }
+
+    if (success.get()) return Optional.of(server);
+    this.occupiedNames.remove(
+            server.getName()); // hosting failed - remove the name from the occupied names
+    return Optional.empty();
+  }
+
+  public Optional<Server> hostRDev(String ip, int port, String name) {
+    ServerType type = ServerType.DEV;
+    this.occupiedNames.add(name);
+    Pinger pinger = new Pinger(ip, port);
+    if (pinger.ping()) {
+      return addRDEV0(type.createServer(name, ip, port));
+    }
+    logger.error("Failed to add dev server, cant' access network");
     this.occupiedNames.remove(name);
     return Optional.empty();
   }

@@ -202,7 +202,7 @@ public class InfriumCore extends JavaPlugin {
                             REDIS_CLOUD_SERVER_UPDATE.setOnlinePlayers(onlinePlayers);
                             REDIS_CLOUD_SERVER_UPDATE.setTps(tps);
                             REDIS_CLOUD_SERVER_UPDATE.setRamUsage(usedMemory);
-                            REDIS_CLOUD_SERVER_UPDATE.setMotd("getMotd()");
+                            REDIS_CLOUD_SERVER_UPDATE.setMotd(getMotd());
 
                             // TODO: depcrecate pubusb update messages
                             infriumProvider
@@ -249,9 +249,9 @@ public class InfriumCore extends JavaPlugin {
                         });
     }
 
-//    public String getMotd() {
-//        return MinecraftServer.getServer().server.getMotd();
-//    }
+    public String getMotd() {
+        return Bukkit.getServer().motd().toString();
+    }
 
     public static void info(String message) {
         InfriumCore.getInstance().getLogger().info("[" + (Bukkit.isPrimaryThread() ? "-" : "+") + "] " + message);

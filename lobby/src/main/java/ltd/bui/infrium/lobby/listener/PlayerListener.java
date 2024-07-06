@@ -1,11 +1,15 @@
 package ltd.bui.infrium.lobby.listener;
 
+import ltd.bui.infrium.api.data.InfriumPlayerData;
+import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.core.InfriumCore;
+import ltd.bui.infrium.core.player.BukkitInfriumPlayer;
 import ltd.bui.infrium.lobby.InfriumLobby;
 import ltd.bui.infrium.lobby.Items;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import ltd.bui.infrium.lobby.cosmetic.Cosmetics;
+import ltd.bui.infrium.lobby.cosmetic.CosmeticsManager;
+import ltd.bui.infrium.lobby.cosmetic.actives.MidasTouch;
+import org.bukkit.*;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -26,15 +30,84 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.scheduler.BukkitScheduler;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class PlayerListener implements Listener {
+
+    ArrayList<Player> waitingToFly = new ArrayList<Player>();
+
+    @EventHandler
+    public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
+        Player player = event.getPlayer();
+
+        if (player.getGameMode() == GameMode.CREATIVE)
+            return;
+
+
+        event.setCancelled(true);
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
+        player.setExp(0.00F);
+        waitingToFly.add(player);
+        player.playSound(player.getLocation(), Sound.ENTITY_ZOMBIE_INFECT, 1, 2);
+        return;
+
+
+
+
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+
+        BukkitScheduler scheduler = InfriumLobby.getInstance().getServer().getScheduler();
+        Player player = event.getPlayer();
+
+        if ((player.getGameMode() == GameMode.CREATIVE))
+            return;
+        if (player.isFlying())
+            return;
+        if (!(player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid()))
+            return;
+        if (player.getExp() > 0.00F)
+            return;
+
+        if (waitingToFly.contains(player)) {
+
+            scheduler.scheduleSyncDelayedTask(InfriumLobby.getInstance(), new Runnable() {
+                @Override
+                public void run() {
+                    if (player.getLocation().subtract(0, 1, 0).getBlock().getType().isSolid()) {
+                        player.setExp(0.99F);
+                        player.setAllowFlight(true);
+                        waitingToFly.remove(player);
+                    }
+                }
+            }, 7L);
+        } else {
+            player.setExp(0.99F);
+            player.setAllowFlight(true);
+        }
+
+    }
 
     @EventHandler
     public final void onJoin(PlayerJoinEvent event) {
         event.getPlayer().teleport(new Location(Bukkit.getWorld("world"),-2.5,103,87.5, 90, 0));
         Items.formatInventory(event.getPlayer());
+        AbstractInfriumPlayer<Player> gp = InfriumCore.getInstance().getInfriumProvider().getInfriumPlayer(event.getPlayer()).get();
+        InfriumPlayerData data = gp.getPlayerData();
+        //Load cosmetics
+        InfriumLobby.getInstance().getCosmeticsManager().unlockCosmetic(event.getPlayer(),
+                InfriumLobby.getInstance().getCosmeticsManager().getCosmeticByName(Cosmetics.MIDAS_TOUCH.getName()));
+        InfriumLobby.getInstance().getCosmeticsManager().unlockCosmetic(event.getPlayer(),
+                InfriumLobby.getInstance().getCosmeticsManager().getCosmeticByName(Cosmetics.PARTICLE_WINGS.getName()));
+        InfriumLobby.getInstance().getCosmeticsManager().unlockCosmetic(event.getPlayer(),
+                InfriumLobby.getInstance().getCosmeticsManager().getCosmeticByName(Cosmetics.HALO.getName()));
     }
 
     @EventHandler
@@ -58,6 +131,11 @@ public class PlayerListener implements Listener {
             case CLOCK -> {
                 if (event.getAction().equals(Action.PHYSICAL)) return;
                 InfriumLobby.getInstance().getLobbySelectorGUI().openInventory(p);
+            }
+            case CHEST -> {
+                if (event.getAction().equals(Action.PHYSICAL)) return;
+                InfriumLobby.getInstance().getCosmeticSelectorGUI().openInventory(p);
+
             }
             default -> {
                 // do nothing
@@ -183,7 +261,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onGrassBecomeDirt(final BlockPhysicsEvent event) {
-        if (event.getChangedType().equals(Material.GRASS) && event.getBlock().getType().equals(Material.DIRT)) {
+        if (event.getChangedType().equals(Material.GRASS_BLOCK) && event.getBlock().getType().equals(Material.DIRT)) {
             event.setCancelled(true);
             event.getBlock().getState().update();
         }

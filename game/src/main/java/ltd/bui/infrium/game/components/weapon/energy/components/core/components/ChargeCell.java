@@ -13,39 +13,79 @@ import ltd.bui.infrium.game.components.weapon.energy.components.core.components.
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
+import org.bukkit.ChatColor;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
+@Setter
+@Getter
 public class ChargeCell extends CoreComponent {
 
+    private ChargeCell chargeCell;
 
-    @Getter @Setter private FrameBody frameBodyParent;
-    @Getter @Setter private UUID uuid;
-    @Getter @Setter private double lifespan; // lifespan of chargecell(total chargeRate throughput x total outputRate + capacity) //TODO
+    private FrameBody frameBodyParent;
+    private UUID uuid;
+    private double lifespan; // lifespan of chargecell(total chargeRate throughput x total outputRate + capacity) //TODO
 
-    @Getter @Setter private int capacity; //total capacity for chargeCell(Tier based + component upgrade)
-    @Getter @Setter private int currentChargeRate; // Charge rate of Cell per second,
-    @Getter @Setter private int currentOutputRate; // energy output per second when able to recharge energy core
-    @Getter @Setter private int heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
-    @Getter @Setter private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
-    @Getter @Setter private Integer upgradeLimit;
+    private int capacity; //total capacity for chargeCell(Tier based + component upgrade)
+    private int currentChargeRate; // Charge rate of Cell per second,
+    private int currentOutputRate; // energy output per second when able to recharge energy core
+    private int heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
+    private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
+    private Integer upgradeLimit;
 
+
+    public List<String> getChargeCellLore() {
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Charge Cell");
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GRAY + "UUID: " + ChatColor.WHITE + chargeCell.getUuid());
+        lore.add(ChatColor.GRAY + "Tier: " + ChatColor.WHITE + chargeCell.getTier());
+        lore.add(ChatColor.GRAY + "Grade: " + ChatColor.WHITE + chargeCell.getGrade());
+        lore.add(ChatColor.GRAY + "Rarity: " + ChatColor.WHITE + chargeCell.getRarity());
+        lore.add(ChatColor.GRAY + "Capacity: " + ChatColor.WHITE + chargeCell.getCapacity() + " units");
+        lore.add(ChatColor.GRAY + "Recharge Rate: " + ChatColor.WHITE + chargeCell.getCurrentChargeRate() + " units/s");
+        lore.add(ChatColor.GRAY + "Output Rate: " + ChatColor.WHITE + chargeCell.getCurrentOutputRate() + " units/s");
+        lore.add(ChatColor.GRAY + "Heat Rate: " + ChatColor.WHITE + chargeCell.getHeatRate() + " °C/s");
+        lore.add(ChatColor.GRAY + "Lifespan: " + ChatColor.WHITE + chargeCell.getLifespan() + " s");
+        lore.add(ChatColor.GRAY + "Upgrades: " + (chargeCell.getComponentUpgrades() != null ? "[" + chargeCell.getComponentUpgrades().size() + "/" + chargeCell.getUpgradeLimit() + "] (click for upgrades)" : "[0/0] (click for upgrades)"));
+        if (chargeCell.getComponentUpgrades() != null) {
+            chargeCell.getComponentUpgrades().forEach(upgrade -> lore.add(ChatColor.GRAY + "  - " + upgrade.getComponentUpgradeType().name()));
+        }
+        lore.add(ChatColor.GRAY + "---------------------");
+
+        return lore;
+    }
 
 
     public ChargeCell(Rarity rarity, Grade grade, Tier tier) {
-        super(rarity, grade, tier, CoreComponentType.ENERGY_CORE);
+        super(rarity, grade, tier, CoreComponentType.CHARGE_CELL);
+        chargeCell = this;
         this.uuid = UUID.randomUUID();
         if (capacity == 0) capacity = tier.getCapacitance();
         if (lifespan == 0) lifespan = grade.getLifespan();
-        this.upgradeLimit = rarity.getComponentUpgradeLimit();
+        this.upgradeLimit = (Integer) rarity.getComponentUpgradeLimit();
         this.currentChargeRate = tier.getRechargeRate();
         this.currentOutputRate = tier.getEnergyOutputRate();
         this.heatRate = tier.getHeatRate();
     }
 
+    @Override
+    public NBTCompound serializeToNBT() {
+        return null;
+    }
+
+    @Override
+    public CoreComponent deserializeFromNBT(NBTCompound nbt) {
+        return null;
+    }
+
 
     public boolean addUpgrade(ComponentUpgrade<? super CoreComponent> upgrade) {
+        if (componentUpgrades == null) componentUpgrades = new HashSet<>(upgradeLimit);
+
         if (componentUpgrades.size() >= upgradeLimit)
             return false;
 
@@ -232,6 +272,7 @@ if (componentUpgrades == null) return;
     public boolean hasHitUpgradeLimit() {
         return componentUpgrades.size() >= upgradeLimit;
     }
+
 
 
 }

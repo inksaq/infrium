@@ -34,7 +34,7 @@ public class EnergyWeaponBuilder {
         this.active = false;
         this.name = null;
         this.lore = null;
-        this.material = Material.DIAMOND_HOE;
+        this.material = Material.NETHERITE_HOE;
         this.unbreakable = true;
     }
 
@@ -136,9 +136,10 @@ public class EnergyWeaponBuilder {
         meta.setUnbreakable(unbreakable);
         meta.getPersistentDataContainer().set(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType(), frameBody);
         if (glow) {
-            meta.addEnchant(Enchantment.WATER_WORKER, 1, true);
+            meta.addEnchant(Enchantment.FROST_WALKER, 1, true);
             meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         }
+        meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 
         itemStack.setItemMeta(meta);
         return itemStack;

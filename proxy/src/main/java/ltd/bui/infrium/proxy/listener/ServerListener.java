@@ -6,12 +6,14 @@ import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.LoginEvent;
 import com.velocitypowered.api.event.connection.PluginMessageEvent;
+import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import ltd.bui.infrium.api.hive.enums.QueueLeftReason;
 import ltd.bui.infrium.api.hive.enums.ServerType;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
@@ -23,6 +25,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static ltd.bui.infrium.proxy.Proxy.serialize;
@@ -47,7 +51,7 @@ public class ServerListener {
 
   public static boolean checkPunishments(Player player2) {
     Optional<AbstractInfriumPlayer<Player>> infriumPlayer =
-        Proxy.get().getInfriumProvider().getInfriumPlayer(player2);
+        Proxy.getInfriumProvider().getInfriumPlayer(player2);
     if (infriumPlayer.isPresent()) {
       var player = infriumPlayer.get();
       var optionalPunishment = player.getPlayerData().hasPunishmentActive(PunishmentType.BAN);
@@ -69,12 +73,26 @@ public class ServerListener {
   }
 
   @Subscribe
+  public void onDisconnect(KickedFromServerEvent event) {
+    // Get the player's previous server
+    Optional<RegisteredServer> previousServer = event.getPlayer().getCurrentServer().flatMap(ServerConnection::getPreviousServer);
+
+    // If the previous server is present, redirect the player to it
+    if (previousServer.isPresent()) {
+      event.setResult(KickedFromServerEvent.RedirectPlayer.create(previousServer.get(), Component.text("Redirecting to previous server...")));
+    } else {
+      // Handle case when no previous server is available
+      event.getPlayer().disconnect(Component.text("No previous server available."));
+    }
+  }
+
+
+  @Subscribe
   public void disconnect(DisconnectEvent event) {
+
     Proxy.get().unregisterQueueLimbo(event.getPlayer().getUsername());
     Proxy.get().getQueuedJoin().remove(event.getPlayer().getUsername());
-    Proxy.get()
-        .getQueueRepository()
-        .leaveQueue(event.getPlayer().getUsername(), QueueLeftReason.DISCONNECTED);
+    Proxy.get().getQueueRepository().leaveQueue(event.getPlayer().getUsername(), QueueLeftReason.DISCONNECTED);
 
     Proxy.get().getInfriumProvider().onQuit(event.getPlayer());
   }
@@ -95,6 +113,8 @@ public class ServerListener {
             + event.getServer().getServerInfo().getName() + "\n";
     event.getPlayer().sendMessage(serialize.apply(message));
   }
+
+
 
   @Subscribe
   public void pluginMessageEvent(final PluginMessageEvent event) {

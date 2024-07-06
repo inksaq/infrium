@@ -6,17 +6,17 @@ import org.bukkit.ChatColor;
 
 public enum Grade {
     //Grade Multiplier effects Lifespan
-    SHATTERED(-3,ChatColor.BLACK.toString() + "-", 31000000,1),
-    FRAGMENTED(-2,ChatColor.DARK_GRAY.toString() + "-", 41000000,1),
-    CHIPPED(-1, ChatColor.GRAY.toString() + "-",    46000000,1),
-    REFURBISHED(0,ChatColor.BLUE.toString() + "=", 51000000, 1),
-    FACTORY(1,ChatColor.WHITE.toString() + "+",      55000000,1),
-    PRIMED(2,ChatColor.LIGHT_PURPLE.toString() + "+",      59000000,1),
-    POLISHED(3,ChatColor.AQUA.toString() + "+",     65000000,1),
-    IMMACULATE(4,ChatColor.YELLOW.toString() + "+", 71000000,1),
-    NEXA_CORE(5,ChatColor.GOLD.toString() + "+",    76000000,0),
-    SINGULARITY(6,ChatColor.DARK_AQUA.toString() + "+", 81000000,0),
-    QUANTUM(7, ChatColor.DARK_PURPLE.toString() + "+",     99000000,0);
+    SHATTERED(-3,ChatColor.BLACK.toString() + "Shattered", 31000000,1),
+    FRAGMENTED(-2,ChatColor.DARK_GRAY.toString() + "Fragmented", 41000000,1),
+    CHIPPED(-1, ChatColor.GRAY.toString() + "Chipped",    46000000,1),
+    REFURBISHED(0,ChatColor.BLUE.toString() + "Refurbished", 51000000, 1),
+    FACTORY(1,ChatColor.WHITE.toString() + "Factory",      55000000,1),
+    PRIMED(2,ChatColor.GREEN.toString() + "Prime",      59000000,1),
+    POLISHED(3,ChatColor.AQUA.toString() + "Polished",     65000000,1),
+    PRISTINE(4,ChatColor.DARK_AQUA.toString() + "Pristine", 71000000,1),
+    REFORGED(5,ChatColor.LIGHT_PURPLE.toString() + "Reforged",    76000000,0),
+    BLACK_HOLE(6,ChatColor.DARK_PURPLE.toString() + "o", 81000000,0),
+    STAR_FORGED(7, ChatColor.YELLOW.toString() + "*",     99000000,0);
 
     @Getter private int gradeLadder;
     @Getter private String gradeFormat;

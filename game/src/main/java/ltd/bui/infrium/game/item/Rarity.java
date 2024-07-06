@@ -11,9 +11,9 @@ public enum Rarity {
     LEGENDARY(1,ChatColor.YELLOW + "****", 1.14, 1.14,1.04,1.35, 1.15, 8), // Legendary Lumen / YELLOW
     CONTRABAND(2,ChatColor.DARK_RED + "*****", 1.20, 1.20,1.05,1.50, 1.45, 10), // Contraband Conquest / RED
     BLACKMARKET(3,ChatColor.BLACK + "******", 1.30, 1.30,1.06,1.95, 1.75, 15), // Blackmarket Blood / DARK_GRAY
-    TITAN(4,ChatColor.GOLD + "#", 1.55, 1.55,1.02,1.97, 2.25, 8), //Taboo Titan / DARK_PURPLE
-    PHANTOM(5,ChatColor.DARK_AQUA + "##", 1.80, 1.80,1.02,1.99, 3.00, 10), //Forbidden Phantom / DARK_AQUA
-    OBLIVION(6,ChatColor.DARK_PURPLE + "###", 1.99, 1.99,1.02,2.50, 5.00, 12); //Oblivion Order / BLACK
+    PHOTONIC(4,ChatColor.GOLD + "#", 1.55, 1.55,1.02,1.97, 2.25, 8), //Taboo Titan / DARK_PURPLE
+    DIMENSIONAL(5,ChatColor.DARK_AQUA + "##", 1.80, 1.80,1.02,1.99, 3.00, 10), //Forbidden Phantom / DARK_AQUA
+    DARK_MATTER(6,ChatColor.DARK_PURPLE + "###", 1.99, 1.99,1.02,2.50, 5.00, 12); //Oblivion Order / BLACK
 
     @Getter private final int ladder;
     @Getter private final String rarityFormat;

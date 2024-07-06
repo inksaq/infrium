@@ -37,6 +37,8 @@ public class QueueLimboHandler implements LimboSessionHandler {
     }
   }
 
+
+
   @Override
   public void onDisconnect() {
     this.player.getProxyPlayer().hideBossBar(bossBar);

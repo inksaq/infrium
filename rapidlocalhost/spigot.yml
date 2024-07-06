@@ -59,6 +59,8 @@ players:
   disable-saving: true
 world-settings:
   default:
+    unload-frozen-chunks: false
+    seed-trialchambers: 94251327
     seed-trailruins: 83469867
     below-zero-generation-in-existing-chunks: false
     end-portal-sound-radius: 0

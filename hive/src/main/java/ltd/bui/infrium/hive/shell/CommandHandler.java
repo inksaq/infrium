@@ -2,14 +2,7 @@ package ltd.bui.infrium.hive.shell;
 
 import ltd.bui.infrium.hive.Hive;
 import ltd.bui.infrium.hive.command.Command;
-import ltd.bui.infrium.hive.command.s.ExitCommand;
-import ltd.bui.infrium.hive.command.s.HelpCommand;
-import ltd.bui.infrium.hive.command.s.HostCommand;
-import ltd.bui.infrium.hive.command.s.InfoCommand;
-import ltd.bui.infrium.hive.command.s.PingCommand;
-import ltd.bui.infrium.hive.command.s.RequestSyncCommand;
-import ltd.bui.infrium.hive.command.s.StopAllCommand;
-import ltd.bui.infrium.hive.command.s.StopCommand;
+import ltd.bui.infrium.hive.command.s.*;
 import ltd.bui.infrium.api.hive.enums.ServerType;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -88,6 +81,7 @@ public class CommandHandler implements Runnable {
     // Registering commands.
     commandList.add(new HelpCommand());
     commandList.add(new HostCommand());
+    commandList.add(new AddDevCommand());
     commandList.add(new InfoCommand());
     commandList.add(new StopCommand());
     commandList.add(new StopAllCommand());

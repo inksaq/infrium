@@ -5,6 +5,7 @@ import lombok.NonNull;
 import ltd.bui.infrium.api.configuration.ConfigurationContainer;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class TomlConfigurationContainer extends ConfigurationContainer<Toml> {
@@ -70,12 +71,20 @@ public class TomlConfigurationContainer extends ConfigurationContainer<Toml> {
 
   @Override
   public void save(String path) throws IOException {
-    throw new IllegalArgumentException("Not supported");
-  }
+    File file = new File(path);
+    FileWriter writer = new FileWriter(file);
+    try {
+      // This is a hypothetical method; you should replace it with the actual method
+      // provided by your TOML library to convert the configuration to a string
+      String tomlString = this.configuration.toString();
+      writer.write(tomlString);
+    } finally {
+      writer.close();
+    }  }
 
   @Override
   public void save(File path) throws IOException {
-    throw new IllegalArgumentException("Not supported");
+    save(path.getAbsolutePath());
   }
 
   @Override

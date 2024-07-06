@@ -17,10 +17,7 @@ public class GamesManager {
 
   private void register(LobbyGame g) {
     this.gameList.add(g);
-    InfriumLobby.getInstance()
-        .getServer()
-        .getPluginManager()
-        .registerEvents(g, InfriumLobby.getInstance());
+    InfriumLobby.getInstance().getServer().getPluginManager().registerEvents(g, InfriumLobby.getInstance());
     InfriumLobby.getInstance().getLogger().info("Registered game: " + g.getClass().getName());
   }
 

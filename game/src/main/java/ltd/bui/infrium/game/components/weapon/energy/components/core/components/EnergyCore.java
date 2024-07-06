@@ -13,41 +13,69 @@ import ltd.bui.infrium.game.components.weapon.energy.components.core.components.
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
-public class EnergyCore extends CoreComponent {
+@Setter
+@Getter
+public class EnergyCore extends CoreComponent{
 
-    @Getter @Setter private FrameBody frameBodyParent;
-    @Getter @Setter private UUID uuid;
+    private FrameBody frameBodyParent;
+    private UUID uuid;
+    private EnergyCore energyCore;
 
-    @Getter @Setter private int lifespan; /*Base lifespan is 2 years(in seconds),
+    private int lifespan; /*Base lifespan is 2 years(in seconds),
      each added component to the Body reduces the lifespan on each component with lifespan(processor and chargecell(with different lifespans)
       but same calculation effecting all)
       lifespan is effected by Tier, Grade and Rarity*/
-    @Getter @Setter private int coreEnergyCapacitance; // capacitance is a set value(altered by overload component) and is where energy is taken when fired, no matter max sustain time, if output energyrate depletes capacitance before sustain time is reached, it will weaken output(only output recharge delay(until max sustain is hit))
-    @Getter @Setter private int idleDrawRate; // calculates corecomponents and upgrades added, and takes charge from chargecell capacitance for the count of added components
+    private int coreEnergyCapacitance; // capacitance is a set value(altered by overload component) and is where energy is taken when fired, no matter max sustain time, if output energyrate depletes capacitance before sustain time is reached, it will weaken output(only output recharge delay(until max sustain is hit))
+    private int idleDrawRate; // calculates corecomponents and upgrades added, and takes charge from chargecell capacitance for the count of added components
 
     //    @Getter @Setter private double rechargeDelay; // charging delay between max sustain and being able to output energy, cooldown(extra delay) may effect recharge rate and also upgrades, quickcharge, constantcharge may affect it too.
-    @Getter @Setter private int rechargeRate; // Calculates rate at which energycore charges, affected by stability rating and heatRate and cooldown(cooldown in cooldown may not fire and half recharge rate with addition of extra recharge delay)
+    private int rechargeRate; // Calculates rate at which energycore charges, affected by stability rating and heatRate and cooldown(cooldown in cooldown may not fire and half recharge rate with addition of extra recharge delay)
 //    @Getter @Setter private double stabilityRating; // percentage value 0 - 100.00% indicating processor stability with upgradecomponents
 //    @Getter @Setter private double stabilityDropRate; // calculated by taking into account, voltage rating, energyoutput rate, maxsustaintime, heatrate to generate a value when sustainTime increases to also decrease stability reducing it from stabilityRating overtime, cooldowns affect this too
 //    @Getter @Setter private double voltageRating; //Default is 1.05 affected by overclocking (calculated by taking into account(tier, rarity, grade) and multiplying by voltage rating(voltageRating can be affected by adding overvolt or supervolt and going under with undervolt)
 //    @Getter @Setter private double voltageThreshold; // default is (Tier*(Rarity/2) * Grade * voltage rating) * voltageRating
-    @Getter @Setter private int outputEnergyRate; // output rate is calculated by having a base output rate calculated from(tier,grade,rarity) and them modifiers are added by the likes of overvolt,
+    private int outputEnergyRate; // output rate is calculated by having a base output rate calculated from(tier,grade,rarity) and them modifiers are added by the likes of overvolt,
 //    @Getter @Setter private double outputEnergyRateThreshold; // threshold is calculated by overload(requires overvolt of chargecell) and underload(no min requirement) core component upgrades
 //    @Getter @Setter private double sustainTime; // sustain time is counted when user holds down click, it draws energy from coreEnergyCapactiance and maintained by outputEnergyRate
 //    @Getter @Setter private double maxSustainRate; // calculated by added core component upgrades added(overload(requires chargecell to have overvolt),superload(requires overcharge,superclock and supervolt to achieve superload((, No requirement for underload))
-    @Getter @Setter private int heatRate; // calculates idle heat, all corecomponents and upgrades create a baseline, then when energyoutput happens, calculated by getting voltage rating and distance to voltage threshold, sustain and distance to max sustain(The need to cooldown)
+    private int heatRate; // calculates idle heat, all corecomponents and upgrades create a baseline, then when energyoutput happens, calculated by getting voltage rating and distance to voltage threshold, sustain and distance to max sustain(The need to cooldown)
 //    @Getter @Setter private double heatStabilityThreshold; // Heat Threshold before stability drop rate increases affecting stabilitiy rating, modified by framebody heat exchanging attachments
 
-    @Getter @Setter private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
-    @Getter @Setter private Integer upgradeLimit;
+    private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
+    private Integer upgradeLimit;
 
+//
+//    private ItemStack cloneItem() {
+//        ItemStack item = new ItemStack(Material.DIAMOND);
+//        ItemMeta im = applyMeta(item);
+//        item.setItemMeta(im);
+//        return item;
+//    }
+//
+//
+//
+//
+//
+//    private ItemMeta applyMeta(ItemStack itemStack) {
+//        ItemMeta meta = itemStack.getItemMeta();
+//        meta.displayName(Component.text("Energy Core"));
+//        meta.lore(getEnergyCoreLore());
+//        return meta;
+//    }
 
     public EnergyCore(Rarity rarity, Grade grade, Tier tier) {
         super(rarity, grade, tier, CoreComponentType.ENERGY_CORE);
+        energyCore = this;
         this.uuid = UUID.randomUUID();
         if (lifespan == 0) lifespan = grade.getLifespan();
         this.upgradeLimit = rarity.getComponentUpgradeLimit();
@@ -62,13 +90,64 @@ public class EnergyCore extends CoreComponent {
 //        this.rechargeDelay = 2; //todo
     }
 
-    public FrameBody getFrameBodyParent() {
-        return this.frameBodyParent;
+
+
+
+/*    public List<String> getEnergyCoreLore() {
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Energy Core");
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GRAY + "UUID: " + ChatColor.WHITE + energyCore.getUuid());
+        lore.add(ChatColor.GRAY + "Tier: " + ChatColor.WHITE + energyCore.getTier());
+        lore.add(ChatColor.GRAY + "Grade: " + ChatColor.WHITE + energyCore.getGrade());
+        lore.add(ChatColor.GRAY + "Rarity: " + ChatColor.WHITE + energyCore.getRarity());
+        lore.add(ChatColor.GRAY + "Lifespan: " + ChatColor.WHITE + energyCore.getLifespan() + "s");
+        lore.add(ChatColor.GRAY + "Capacitance: " + ChatColor.WHITE + energyCore.getCoreEnergyCapacitance() + "u");
+        lore.add(ChatColor.GRAY + "Idle Draw: " + ChatColor.WHITE + energyCore.getIdleDrawRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Recharge: " + ChatColor.WHITE + energyCore.getRechargeRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Output Rate: " + ChatColor.WHITE + energyCore.getOutputEnergyRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Heat Rate: " + ChatColor.WHITE + energyCore.getHeatRate() + "°C/s");
+        lore.add(ChatColor.GRAY + "Upgrades: "  + (energyCore.getComponentUpgrades() != null ? "[" + energyCore.getComponentUpgrades().size() + "/" + energyCore.getUpgradeLimit() +"] (click for upgrades)" : "[0/0] (click for upgrades)"));
+        if (energyCore.getUpgrades() != null) {
+            energyCore.getUpgrades().forEach(upgrade -> lore.add(ChatColor.GRAY + "  - " + upgrade.getComponentUpgradeType().name()));
+        }
+        lore.add(ChatColor.GRAY + "---------------------");
+
+        return lore;
+    }*/
+
+
+
+    public List<String> getEnergyCoreLore() {
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Energy Core");
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GRAY + "UUID: " + ChatColor.WHITE + energyCore.getUuid().toString());
+        lore.add(ChatColor.GRAY + "Tier: " + ChatColor.WHITE + energyCore.getTier().toString());
+        lore.add(ChatColor.GRAY + "Grade: " + ChatColor.WHITE + energyCore.getGrade().toString());
+        lore.add(ChatColor.GRAY + "Rarity: " + ChatColor.WHITE + energyCore.getRarity().toString());
+        lore.add(ChatColor.GRAY + "Lifespan: " + ChatColor.WHITE + energyCore.getLifespan() + "s");
+        lore.add(ChatColor.GRAY + "Capacitance: " + ChatColor.WHITE + energyCore.getCoreEnergyCapacitance() + "u");
+        lore.add(ChatColor.GRAY + "Idle Draw: " + ChatColor.WHITE + energyCore.getIdleDrawRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Recharge: " + ChatColor.WHITE + energyCore.getRechargeRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Output Rate: " + ChatColor.WHITE + energyCore.getOutputEnergyRate() + "u/s");
+        lore.add(ChatColor.GRAY + "Heat Rate: " + ChatColor.WHITE + energyCore.getHeatRate() + "°C/s");
+        lore.add(ChatColor.GRAY + "Upgrades: " + (energyCore.getComponentUpgrades() != null ? "[" + energyCore.getComponentUpgrades().size() + "/" + energyCore.getUpgradeLimit() + "] (click for upgrades)" : "[0/0] (click for upgrades)"));
+        if (energyCore.getComponentUpgrades() != null) {
+            for (ComponentUpgrade<?> upgrade : energyCore.getComponentUpgrades()) {
+                lore.add(ChatColor.GRAY + "  - " + upgrade.getComponentUpgradeType().name());
+            }
+        }
+        lore.add(ChatColor.GRAY + "---------------------");
+
+        return lore;
     }
 
-    public void setFrameBodyParent(FrameBody frameBody) {
-        this.frameBodyParent = frameBody;
-    }
+
     public void onTick(){
         computeAttributes();
         applyDegredation();
@@ -302,6 +381,7 @@ public class EnergyCore extends CoreComponent {
 //    }
 
     public void addUpgrade(ComponentUpgrade upgrade) {
+        if (componentUpgrades == null) componentUpgrades = new HashSet<>(upgradeLimit);
         if (componentUpgrades.size() >= upgradeLimit) {
             System.out.println("upgrade limit hit");
             return;

@@ -2,17 +2,22 @@ package ltd.bui.infrium.lobby;
 
 import co.aikar.commands.BukkitCommandManager;
 import lombok.Getter;
+import ltd.bui.infrium.core.InfriumCore;
 import ltd.bui.infrium.core.configuration.YamlConfigurationContainer;
 import ltd.bui.infrium.core.helpers.InfriumScoreBoard;
 import ltd.bui.infrium.core.commands.ServerCommand;
 import ltd.bui.infrium.lobby.configuration.LobbyConfiguration;
+import ltd.bui.infrium.lobby.cosmetic.CosmeticsManager;
 import ltd.bui.infrium.lobby.game.GamesManager;
+import ltd.bui.infrium.lobby.gui.CosmeticSelectorGUI;
 import ltd.bui.infrium.lobby.gui.LobbySelectorGUI;
 import ltd.bui.infrium.core.gui.ServerSelectorGUI;
 import ltd.bui.infrium.lobby.listener.PlayerListener;
 import ltd.bui.infrium.lobby.staff.BuildCommand;
 import ltd.bui.infrium.lobby.staff.LobbyManagerCommand;
 import me.clip.placeholderapi.PlaceholderAPI;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -30,14 +35,16 @@ public class InfriumLobby extends JavaPlugin {
 
   private static final String[] animations =
       new String[] {
-        "&5&lASYLUM.EU", "&5&lASYLUM.EU %playerlist_online,normal,yes,amount%", "&5&lASYLUM.EU"
+        "&f&lInfrium", "&f&lInfrium %player_ping%", "&f&lInfrium"
       };
 
   @Getter private static InfriumLobby instance;
   @Getter private final List<Player> buildingPlayers = new ArrayList<>();
   private LobbySelectorGUI lobbySelectorGUI;
+  private CosmeticSelectorGUI cosmeticSelectorGUI;
   @Getter private Location lobbyLocation;
   @Getter private GamesManager gamesManager;
+  @Getter private CosmeticsManager cosmeticsManager;
   private int animationTick = 0;
   private BukkitCommandManager commandManager;
   private YamlConfigurationContainer configuration;
@@ -49,30 +56,32 @@ public class InfriumLobby extends JavaPlugin {
             .forEach(
                 player -> {
                   InfriumScoreBoard board = InfriumScoreBoard.getByPlayer(player);
-
-                  if (board == null) return;
-
-                  if (!this.scoreboardTitle.isEmpty()) {
-                    board.setTitle(PlaceholderAPI.setPlaceholders(player, this.scoreboardTitle));
-                  } else {
-                    board.setTitle(
-                        PlaceholderAPI.setPlaceholders(player, animations[animationTick]));
+                  if (board == null) {
+                    board = InfriumScoreBoard.createScore(player);
                   }
-                  List<String> placeholdered = new ArrayList<>();
-                  for (var s : scoreboardList) {
-                    placeholdered.add(PlaceholderAPI.setPlaceholders(player, s));
-                  }
-                  board.setSlotsFromList(placeholdered);
+                  board.setTitle(scoreboardTitle);
+
+//                  board.setTitle("a");
+//
+//                  if (board == null) return;
+//
+//                  if (!this.scoreboardTitle.isEmpty()) {
+//                    board.setTitle(PlaceholderAPI.setPlaceholders(player, LegacyComponentSerializer.legacyAmpersand().deserialize(this.scoreboardTitle)));
+//                  } else {
+//                    board.setTitle(
+//                        PlaceholderAPI.setPlaceholders(player, animations[animationTick]));
+//                  }
+//                  List<String> placeholdered = new ArrayList<>();
+//                  for (var s : scoreboardList) {
+//                    placeholdered.add(PlaceholderAPI.setPlaceholders(player, s));
+//                  }
+//                  board.setSlotsFromList(placeholdered);
                 });
-
-        animationTick++;
-        if (animationTick >= animations.length) animationTick = 0;
       };
 
   @Override
   public void onEnable() {
     InfriumLobby.instance = this;
-    this.getServer().getScheduler().runTaskTimerAsynchronously(this, scoreboardTask, 10L, 60L);
     this.commandManager = new BukkitCommandManager(this);
     this.commandManager.registerCommand(new LobbyManagerCommand());
     this.commandManager.registerCommand(new BuildCommand());
@@ -100,10 +109,16 @@ public class InfriumLobby extends JavaPlugin {
 
     this.loadData();
     this.getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+    this.getServer().getScheduler().runTaskTimerAsynchronously(this, scoreboardTask, 10L, 60L);
+    this.cosmeticsManager = new CosmeticsManager();
     this.lobbySelectorGUI =
         new LobbySelectorGUI(LegacyComponentSerializer.legacyAmpersand().deserialize("Lobby Shards"),
                 this);
+    this.cosmeticSelectorGUI =
+        new CosmeticSelectorGUI(LegacyComponentSerializer.legacyAmpersand().deserialize("Cosmetics"),
+                this, cosmeticsManager);
     this.gamesManager = new GamesManager();
+
     this.getServer().getOnlinePlayers().forEach(Items::formatInventory);
 
   }
@@ -115,7 +130,7 @@ public class InfriumLobby extends JavaPlugin {
 
   private void loadData() {
     List<String> s = LobbyConfiguration.SCOREBOARD.get(List.class);
-    this.scoreboardTitle = s.get(0);
+    this.scoreboardTitle = "&f&lInfrium";
     this.scoreboardList = s.subList(1, s.size());
     this.lobbyLocation = LobbyConfiguration.HUB_SPAWN.get(Location.class);
   }
@@ -123,6 +138,7 @@ public class InfriumLobby extends JavaPlugin {
   @Override
   public void onDisable() {
     this.commandManager.unregisterCommands();
+    InfriumScoreBoard.flush();
     try {
       this.configuration.save();
     } catch (IOException e) {

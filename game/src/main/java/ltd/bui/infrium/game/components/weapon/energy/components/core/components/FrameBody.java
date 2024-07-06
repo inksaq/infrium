@@ -24,26 +24,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 
+@Setter
+@Getter
 public class FrameBody extends CoreComponent {
 
 
-    @Getter @Setter
     private UUID frameUUID;
-    @Getter @Setter
     private FrameBody frameBody;
-    @Getter @Setter
     private int lifespan;
-    @Getter @Setter
     private int maxFrameAttachments;
-    @Getter @Setter
     private Set<FrameAttachment> frameAttachments;
-    @Getter @Setter
     private ChargeCell chargeCell;
-    @Getter @Setter
     private EnergyCore energyCore;
-    @Getter @Setter
     private CoreProcessor coreProcessor;
-    @Getter @Setter
     private LensConduit lensConduit;
 
 
@@ -63,8 +56,28 @@ public class FrameBody extends CoreComponent {
         WeaponRegistry.getInstance().updateWeapon(frameBody);
     }
 
-    public List<String> generateLore(CoreComponent component) {
+//    public List<String> generateLore(CoreComponent component) {
+//
+//    }
 
+    public List<String> getFrameBodyLore() {
+        List<String> lore = new ArrayList<>();
+
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GOLD + "" + ChatColor.BOLD + "Frame Body");
+        lore.add(ChatColor.GRAY + "---------------------");
+        lore.add(ChatColor.GRAY + "UUID: " + ChatColor.WHITE + frameBody.getFrameUUID());
+        lore.add(ChatColor.GRAY + "Tier: " + ChatColor.WHITE + frameBody.getTier().getTierFormat());
+        lore.add(ChatColor.GRAY + "Grade: " + ChatColor.WHITE + frameBody.getGrade().getGradeFormat());
+        lore.add(ChatColor.GRAY + "Rarity: " + ChatColor.WHITE + frameBody.getRarity().getRarityFormat());
+        lore.add(ChatColor.GRAY + "Lifespan: " + ChatColor.WHITE + frameBody.getLifespan() + "s");
+        lore.add(ChatColor.GRAY + "Attachments: "  + (frameBody.getFrameAttachments() != null ? "[" + frameBody.getFrameAttachments().size() + "/" + frameBody.getMaxFrameAttachments() +"] (click for attachments)" : "[0/0] (click for attachments)"));
+        for (FrameAttachment attachment : frameBody.getFrameAttachments()) {
+            lore.add(ChatColor.GRAY + "  - " + attachment.getFrameAttachmentType().name() + " (" + attachment.getTier().getTierFormat() + " " + attachment.getGrade().getGradeFormat() + attachment.getRarity().getRarityFormat() + ")");
+        }
+        lore.add(ChatColor.GRAY + "---------------------");
+
+        return lore;
     }
 
     public List<String> generateDebugLore(FrameBody weaponData) {
@@ -85,7 +98,11 @@ public class FrameBody extends CoreComponent {
                 lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                 for (ComponentUpgrade<?> comp : ec.getComponentUpgrades()) {
                     lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                    lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                    if (comp.getAppliedTo() != null) { // Add this null check
+                        lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                    } else {
+                        lore.add(ChatColor.GRAY + "AppliedTo: None");
+                    }
                     lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                 }
             }
@@ -108,7 +125,11 @@ public class FrameBody extends CoreComponent {
                 lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                 for (ComponentUpgrade<?> comp : cc.getComponentUpgrades()) {
                     lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                    lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                    if (comp.getAppliedTo() != null) { // Add this null check
+                        lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                    } else {
+                        lore.add(ChatColor.GRAY + "AppliedTo: None");
+                    }
                     lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                 }
             }
@@ -131,7 +152,11 @@ public class FrameBody extends CoreComponent {
                 lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                 for (ComponentUpgrade<?> comp : cp.getComponentUpgrades()) {
                     lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                    lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                    if (comp.getAppliedTo() != null) { // Add this null check
+                        lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                    } else {
+                        lore.add(ChatColor.GRAY + "AppliedTo: None");
+                    }
                     lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                 }
             }
@@ -155,7 +180,11 @@ public class FrameBody extends CoreComponent {
                 lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                 for (FocalUpgrade<?> comp : cp.getFocalUpgrades()) {
                     lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                    lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                    if (comp.getAppliedTo() != null) { // Add this null check
+                        lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                    } else {
+                        lore.add(ChatColor.GRAY + "AppliedTo: None");
+                    }
                     lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                 }
             }
@@ -173,23 +202,14 @@ public class FrameBody extends CoreComponent {
 
     public ItemStack set(ItemStack itemStack, FrameBody weaponData, Player player) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-//        NBTContainer nbtContainer = new NBTContainer();
-//        nbtContainer.setCompound();
-//        nbtContainer.setCompound(weaponData.getEnergyCore().serializeToNBT());
-
-
-//        itemStack = NBT.itemStackFromNBT(NBT.itemStackToNBT(itemStack));
-
-//        itemStack = NBT.itemStackFromNBT(weaponData.serializeToNBT());
-//        assert itemStack != null;
         NBT.modify(itemStack, readWriteItemNBT -> {
             readWriteItemNBT.clearNBT();
             readWriteItemNBT.setString("uuid", weaponData.getFrameUUID().toString());
-            readWriteItemNBT.setString("grade", weaponData.getGrade().getGradeFormat();
+            readWriteItemNBT.setString("grade", weaponData.getGrade().getGradeFormat());
             readWriteItemNBT.setString("rarity", weaponData.getRarity().getRarityFormat());
             readWriteItemNBT.setString("tier", weaponData.getTier().getTierFormat());
             readWriteItemNBT.setInteger("lifespan", weaponData.getLifespan());
-//            readWriteItemNBT.set("components", weaponData.chargeCell, );
+//            readWriteItemNBT.set("components", weaponData.chargeCell);
             readWriteItemNBT.modifyMeta((readableNBT, itemMeta1) -> {
                 itemMeta1.setDisplayName(weaponData.getFrameBody().getGrade().getGradeFormat() + " FrameBody");
 
@@ -200,14 +220,6 @@ public class FrameBody extends CoreComponent {
         });
 
         player.getInventory().addItem(itemStack);
-
-
-//            nbt.getOrCreateCompound("framebody").set.setUUID("uuid", weaponData.getFrameUUID());
-//            nbt.setInteger("lifespan", weaponData.getLifespan());
-
-
-//        PersistentDataContainer customItemTagContainer = itemMeta.getPersistentDataContainer();
-//        customItemTagContainer.set(WeaponComponent.getInstance().getWeaponKey(), WeaponComponent.getInstance().getFrameBodyDataType(), weaponData);
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
@@ -239,7 +251,11 @@ public class FrameBody extends CoreComponent {
                         lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                         for (ComponentUpgrade<?> comp : ec.getComponentUpgrades()) {
                             lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                            lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                            if (comp.getAppliedTo() != null) { // Add this null check
+                                lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                            } else {
+                                lore.add(ChatColor.GRAY + "AppliedTo: None");
+                            }
                             lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                         }
                     }
@@ -262,7 +278,11 @@ public class FrameBody extends CoreComponent {
                         lore.add(ChatColor.GRAY+"--ComponentUpgrades--");
                         for (ComponentUpgrade<?> comp : ec.getComponentUpgrades()) {
                             lore.add(ChatColor.GRAY+"["+comp.getComponentUpgradeType().name()+"] " + comp.getTier().getTierFormat() + " " + comp.getGrade().getGradeFormat() + comp.getRarity().getRarityFormat());
-                            lore.add(ChatColor.GRAY + "AppliedTo: " +comp.getAppliedTo().toString());
+                            if (comp.getAppliedTo() != null) { // Add this null check
+                                lore.add(ChatColor.GRAY + "AppliedTo: " + comp.getAppliedTo().toString());
+                            } else {
+                                lore.add(ChatColor.GRAY + "AppliedTo: None");
+                            }
                             lore.add(ChatColor.GRAY+"Enables: //need switch statement to check each");
                         }
                     }
@@ -455,13 +475,13 @@ public class FrameBody extends CoreComponent {
 
     public NBTCompound serializeToNBT() {
 //        String uuid = NBT.get(itemstack, (Function<ReadableItemNBT, String>) nbt -> nbt.getString("uuid"));
-        NBTCompound nbt = NBT.createNBTObject();
+        NBTCompound nbt = (NBTCompound) NBT.createNBTObject();
         nbt.getOrCreateCompound("frameBody");
         nbt.setString("uuid", frameBody.getFrameUUID().toString() != null ? frameBody.getFrameUUID().toString() : UUID.randomUUID().toString());
-        nbt.setInteger("lifespan", frameBody.getLifespan());
+        nbt.setInteger("lifespan", (Integer) frameBody.getLifespan());
 
         // For enums and other complex attributes, you can further serialize them.
-        nbt.setInteger("grade", grade.getGradeLadder());
+        nbt.setInteger("grade", (Integer) grade.getGradeLadder());
 
         // Serialize componentUpgrades (assuming you have a way to serialize/deserialize each ComponentUpgrade)
         NBTCompoundList nbts = nbt.getCompoundList("componentUpgrades");

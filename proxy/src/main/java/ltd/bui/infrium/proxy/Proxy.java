@@ -6,6 +6,7 @@ import com.moandjiezana.toml.Toml;
 import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.plugin.Dependency;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.PluginContainer;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
@@ -14,6 +15,7 @@ import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import ltd.bui.infrium.api.InfriumProvider;
@@ -36,14 +38,16 @@ import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
-@Plugin(id = "proxy", name = "Proxy", version = "1.0")
-@Getter
+@Plugin(id = "proxy", name = "Proxy", version = "1.0",dependencies = {
+        @Dependency(id = "limboapi")
+})@Getter
 public class Proxy {
     private static Proxy instance;
 
@@ -54,7 +58,7 @@ public class Proxy {
     private final ProxyServer server;
     private final Logger logger;
     private final Path dataDirectory;
-    private final LimboFactory limboFactory;
+    private LimboFactory limboFactory;
     private final Map<String, QueueLimboHandler> limboPlayers = new ConcurrentHashMap<>();
     @Getter
     private final Map<String, RegisteredServer> queuedJoin = new ConcurrentHashMap<>();
@@ -106,12 +110,25 @@ public class Proxy {
                         InfriumConfiguration.REDIS_URI.getString(), InfriumConfiguration.MONGODB_URI.getString());
         this.queueRepository = new ProxyQueueRepository(this.serverRepository);
 
+        //remove limbo from servers after normal servers have been added
+//        Proxy.get().getServer().getAllServers().stream().allMatch(server -> {
+//            System.out.println(server.getServerInfo().getName());
+//             if (server.getServerInfo().getName().contains("limbo")) {
+//                this.server.unregisterServer(server.getServerInfo());
+//            }
+//            return true;
+//        });
         VirtualWorld queueWorld =
                 this.limboFactory.createVirtualWorld(Dimension.THE_END, 0, 0, 0, 90f, 90f);
         this.queueServer = this.limboFactory.createLimbo(queueWorld);
-        registerCommand(new PunishmentCommand(), "ban", "mute", "tempban", "tempmute", "kick");
+        registerCommand(new PunishmentCommand(), "punish", "mute", "tempban", "tempmute", "kick");
         registerCommand(new QueueCommand(), "queue", "join");
         registerCommand(new HubCommand(), "hub");
+    }
+
+    public void delistLimbo(){
+
+
     }
 
     public static Proxy get() {

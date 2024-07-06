@@ -58,8 +58,12 @@ public class Settlements extends JavaPlugin {
 
 
     }
+
+
+
     @Override
     public void onDisable(){
+        this.getServer().getOnlinePlayers().forEach(player -> {player.performCommand("hub");});
         try {
             Collections.reverse(components);
             Collections.reverse(handlers);

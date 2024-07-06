@@ -10,6 +10,7 @@ import ltd.bui.infrium.core.events.OnServerDeleteEvent;
 import ltd.bui.infrium.core.events.OnServerUpdateEvent;
 import ltd.bui.infrium.core.events.OnSyncEvent;
 import ltd.bui.infrium.core.item.ItemBuilder;
+import ltd.bui.infrium.core.player.BukkitInfriumPlayer;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -72,8 +73,14 @@ public class ServerSelectorGUI extends AbstractGui {
       String itemName = ChatColor.stripColor(clickedItem.getItemMeta().getDisplayName().split(" ")[0]);
       String serverName = MiniMessage.miniMessage().escapeTags(itemName);
       if ((Objects.equals(serverName, InfriumCore.getInstance().getServerName()))) {
-        player.sendMessage(LegacyComponentSerializer.legacyAmpersand()
-                .deserialize("&cYou are already on this shard."));
+        InfriumCore.getInstance().getInfriumProvider().craftInfriumPlayer(player).sendTitle(
+                legacyAmpersand().deserialize("&cAlready on this shard"),
+                legacyAmpersand().deserialize("&7You are already on this shard"),
+                10,
+                40,
+                10);
+//        player.sendMessage(LegacyComponentSerializer.legacyAmpersand()
+//                .deserialize("&cYou are already on this shard."));
         return;
       }
       Teleporter.connect(serverName, player.getName());

@@ -24,7 +24,7 @@ public class PunishmentManager {
     String issuerName = "Console";
     if (issuer != null) {
       if (!issuer.getPlayerData().getRank().isStaff()) {
-        issuer.sendMessage(MiniMessage.get().deserialize("Unknown command."));
+        issuer.sendMessage(MiniMessage.miniMessage().deserialize("Unknown command."));
         return Optional.empty();
       }
       issuerName = issuer.getUsername();
@@ -34,7 +34,7 @@ public class PunishmentManager {
             type,
             reason,
             System.currentTimeMillis(),
-            duration <= 0 ? -1 : duration,
+                duration <= 0 ? 7889400 : duration,
             issuerName,
             player.getUsername(),
             type != PunishmentType.KICK);

@@ -4,9 +4,25 @@
  * This is a general purpose Gradle build.
  * Learn more about Gradle by exploring our samples at https://docs.gradle.org/8.0.1/samples
  */
+
+//Shadowjar Work around for https://github.com/johnrengelman/shadow/issues/911
+buildscript {
+	ext {
+		asmAsmVersion = "9.6" // https://gitlab.ow2.org/asm/asm/-/tags
+	}
+	configurations {
+		classpath {
+			resolutionStrategy {
+				//in order to handle jackson's higher release version in shadow, this needs to be upgraded to latest.
+				force(group: "org.ow2.asm", name: "asm", version: asmAsmVersion)
+				force(group: "org.ow2.asm", name: "asm-commons", version: asmAsmVersion)
+			}
+		}
+	}
+}
 plugins {
 	id 'java'
-	id 'com.github.johnrengelman.shadow' version '8.1.0'
+	id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group 'ltd.biu.infrium'
@@ -24,29 +40,33 @@ dependencies {
 	compileOnly project(":game")
 }
 
+
+
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'com.github.johnrengelman.shadow'
 
 	compileJava {
-		sourceCompatibility = JavaVersion.VERSION_17
-		targetCompatibility = JavaVersion.VERSION_17
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
 		options.compilerArgs << '-nowarn'
+	}
+	java {
+		toolchain.languageVersion.set(JavaLanguageVersion.of(21))
 	}
 
 	repositories {
+		maven { url = "https://repo.papermc.io/repository/maven-public/" }
 		maven { url = "https://repo.aikar.co/content/groups/aikar/" }
-		maven { url = uri("https://papermc.io/repo/repository/maven-public/") }
-		maven { url "https://repo.dmulloy2.net/repository/public/" }
-		maven {
-			name = "CodeMC"
-			url = uri("https://repo.codemc.io/repository/maven-public/")
-		}
-
+		maven { url = "https://repo.dmulloy2.net/repository/public/" }
+		maven { url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+		maven { url = "https://oss.sonatype.org/content/repositories/snapshots" }
+		maven { url = "https://oss.sonatype.org/content/repositories/central" }
+		maven { url = "https://repo.codemc.io/repository/maven-public/" }
 	}
 	dependencies {
-		compileOnly 'org.projectlombok:lombok:1.18.22'
-		annotationProcessor 'org.projectlombok:lombok:1.18.22'
+		compileOnly 'org.projectlombok:lombok:1.18.30'
+		annotationProcessor 'org.projectlombok:lombok:1.18.30'
 		compileOnly 'org.mongodb:mongodb-driver-sync:4.4.0' // mongodb
 		compileOnly 'io.lettuce:lettuce-core:6.1.5.RELEASE' // redis client
 		compileOnly 'com.google.code.gson:gson:2.8.9' // google gson
@@ -57,8 +77,8 @@ subprojects {
 		compileOnly group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 		// apache common collections
 		compileOnly 'org.hydev:HyLogger:2.1.0.378' // logging library
-		compileOnly "co.aikar:acf-paper:0.5.0-SNAPSHOT" // command processor
-		compileOnly "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
+		compileOnly "co.aikar:acf-paper:0.5.1-SNAPSHOT" // command processor
+		compileOnly "net.kyori:adventure-text-minimessage:4.17.0"
 	}
 
 	shadowJar {
@@ -79,5 +99,12 @@ subprojects {
 		//minimize()
 	}
 	jar.dependsOn shadowJar
+
+
+	tasks.register('buildRelease', Copy) {
+		jar.dependsOn(core:candiateRelease)
+		jar.dependsOn(game:candiateRelease)
+		jar.dependsOn(lobby:candiateRelease)
+	}
 
 }

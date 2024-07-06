@@ -7,6 +7,7 @@ build
 gradle/
 /dev-build
 /dev/
+nbt
 /rapidlocalhost/cache/
 /rapidlocalhost/libraries/
 /rapidlocalhost/versions/

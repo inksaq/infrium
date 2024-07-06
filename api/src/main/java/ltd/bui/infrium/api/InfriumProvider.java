@@ -40,7 +40,7 @@ public abstract class InfriumProvider<T> {
         this.configurationContainer = configurationContainer;
 
         InfriumConfiguration.setConfigurationContainer(this.configurationContainer);
-        this.configurationContainer.save( "api.yml");
+//        this.configurationContainer.save( "api.yml"); //TODO Fix hardcoded and add support for config
         RedisURI redisURI = RedisURI.create(InfriumConfiguration.REDIS_URI.getString());
         redisURI.setDatabase(0);
         this.infriumDB = new InfriumDB(redisURI, InfriumConfiguration.MONGODB_URI.getString());

@@ -12,6 +12,7 @@ public enum ServerType {
   BUILD("build.zip", 20, 1024, 4096, true),
   PLUGIN("plugin.zip", 30, 1024, 8192, true),
   GAME("game.zip", 60, 4096, 6144, true),
+  DEV("dev.zip", 20, 1024, 2048, false),
 
 
 //  CAKEWARS_DUOS("cakewars_duos.zip", 15, 512, 1024, false),

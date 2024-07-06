@@ -8,6 +8,8 @@ import ltd.bui.infrium.game.components.testing.ui.WorkbenchGUI;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Material;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,8 +46,21 @@ public class WeaponListener implements Listener {
 
             if (WeaponRegistry.getInstance().isFrameBody(event.getItemDrop().getItemStack())){
                 event.setCancelled(true);
-                gui.openInventory(event.getPlayer());
+
+                gui.openInventory(event.getPlayer(), event.getItemDrop().getItemStack());
+
             }
+    }
+
+    @EventHandler
+    public void onShiftDrop(PlayerSwapHandItemsEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        if (item == null || item.getType() == Material.AIR) return;
+        if (player.isSneaking() && WeaponRegistry.getInstance().isFrameBody(item)) {
+            event.setCancelled(true);
+            gui.openInventory(player, item);
+        }
     }
 
     @EventHandler

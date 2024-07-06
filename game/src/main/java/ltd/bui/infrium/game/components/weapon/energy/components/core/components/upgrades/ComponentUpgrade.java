@@ -31,6 +31,7 @@ public abstract class ComponentUpgrade<T extends CoreComponent>{
         this.grade = grade;
         this.tier = tier;
         this.componentUpgradeType = componentUpgradeType;
+        this.appliedTo = null;
     }
 
     public ReadWriteNBT serialize() {
