@@ -53,6 +53,7 @@ public class ServerSelectorGUI extends AbstractGui {
                             .getInfriumProvider()
                             .getRepository()
                             .getServers().stream().filter(server -> !server.getServerType().equals(LOBBY)).toList());
+
     for (Server server : servers) {
       try {
         int i = servers.indexOf(server);

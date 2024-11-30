@@ -124,6 +124,10 @@ public class Proxy {
         registerCommand(new PunishmentCommand(), "punish", "mute", "tempban", "tempmute", "kick");
         registerCommand(new QueueCommand(), "queue", "join");
         registerCommand(new HubCommand(), "hub");
+        System.out.println("Proxy initialized");
+        for (var server : this.server.getAllServers()) {
+            System.out.println(server.getServerInfo().getName());
+        }
     }
 
     public void delistLimbo(){

@@ -14,6 +14,7 @@ import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
+import com.velocitypowered.api.proxy.server.ServerInfo;
 import ltd.bui.infrium.api.hive.enums.QueueLeftReason;
 import ltd.bui.infrium.api.hive.enums.ServerType;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
@@ -25,6 +26,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -51,7 +53,7 @@ public class ServerListener {
 
   public static boolean checkPunishments(Player player2) {
     Optional<AbstractInfriumPlayer<Player>> infriumPlayer =
-        Proxy.getInfriumProvider().getInfriumPlayer(player2);
+            Proxy.getInfriumProvider().getInfriumPlayer(player2);
     if (infriumPlayer.isPresent()) {
       var player = infriumPlayer.get();
       var optionalPunishment = player.getPlayerData().hasPunishmentActive(PunishmentType.BAN);
@@ -66,8 +68,20 @@ public class ServerListener {
     return false;
   }
 
+
+  private boolean isServerTypeMatch(RegisteredServer server, ServerType type) {
+    // Implementation depends on how you name your servers
+    return server.getServerInfo().getName().toLowerCase().contains(type.name().toLowerCase());
+  }
+
   @Subscribe
   public void onJoin(LoginEvent event) {
+    Player player = event.getPlayer();
+    String virtualHost = player.getVirtualHost().map(InetSocketAddress::getHostString).orElse("");
+    if (virtualHost.equalsIgnoreCase("atm.infrium.com") || virtualHost.equalsIgnoreCase("192.168.1.41")) {
+      // ATM server connection will be handled in onServerPreConnect
+      return;
+    }
     // todo
     checkPunishments(event.getPlayer());
   }
@@ -97,30 +111,73 @@ public class ServerListener {
     Proxy.get().getInfriumProvider().onQuit(event.getPlayer());
   }
 
+
   @Subscribe
   public void onServerPreConnect(ServerPreConnectEvent event) {
-    var isQueued = Proxy.get().getQueuedJoin().get(event.getPlayer().getUsername());
-    if (isQueued != null) {
-      event.setResult(ServerPreConnectEvent.ServerResult.allowed(isQueued));
-      Proxy.get().getQueuedJoin().remove(event.getPlayer().getUsername());
+    Player player = event.getPlayer();
+    RegisteredServer targetServer = event.getOriginalServer();
+    String virtualHost = player.getVirtualHost().map(InetSocketAddress::getHostString).orElse("");
+
+    if (virtualHost.equalsIgnoreCase("atm.infrium.com") || virtualHost.equalsIgnoreCase("192.168.1.41")) {
+      handleAtmConnection(event, player);
+    } else {
+      var isQueued = Proxy.get().getQueuedJoin().get(event.getPlayer().getUsername());
+      if (isQueued != null) {
+        event.setResult(ServerPreConnectEvent.ServerResult.allowed(isQueued));
+        Proxy.get().getQueuedJoin().remove(event.getPlayer().getUsername());
+      }
     }
+  }
+
+  private void handleAtmConnection(ServerPreConnectEvent event, Player player) {
+    Proxy.get().getServer().getServer("atm10").ifPresentOrElse(
+            server -> {
+              event.setResult(ServerPreConnectEvent.ServerResult.allowed(server));
+              player.sendMessage(Component.text("Connecting you to the ATM server..."));
+            },
+            () -> {
+              event.setResult(ServerPreConnectEvent.ServerResult.denied());
+              player.sendMessage(Component.text("ATM server is not available."));
+            }
+    );
+  }
+
+  @Subscribe
+  public void onServerConnected(DisconnectEvent event) {
+    System.out.println("disconnect: " + event.getPlayer().getUsername());
+    System.out.println("reason: " + event.toString());
+    // Handle server connection
   }
 
   @Subscribe
   public void onPostConnect(ServerConnectedEvent event) {
     var message =
-        "\n                       &eLoading Shard - &l&e " + event.getServer().getServerInfo().getName() + " ... \n&7&oYour current game session has been paused while you are transferred.\n "
-            + event.getServer().getServerInfo().getName() + "\n";
+            "\n                       &eLoading Shard - &l&e " + event.getServer().getServerInfo().getName() + " ... \n&7&oYour current game session has been paused while you are transferred.\n "
+                    + event.getServer().getServerInfo().getName() + "\n";
     event.getPlayer().sendMessage(serialize.apply(message));
   }
 
+  private boolean isModdedServer(RegisteredServer server) {
+    // Implement logic to determine if a server is modded
+    // This could be based on server name, properties, or a predefined list
+    return server.getServerInfo().getName().contains("atm"); // Example condition
+  }
+
+  private RegisteredServer getAppropriateModdedServer(Player player) {
+    // Implement logic to determine the appropriate modded server for the player
+    // This could be based on player properties, load balancing, etc.
+    return Proxy.get().getServer().getAllServers().stream()
+            .filter(this::isModdedServer)
+            .findFirst()
+            .orElse(null);
+  }
 
 
   @Subscribe
   public void pluginMessageEvent(final PluginMessageEvent event) {
     System.out.println(event.dataAsDataStream().readUTF());
     if (!event.getIdentifier().equals(LEGACY_BUNGEE_CHANNEL)
-        && !event.getIdentifier().equals(MODERN_BUNGEE_CHANNEL)) {
+            && !event.getIdentifier().equals(MODERN_BUNGEE_CHANNEL)) {
       return;
     }
     event.setResult(PluginMessageEvent.ForwardResult.handled());
@@ -133,7 +190,7 @@ public class ServerListener {
 
     if (subChannel.equals("hive")) {
       String command = in.readUTF();
-      if (command == "test"){
+      if (command == "test") {
         Proxy.get().getServer().sendMessage(Component.text("test"));
       }
       if (command.equals("queue:join")) { // join queue for a server
@@ -155,22 +212,22 @@ public class ServerListener {
         String serverName = in.readUTF();
         String playerName = in.readUTF();
         Proxy.get()
-            .getServer()
-            .getPlayer(playerName)
-            .ifPresent(
-                player -> {
-                  Proxy.get()
-                      .getServer()
-                      .getServer(serverName)
-                      .ifPresent(
-                          server -> { // if server is present
-                            Proxy.get()
-                                .getQueueLimboHandler(player.getUsername())
-                                .ifPresentOrElse(
-                                    limbo -> limbo.getPlayer().disconnect(server),
-                                    () -> player.createConnectionRequest(server).fireAndForget());
-                          });
-                });
+                .getServer()
+                .getPlayer(playerName)
+                .ifPresent(
+                        player -> {
+                          Proxy.get()
+                                  .getServer()
+                                  .getServer(serverName)
+                                  .ifPresent(
+                                          server -> { // if server is present
+                                            Proxy.get()
+                                                    .getQueueLimboHandler(player.getUsername())
+                                                    .ifPresentOrElse(
+                                                            limbo -> limbo.getPlayer().disconnect(server),
+                                                            () -> player.createConnectionRequest(server).fireAndForget());
+                                          });
+                        });
         System.out.println("send player to server");
       }
     }
@@ -178,11 +235,18 @@ public class ServerListener {
 
   @Subscribe
   public void onLoginLimboRegister(LoginLimboRegisterEvent event) {
-    event.addCallback(
-        () -> {
-          if (event.getPlayer().isActive()) {
-            Proxy.get().getQueueServer().spawnPlayer(event.getPlayer(), new QueueLimboHandler());
-          }
-        });
+    Player player = event.getPlayer();
+    // Find an ATM server
+    String virtualHost = event.getPlayer().getVirtualHost().map(h -> h.getHostName().toLowerCase()).orElse("");
+
+    if (virtualHost.equalsIgnoreCase("atm.infrium.com") || virtualHost.equalsIgnoreCase("192.168.1.41")) {
+      return;
+    }
+      event.addCallback(
+              () -> {
+                if (event.getPlayer().isActive()) {
+                  Proxy.get().getQueueServer().spawnPlayer(event.getPlayer(), new QueueLimboHandler());
+                }
+              });
   }
 }

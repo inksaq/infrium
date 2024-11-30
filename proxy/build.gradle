@@ -30,5 +30,5 @@ dependencies {
 	implementation "net.kyori:adventure-text-minimessage:4.1.0-SNAPSHOT"
 	annotationProcessor 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
 	compileOnly 'com.velocitypowered:velocity-api:3.3.0-SNAPSHOT'
-	compileOnly("net.elytrium.limboapi:api:1.1.23")
+	compileOnly("net.elytrium.limboapi:api:1.1.26")
 }

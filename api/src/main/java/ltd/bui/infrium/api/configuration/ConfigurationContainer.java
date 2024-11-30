@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public abstract class ConfigurationContainer<T> {
 
-  protected final T configuration;
+  protected T configuration;
 
   public ConfigurationContainer(@NonNull final T conf) {
     this.configuration = conf;

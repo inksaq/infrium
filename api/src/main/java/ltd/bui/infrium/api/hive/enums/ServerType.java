@@ -8,6 +8,7 @@ import lombok.NonNull;
 
 public enum ServerType {
   LOBBY("lobby.zip", 60, 1024, 2048, false),
+  MODDED("modded.zip", 20, 4096, 12288, true),
   SMP("smp.zip", 20, 8096, 16384, true),
   BUILD("build.zip", 20, 1024, 4096, true),
   PLUGIN("plugin.zip", 30, 1024, 8192, true),

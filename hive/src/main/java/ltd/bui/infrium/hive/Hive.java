@@ -298,6 +298,18 @@ public class Hive {
     return Optional.empty();
   }
 
+  public Optional<Server> hostModded(String ip, int port, String name) {
+    ServerType type = ServerType.MODDED;
+    this.occupiedNames.add(name);
+    Pinger pinger = new Pinger(ip, port);
+    if (pinger.ping()) {
+      return addRDEV0(type.createServer(name, ip, port));
+    }
+    logger.error("Failed to add dev server, cant' access network");
+    this.occupiedNames.remove(name);
+    return Optional.empty();
+  }
+
   public Optional<Server> hostRDev(String ip, int port, String name) {
     ServerType type = ServerType.DEV;
     this.occupiedNames.add(name);
