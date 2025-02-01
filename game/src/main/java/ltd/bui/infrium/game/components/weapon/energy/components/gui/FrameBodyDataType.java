@@ -61,11 +61,11 @@ public class FrameBodyDataType implements PersistentDataType<PersistentDataConta
         var rarity = primitive.get(key("rarity"), INTEGER);
         var tier = primitive.get(key("tier"), INTEGER);
         FrameBody frameBody = new FrameBody(Grade.getGradeLadder(grade), Rarity.getRarityLadder(rarity), Tier.getTierLadder(tier));
-        frameBody.setFrameUUID(primitive.get(key("uuid"), Settlements.uuidTagType));
-        frameBody.setMaxFrameAttachments(primitive.get(key("maxFrameAttachments"), INTEGER));
-        if (primitive.get(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType()) != null) {
-            frameBody.setEnergyCore(primitive.get(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType()));
-        }
+//        frameBody.setFrameUUID(primitive.get(key("uuid"), Settlements.uuidTagType));
+//        frameBody.setMaxFrameAttachments(primitive.get(key("maxFrameAttachments"), INTEGER));
+//        if (primitive.get(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType()) != null) {
+//            frameBody.setEnergyCore(primitive.get(key("energyCore"), WeaponComponent.getInstance().getEnergyCoreDataType()));
+//        }
 
         return frameBody;
     }

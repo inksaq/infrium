@@ -6,6 +6,7 @@ import ltd.bui.infrium.api.hive.servers.ServerJoinable;
 import lombok.Getter;
 import lombok.NonNull;
 
+
 public enum ServerType {
   LOBBY("lobby.zip", 60, 1024, 2048, false),
   MODDED("modded.zip", 20, 4096, 12288, true),

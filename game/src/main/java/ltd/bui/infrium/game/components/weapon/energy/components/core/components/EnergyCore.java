@@ -8,6 +8,7 @@ import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentLogger;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.item.Grade;
@@ -85,9 +86,61 @@ public class EnergyCore extends CoreComponent{
         this.outputEnergyRate = tier.getEnergyOutputRate();
         this.rechargeRate = tier.getRechargeRate();
         this.upgradeLimit = 2;
+        //        this.sustainTime = 0;
+//        this.stabilityRating = 100;
+//        this.rechargeDelay = 2; //todo
+    }
+
+
+    public EnergyCore(FrameBody frameBodyParent,
+            Rarity rarity, Grade grade, Tier tier) {
+        super(rarity, grade, tier, CoreComponentType.ENERGY_CORE);
+        energyCore = this;
+        this.frameBodyParent = frameBodyParent;
+        this.uuid = UUID.randomUUID();
+        if (lifespan == 0) lifespan = grade.getLifespan();
+        this.upgradeLimit = rarity.getComponentUpgradeLimit();
+        this.idleDrawRate = tier.getIdleDraw();
+        this.coreEnergyCapacitance = tier.getCapacitance();
+        this.heatRate = tier.getHeatRate();
+        this.outputEnergyRate = tier.getEnergyOutputRate();
+        this.rechargeRate = tier.getRechargeRate();
+        this.upgradeLimit = 2;
 //        this.sustainTime = 0;
 //        this.stabilityRating = 100;
 //        this.rechargeDelay = 2; //todo
+    }
+
+    public ItemStack createItemStack() {
+        logDebug("Creating ItemStack for FrameBody");
+        ItemStack item = new ItemStack(Material.NETHERITE_HOE); // You can change this to whatever material represents your FrameBody
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Energy Core");
+        meta.setLore(getEnergyCoreLore());
+        item.setItemMeta(meta);
+
+        NBT.modify(item, (nbt) -> {
+            nbt.mergeCompound(this.serializeToNBT());
+        });
+
+        logInfo("Created ItemStack for EnergyCore: " + uuid);
+        return item;
+    }
+
+    public static EnergyCore fromItemStack(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            CoreComponentLogger.warning(CoreComponentType.ENERGY_CORE, "Invalid ItemStack for FrameBody creation");
+            return null;
+        }
+
+        return NBT.get(item, (nbt) -> {
+            if (nbt.hasTag("uuid")) {
+                return deserializeFromNBT((NBTCompound) nbt);
+            } else {
+                CoreComponentLogger.warning(CoreComponentType.ENERGY_CORE, "ItemStack does not contain FrameBody NBT data");
+                return null;
+            }
+        });
     }
 
 
@@ -187,7 +240,7 @@ public class EnergyCore extends CoreComponent{
 //        computeOutputEnergyRateThreshold();
 //        computeSustainTime();
 //        computeMaxSustainRate();
-        computeIdleDrawRate();
+//        computeIdleDrawRate();
         computeHeatRate();
 //        computeHeatStabilityThreshold();
     }
@@ -238,7 +291,7 @@ public class EnergyCore extends CoreComponent{
 
 
     private void computeIdleDrawRate() {
-        if (frameBodyParent.getCoreProcessor() == null) return;
+        if (frameBodyParent.getCoreProcessor().getCoreProcessor() == null) return;
         idleDrawRate += frameBodyParent.getCoreProcessor().getGigaHertz();
     }
 
@@ -405,29 +458,40 @@ public class EnergyCore extends CoreComponent{
      *
      * @return the serialized NBTCompound.
      */
+    @Override
     public NBTCompound serializeToNBT() {
+        logDebug("Serializing EnergyCore to NBT");
+        NBTCompound nbt = null;
+        try {
+            nbt = (NBTCompound) NBT.createNBTObject();
+            if (nbt == null) {
+                logSevere("Failed to create NBT object for EnergyCore");
+                return null;
+            }
 
-        NBTCompound nbt = (NBTCompound) NBT.createNBTObject().get("energyCore", NBTHandlers.STORE_READABLE_TAG);
-        nbt.setString("uuid", uuid.toString());
-        nbt.setInteger("lifespan", lifespan);
-        nbt.setInteger("coreEnergyCapacitance", coreEnergyCapacitance);
-        nbt.setInteger("idleDrawRate", idleDrawRate);
-        nbt.setInteger("rechargeRate", rechargeRate);
-        nbt.setInteger("outputEnergyRate", outputEnergyRate);
-        nbt.setInteger("heatRate", heatRate);
+            nbt.setString("uuid", uuid.toString());
+            nbt.setInteger("coreEnergyCapacitance", coreEnergyCapacitance);
+            nbt.setInteger("idleDrawRate", idleDrawRate);
+            nbt.setInteger("rechargeRate", rechargeRate);
+            nbt.setInteger("heatRate", heatRate);
+            nbt.setInteger("lifespan", lifespan);
+            nbt.setInteger("upgradeLimit", upgradeLimit);
+            nbt.setString("tier", getTier().name());
+            nbt.setString("grade", getGrade().name());
+            nbt.setString("rarity", getRarity().name());
 
-        // For enums and other complex attributes, you can further serialize them.
-        nbt.setString("rarity", rarity.name());
-        nbt.setString("grade", grade.name());
-        nbt.setString("tier", tier.name());
+            NBTCompound upgradesNBT = nbt.getOrCreateCompound("componentUpgrades");
+            int index = 0;
+            for (ComponentUpgrade<?> upgrade : componentUpgrades) {
+                upgradesNBT.getOrCreateCompound("upgrade_" + index).mergeCompound(upgrade.serialize());
+                index++;
+            }
 
-        // Serialize componentUpgrades (assuming you have a way to serialize/deserialize each ComponentUpgrade)
-
-        NBTCompoundList nbts = nbt.getCompoundList("componentUpgrades");
-        componentUpgrades.forEach(componentUpgrade -> nbts.addCompound().mergeCompound(componentUpgrade.serialize()));
-        nbt.mergeCompound((ReadWriteNBT) nbts);
-
-
+            logInfo("EnergyCore serialized to NBT");
+        } catch (Exception e) {
+            logSevere("Error serializing EnergyCore to NBT: " + e.getMessage());
+            e.printStackTrace();
+        }
         return nbt;
     }
 
@@ -438,7 +502,7 @@ public class EnergyCore extends CoreComponent{
      * @param nbt the source NBTCompound.
      * @return a new EnergyCore constructed from the given NBT data.
      */
-    public EnergyCore deserializeFromNBT(NBTCompound nbt) {
+    public static EnergyCore deserializeFromNBT(NBTCompound nbt) {
         Rarity rarity = Rarity.valueOf(nbt.getString("rarity"));
         Grade grade = Grade.valueOf(nbt.getString("grade"));
         Tier tier = Tier.valueOf(nbt.getString("tier"));

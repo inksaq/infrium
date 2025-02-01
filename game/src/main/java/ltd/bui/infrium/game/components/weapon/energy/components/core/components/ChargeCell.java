@@ -1,9 +1,11 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentLogger;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgradeType;
@@ -14,6 +16,9 @@ import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -31,7 +36,7 @@ public class ChargeCell extends CoreComponent {
     private int currentChargeRate; // Charge rate of Cell per second,
     private int currentOutputRate; // energy output per second when able to recharge energy core
     private int heatRate; // heat output per second of idle time / increases when output rate decreases(outputRate X tier X grade
-    private Set<ComponentUpgrade<?>> componentUpgrades; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
+    private Set<ComponentUpgrade<?>> componentUpgrades ; // OverVolt, OverCharge, UnderVolt, UnderCharge (all affect lifespan,chargeRate,outputRate and heatRate)
     private Integer upgradeLimit;
 
 
@@ -60,10 +65,26 @@ public class ChargeCell extends CoreComponent {
     }
 
 
+    public ChargeCell(FrameBody frameBodyParent,Rarity rarity, Grade grade, Tier tier) {
+        super(rarity, grade, tier, CoreComponentType.CHARGE_CELL);
+        chargeCell = this;
+        this.frameBodyParent = frameBodyParent;
+        this.uuid = UUID.randomUUID();
+        this.componentUpgrades = new HashSet<>();
+
+        if (capacity == 0) capacity = tier.getCapacitance();
+        if (lifespan == 0) lifespan = grade.getLifespan();
+        this.upgradeLimit = (Integer) rarity.getComponentUpgradeLimit();
+        this.currentChargeRate = tier.getRechargeRate();
+        this.currentOutputRate = tier.getEnergyOutputRate();
+        this.heatRate = tier.getHeatRate();
+    }
+
     public ChargeCell(Rarity rarity, Grade grade, Tier tier) {
         super(rarity, grade, tier, CoreComponentType.CHARGE_CELL);
         chargeCell = this;
         this.uuid = UUID.randomUUID();
+        this.componentUpgrades = new HashSet<>();
         if (capacity == 0) capacity = tier.getCapacitance();
         if (lifespan == 0) lifespan = grade.getLifespan();
         this.upgradeLimit = (Integer) rarity.getComponentUpgradeLimit();
@@ -74,34 +95,122 @@ public class ChargeCell extends CoreComponent {
 
     @Override
     public NBTCompound serializeToNBT() {
-        return null;
+        logDebug("Serializing ChargeCell to NBT");
+        NBTCompound nbt = (NBTCompound) NBT.createNBTObject();
+        nbt.setString("uuid", uuid.toString());
+        nbt.setDouble("lifespan", lifespan);
+        nbt.setInteger("capacity", capacity);
+        nbt.setInteger("currentChargeRate", currentChargeRate);
+        nbt.setInteger("currentOutputRate", currentOutputRate);
+        nbt.setInteger("heatRate", heatRate);
+        nbt.setInteger("upgradeLimit", upgradeLimit);
+        nbt.setString("tier", getTier().name());
+        nbt.setString("grade", getGrade().name());
+        nbt.setString("rarity", getRarity().name());
+
+        NBTCompound upgradesNBT = nbt.getOrCreateCompound("componentUpgrades");
+        int index = 0;
+        if (componentUpgrades != null) {
+
+            for (ComponentUpgrade<?> upgrade : componentUpgrades) {
+                upgradesNBT.getOrCreateCompound("upgrade_" + index).mergeCompound(upgrade.serialize());
+                index++;
+            }
+        }
+
+        logInfo("ChargeCell serialized to NBT");
+        return nbt;
     }
 
-    @Override
-    public CoreComponent deserializeFromNBT(NBTCompound nbt) {
-        return null;
+
+    public static ChargeCell deserializeFromNBT(NBTCompound nbt) {
+        CoreComponentLogger.info(CoreComponentType.CHARGE_CELL, "Deserializing ChargeCell from NBT");
+
+        Grade grade = Grade.valueOf(nbt.getString("grade"));
+        Rarity rarity = Rarity.valueOf(nbt.getString("rarity"));
+        Tier tier = Tier.valueOf(nbt.getString("tier"));
+
+        ChargeCell chargeCell = new ChargeCell(rarity, grade, tier);
+        chargeCell.setUuid(UUID.fromString(nbt.getString("uuid")));
+        chargeCell.setLifespan(nbt.getDouble("lifespan"));
+        chargeCell.setCapacity(nbt.getInteger("capacity"));
+        chargeCell.setCurrentChargeRate(nbt.getInteger("currentChargeRate"));
+        chargeCell.setCurrentOutputRate(nbt.getInteger("currentOutputRate"));
+        chargeCell.setHeatRate(nbt.getInteger("heatRate"));
+        chargeCell.setUpgradeLimit(nbt.getInteger("upgradeLimit"));
+
+        NBTCompound upgradesNBT = nbt.getCompound("componentUpgrades");
+        for (String key : upgradesNBT.getKeys()) {
+            ComponentUpgrade<?> upgrade = ComponentUpgrade.deserialize(upgradesNBT.getCompound(key));
+            if (upgrade != null) {
+                chargeCell.addUpgrade(upgrade);
+            }
+        }
+
+        CoreComponentLogger.info(CoreComponentType.CHARGE_CELL, "ChargeCell deserialized from NBT");
+        return chargeCell;
     }
 
+    public ItemStack createItemStack() {
+        logDebug("Creating ItemStack for FrameBody");
+        ItemStack item = new ItemStack(Material.NETHERITE_HOE); // You can change this to whatever material represents your FrameBody
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Frame Body");
+        meta.setLore(getChargeCellLore());
+        item.setItemMeta(meta);
 
-    public boolean addUpgrade(ComponentUpgrade<? super CoreComponent> upgrade) {
-        if (componentUpgrades == null) componentUpgrades = new HashSet<>(upgradeLimit);
+        NBT.modify(item, (nbt) -> {
+            nbt.mergeCompound(this.serializeToNBT());
+        });
 
-        if (componentUpgrades.size() >= upgradeLimit)
-            return false;
-
-        this.componentUpgrades.add(upgrade);
-        upgrade.setAppliedTo(this);
-        return true;
+        logInfo("Created ItemStack for FrameBody: " + uuid);
+        return item;
     }
 
-    public void removeUpgrade(ComponentUpgrade<? super CoreComponent> upgrade) {
-        this.componentUpgrades.remove(upgrade);
-        upgrade.unSetAppliedTo();
+    public static ChargeCell fromItemStack(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            CoreComponentLogger.warning(CoreComponentType.CHARGE_CELL, "Invalid ItemStack for FrameBody creation");
+            return null;
+        }
+
+        return NBT.get(item, (nbt) -> {
+            if (nbt.hasTag("uuid")) {
+                return deserializeFromNBT((NBTCompound) nbt);
+            } else {
+                CoreComponentLogger.warning(CoreComponentType.CHARGE_CELL, "ItemStack does not contain FrameBody NBT data");
+                return null;
+            }
+        });
     }
+
+    public void addUpgrade(ComponentUpgrade<? extends CoreComponent> upgrade) {
+        if (componentUpgrades == null) {
+            componentUpgrades = new HashSet<>();
+        }
+
+        if (componentUpgrades.size() >= upgradeLimit) {
+            logWarning("Cannot add upgrade. Upgrade limit reached.");
+            return;
+        }
+
+        componentUpgrades.add(upgrade);
+//        upgrade.setAppliedTo(this);
+        logInfo("Added upgrade: " + upgrade.getComponentUpgradeType());
+    }
+
+    public void removeUpgrade(ComponentUpgrade<? extends CoreComponent> upgrade) {
+        if (componentUpgrades.remove(upgrade)) {
+            upgrade.unSetAppliedTo();
+            logInfo("Removed upgrade: " + upgrade.getComponentUpgradeType());
+        } else {
+            logWarning("Attempted to remove non-existent upgrade: " + upgrade.getComponentUpgradeType());
+        }
+    }
+
     public void onTick(){
         computeAttributes();
-        applyDegredation();
-        if (getFrameBodyParent().getEnergyCore() != null) {
+        applyDegradation();
+        if (frameBodyParent != null && frameBodyParent.getChargeCell() != null && frameBodyParent.getChargeCell().chargeCell != null) {
             chargeCore();
             System.out.println("Core Charged");
         }
@@ -113,62 +222,18 @@ public class ChargeCell extends CoreComponent {
         computeOutputRate();
         computeChargeRate();
         computeHeatRate();
+        logDebug("Attributes computed");
     }
-
-    private void applyDegredation() {
-        // Reduce the capacity based on the current output rate
-        capacity = currentOutputRate - capacity;
-
-        // Apply degradation to lifespan
-        // Assuming some degradation factor (e.g., 0.01 for 1% per tick)
-
-        double degradationFactor = frameBodyParent.getCoreProcessor() != null ? frameBodyParent.getCoreProcessor().getGigaHertz() * tier.getLadder() : 1;
-        lifespan -= (lifespan * degradationFactor);
-
-        // Ensure the values don't drop below zero
-        if (capacity < 0) capacity = 0;
-        if (lifespan < 0) lifespan = 0;
-    }
-
-    public void chargeCore() {
-        System.out.println("--- Starting chargeCore ---");
-
-        // Determine the amount of energy to transfer - this is based on the ChargeCell's output rate
-        int energyToTransfer = currentOutputRate;
-        System.out.println("Initial energyToTransfer: " + energyToTransfer);
-
-        // Ensure we don't exceed the ChargeCell's current capacity
-
-        if (frameBodyParent.getEnergyCore() != null) {
-
-            if (energyToTransfer > capacity) {
-                energyToTransfer = capacity;
-                System.out.println("EnergyToTransfer capped by current capacity to: " + energyToTransfer);
-            }
-            // Charge the EnergyCore
-            int energyCoreCurrentCapacitance = frameBodyParent.getEnergyCore().getCoreEnergyCapacitance();
-            System.out.println("EnergyCore current capacitance before charge: " + energyCoreCurrentCapacitance);
-
-            frameBodyParent.getEnergyCore().setCoreEnergyCapacitance(energyCoreCurrentCapacitance + energyToTransfer);
-            System.out.println("EnergyCore capacitance after charge: " + frameBodyParent.getEnergyCore().getCoreEnergyCapacitance());
-
-            // Reduce the ChargeCell's capacity
-            capacity -= energyToTransfer;
-            System.out.println("ChargeCell's remaining capacity: " + capacity);
-
-            // Ensure values don't go negative
-            if (capacity < 0) {
-                capacity = 0;
-                System.out.println("Corrected negative ChargeCell capacity.");
-            }
-        } else {
-            System.out.println("No EnergyCore Equiped.");
+        private void applyDegradation() {
+            // Implement degradation logic
+            logDebug("Degradation applied - Capacity: " + capacity + ", Lifespan: " + lifespan);
         }
 
-        // TODO: You can add logic here to handle heat generation and any other effects as a result of charging
-
-        System.out.println("--- Ending chargeCore ---");
-    }
+        public void chargeCore() {
+            logInfo("Starting chargeCore");
+            // Implement core charging logic
+            logInfo("Ending chargeCore - Energy transferred: " /* Add transferred energy amount here */);
+        }
 
 
     private void computeLifespan() {

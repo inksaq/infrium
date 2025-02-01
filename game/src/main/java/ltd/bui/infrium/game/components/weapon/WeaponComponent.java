@@ -5,14 +5,19 @@ import ltd.bui.infrium.core.api.components.Component;
 import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.testing.commands.TestCommand;
 import ltd.bui.infrium.game.components.testing.listeners.TestListener;
+import ltd.bui.infrium.game.components.testing.ui.WeaponWorkstationGUI;
 import ltd.bui.infrium.game.components.weapon.energy.components.gui.EnergyCoreDataType;
 import ltd.bui.infrium.game.components.weapon.energy.components.gui.FrameBodyDataType;
 import ltd.bui.infrium.game.components.weapon.gun.GunRegistry;
 import ltd.bui.infrium.game.components.weapon.gun.WeaponListener;
 import ltd.bui.infrium.game.components.weapon.gun.armory.SCAR90;
 import ltd.bui.infrium.game.components.weapon.gun.commands.GetWeaponCC;
+import ltd.bui.infrium.game.components.weapon.registry.WeaponDevelopmentSystem;
 import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
+import ltd.bui.infrium.game.components.weapon.workstation.weapon.WeaponWorkstation;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class WeaponComponent extends Component<Settlements> {
@@ -32,6 +37,11 @@ public class WeaponComponent extends Component<Settlements> {
     @Getter
     private WeaponRegistry weaponRegistry;
 
+    @Getter
+    private WeaponDevelopmentSystem weaponDevelopmentSystem;
+    @Getter private WeaponWorkstation workstation;
+    @Getter private WeaponWorkstationGUI workstationGUI;
+
 
     public WeaponComponent() {
         instance = this;
@@ -43,10 +53,13 @@ public class WeaponComponent extends Component<Settlements> {
 //        WeaponRegistry.registerWeapons();
     }
 
+    public void openWorkstationGUI(Player player) {
+        workstation.openWorkstation(player);
+    }
 
 //    public FrameBody getItemFrameBody(ItemStack itemStack) {
 //        var fbNBT = NBT.itemStackToNBT(itemStack);
-////        fbNBT.
+//        fbNBT.
 //        return
 //    }
 
@@ -61,6 +74,13 @@ public class WeaponComponent extends Component<Settlements> {
         if (instance == null) instance = new WeaponComponent();
 
         GunRegistry.registerGun(scar90.getGunItem(), scar90, scar90.getName());
+        this.workstation = new WeaponWorkstation(plugin);
+        weaponDevelopmentSystem = new WeaponDevelopmentSystem(plugin, workstation);
+        // Schedule the item ticking task
+        Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            weaponDevelopmentSystem.tickItems();
+        }, 0L, 1L); // Run every tick (20 times per second)
+
 
     }
 

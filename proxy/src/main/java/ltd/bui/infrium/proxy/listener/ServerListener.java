@@ -9,20 +9,26 @@ import com.velocitypowered.api.event.connection.PluginMessageEvent;
 import com.velocitypowered.api.event.player.KickedFromServerEvent;
 import com.velocitypowered.api.event.player.ServerConnectedEvent;
 import com.velocitypowered.api.event.player.ServerPreConnectEvent;
+import com.velocitypowered.api.event.proxy.ProxyPingEvent;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ServerConnection;
 import com.velocitypowered.api.proxy.messages.LegacyChannelIdentifier;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.server.ServerInfo;
+import com.velocitypowered.api.proxy.server.ServerPing;
 import ltd.bui.infrium.api.hive.enums.QueueLeftReason;
 import ltd.bui.infrium.api.hive.enums.ServerType;
+import ltd.bui.infrium.api.hive.servers.Server;
 import ltd.bui.infrium.api.player.AbstractInfriumPlayer;
 import ltd.bui.infrium.api.punishments.PunishmentType;
 import ltd.bui.infrium.proxy.Proxy;
 import ltd.bui.infrium.proxy.handler.QueueLimboHandler;
 import net.elytrium.limboapi.api.event.LoginLimboRegisterEvent;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 
 
@@ -66,6 +72,49 @@ public class ServerListener {
       return true;
     }
     return false;
+  }
+
+
+
+  @Subscribe
+  public void test(ProxyPingEvent e) {
+    // Get all current active server types
+    var activeServerTypes = Proxy.getInfriumProvider().getRepository().getServers().stream()
+            .map(Server::getServerType)
+            .distinct()
+            .toList();
+
+    // Create list for all server types except LOBBY
+    List<TextComponent> serverList = java.util.Arrays.stream(ServerType.values())
+            .filter(type -> type != ServerType.LOBBY)
+            .map(serverType -> {
+              boolean isOnline = activeServerTypes.contains(serverType);
+              return Component.text()
+                      .append(MiniMessage.miniMessage().deserialize(
+                              isOnline ? "<dark_green>*</dark_green>" : "<red>*</red>"
+                      ))
+                      .append(MiniMessage.miniMessage().deserialize(
+                              isOnline ? "<white>" + serverType.name() : "<gray>" + serverType.name()
+                      ))
+                      .build();
+            })
+            .toList();
+
+    Component description = MiniMessage.miniMessage().deserialize(
+            "<gradient:black:gold><bold>anarchists cradle</bold></gradient>\n"
+    );
+
+    // Append each server component individually
+    for (TextComponent serverComponent : serverList) {
+      description = description.append(serverComponent).appendSpace();
+    }
+
+    e.setPing(e.getPing().asBuilder()
+            .version(ServerPing.builder().getVersion())
+            .onlinePlayers(Proxy.get().getServer().getPlayerCount())
+            .maximumPlayers(Proxy.get().getServer().getConfiguration().getShowMaxPlayers())
+            .description(description)
+            .build());
   }
 
 

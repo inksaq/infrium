@@ -5,6 +5,7 @@ import io.papermc.paper.event.player.PlayerStopUsingItemEvent;
 import lombok.Getter;
 import ltd.bui.infrium.game.Settlements;
 import ltd.bui.infrium.game.components.testing.ui.WorkbenchGUI;
+import ltd.bui.infrium.game.components.weapon.WeaponComponent;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.FrameBody;
 import ltd.bui.infrium.game.components.weapon.registry.WeaponRegistry;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -41,16 +42,18 @@ public class WeaponListener implements Listener {
 
     }
 
-    @EventHandler
-    public void onWeaponGUI(PlayerDropItemEvent event) {
 
-            if (WeaponRegistry.getInstance().isFrameBody(event.getItemDrop().getItemStack())){
-                event.setCancelled(true);
 
-                gui.openInventory(event.getPlayer(), event.getItemDrop().getItemStack());
-
-            }
-    }
+//    @EventHandler
+//    public void onWeaponGUI(PlayerDropItemEvent event) {
+//
+//            if (WeaponRegistry.getInstance().isFrameBody(event.getItemDrop().getItemStack())){
+//                event.setCancelled(true);
+//
+//                gui.openInventory(event.getPlayer(), event.getItemDrop().getItemStack());
+//
+//            }
+//    }
 
     @EventHandler
     public void onShiftDrop(PlayerSwapHandItemsEvent event) {
@@ -67,13 +70,18 @@ public class WeaponListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getClickedBlock().getType() == Material.SMITHING_TABLE) {
+            event.setCancelled(true);
+            WeaponComponent.getInstance().openWorkstationGUI(event.getPlayer());
+            return;
+        }
 
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
             FrameBody fb = WeaponRegistry.getInstance().getFrameBody(heldItem);
             if (fb != null){
 
-                fb.tickFrameBody();
-                fb.updateLoreNBT(heldItem, fb);
+                fb.onTick();
+//                fb.updateLoreNBT(heldItem, fb);
                 fb.updateRegistry(fb);
                 player.sendMessage("UUID:" + fb.getFrameUUID());
                 player.sendMessage("Lifespan: " + fb.getLifespan());
@@ -86,16 +94,15 @@ public class WeaponListener implements Listener {
                     player.sendMessage("EnergyCore Capacitance:" + ec.getCoreEnergyCapacitance());
                 }
                 player.sendMessage("ChargeCell:" + (fb.getChargeCell() != null ? "installed" : "not installed"));
-
                 if (fb.getChargeCell() != null) {
                     var cc = fb.getChargeCell();
                     player.sendMessage("Lifespan:" + cc.getLifespan());
-                    player.sendMessage("parent: " + cc.getFrameBodyParent().getFrameUUID());
+                        player.sendMessage("parent: " + cc.getUuid());
+
                     player.sendMessage("chargerate: " + cc.getCurrentChargeRate());
                     player.sendMessage("outputrate:" + cc.getCurrentOutputRate());
                 }
             }
-
             if (GunRegistry.isGun(heldItem)) {
                 player.sendMessage("shoot");
                 InfantryWeapon gun = (InfantryWeapon) GunRegistry.getGunByName(heldItem.getItemMeta().getDisplayName());

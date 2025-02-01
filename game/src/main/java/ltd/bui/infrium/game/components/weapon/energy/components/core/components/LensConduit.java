@@ -1,12 +1,15 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteItemNBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentLogger;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.lense.Lense;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.lense.LenseState;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.lense.LenseType;
@@ -15,6 +18,9 @@ import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -40,6 +46,23 @@ public class LensConduit extends CoreComponent {
 
     public LensConduit(Rarity rarity, Grade grade, Tier tier) {
         super(rarity, grade, tier, CoreComponentType.LENS_CONDUIT);
+        lifespan = grade.getLifespan();
+        upgradeLimit = rarity.getComponentUpgradeLimit();
+
+    }
+
+    public LensConduit(FrameBody frameBodyParent, Rarity rarity, Grade grade, Tier tier) {
+        super(rarity, grade, tier, CoreComponentType.LENS_CONDUIT);
+        lensConduit = this;
+        this.frameBodyParent = frameBodyParent;
+    }
+
+    public void setLens(Lense lense) {
+        this.currentLense = lense;
+    }
+
+    public void setLensState(LenseState lenseState) {
+        this.lenseState = lenseState;
     }
 
     public List<String> getLensConduitLore() {
@@ -67,13 +90,67 @@ public class LensConduit extends CoreComponent {
     }
 
 
+
+    public void addUpgrade(FocalUpgrade upgrade) {
+            if (focalUpgrades == null) {
+                focalUpgrades = new HashSet<>();
+            }
+            if (focalUpgrades.size() < upgradeLimit) {
+                focalUpgrades.add((FocalUpgrade<?>) upgrade);
+            }
+
+    }
+
+    @Override
+    public void addUpgrade(ComponentUpgrade<? extends CoreComponent> upgrade) {
+
+    }
+
+    @Override
+    public void onTick() {
+        if (lensConduit.getFocalUpgrades() != null) {
+//            lensConduit.getFocalUpgrades().forEach(focalUpgrade -> focalUpgrade.onTick());
+        }
+    }
+
     @Override
     public NBTCompound serializeToNBT() {
         return null;
     }
 
-    @Override
-    public CoreComponent deserializeFromNBT(NBTCompound nbt) {
+    public static LensConduit deserializeFromNBT(NBTCompound nbt) {
         return null;
+    }
+
+    public ItemStack createItemStack() {
+        logDebug("Creating ItemStack for FrameBody");
+        ItemStack item = new ItemStack(Material.NETHERITE_HOE); // You can change this to whatever material represents your FrameBody
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Frame Body");
+        meta.setLore(getLensConduitLore());
+        item.setItemMeta(meta);
+
+        NBT.modify(item, (nbt) -> {
+            nbt.mergeCompound(this.serializeToNBT());
+        });
+
+        logInfo("Created ItemStack for FrameBody: " + uuid);
+        return item;
+    }
+
+    public static LensConduit fromItemStack(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            CoreComponentLogger.warning(CoreComponentType.LENS_CONDUIT, "Invalid ItemStack for FrameBody creation");
+            return null;
+        }
+
+        return NBT.get(item, (nbt) -> {
+            if (nbt.hasTag("uuid")) {
+                return deserializeFromNBT((NBTCompound) nbt);
+            } else {
+                CoreComponentLogger.warning(CoreComponentType.LENS_CONDUIT, "ItemStack does not contain FrameBody NBT data");
+                return null;
+            }
+        });
     }
 }

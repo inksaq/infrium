@@ -1,15 +1,20 @@
 package ltd.bui.infrium.game.components.weapon.energy.components.core.components;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTCompound;
 import lombok.Getter;
 import lombok.Setter;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponent;
+import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentLogger;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.CoreComponentType;
 import ltd.bui.infrium.game.components.weapon.energy.components.core.components.upgrades.ComponentUpgrade;
 import ltd.bui.infrium.game.item.Grade;
 import ltd.bui.infrium.game.item.Rarity;
 import ltd.bui.infrium.game.item.Tier;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
@@ -70,13 +75,56 @@ public class CoreProcessor extends CoreComponent {
 
         return lore;
     }
+
     @Override
+    public void addUpgrade(ComponentUpgrade<? extends CoreComponent> upgrade) {
+        componentUpgrades.add(upgrade);
+    }
+
+    @Override
+    public void onTick() {
+
+    }
+
     public NBTCompound serializeToNBT() {
         return null;
     }
 
-    @Override
-    public CoreComponent deserializeFromNBT(NBTCompound nbt) {
+    public static CoreProcessor deserializeFromNBT(NBTCompound nbt) {
         return null;
     }
+
+    public ItemStack createItemStack() {
+        logDebug("Creating ItemStack for FrameBody");
+        ItemStack item = new ItemStack(Material.NETHERITE_HOE); // You can change this to whatever material represents your FrameBody
+        ItemMeta meta = item.getItemMeta();
+        meta.setDisplayName(ChatColor.GOLD + "Frame Body");
+        meta.setLore(getCoreProcessorLore());
+        item.setItemMeta(meta);
+
+        NBT.modify(item, (nbt) -> {
+            nbt.mergeCompound(this.serializeToNBT());
+        });
+
+        logInfo("Created ItemStack for FrameBody: " + uuid);
+        return item;
+    }
+
+    public static CoreProcessor fromItemStack(ItemStack item) {
+        if (item == null || !item.hasItemMeta()) {
+            CoreComponentLogger.warning(CoreComponentType.CORE_PROCESSOR, "Invalid ItemStack for FrameBody creation");
+            return null;
+        }
+
+        return NBT.get(item, (nbt) -> {
+            if (nbt.hasTag("uuid")) {
+                return deserializeFromNBT((NBTCompound) nbt);
+            } else {
+                CoreComponentLogger.warning(CoreComponentType.CORE_PROCESSOR, "ItemStack does not contain FrameBody NBT data");
+                return null;
+            }
+        });
+    }
+
+
 }

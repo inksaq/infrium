@@ -4,12 +4,13 @@
 
 # Ignore Gradle build output directory
 build
+/templates/
+/release-candidate/
 gradle/
-/dev-build
-/dev/
-nbt
 /rapidlocalhost/cache/
 /rapidlocalhost/libraries/
 /rapidlocalhost/versions/
 /rapidlocalhost/logs/
 /rapidlocalhost/world/
+/.z_home_grown/
+/.z_third_party/

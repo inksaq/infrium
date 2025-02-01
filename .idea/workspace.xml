@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1d0da10d-5d67-4426-b632-0987aaeae2b6" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/testing/ui/WeaponWorkstationGUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/CoreComponentLogger.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/registry/WeaponDevelopmentSystem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/workstation/weapon/WeaponWorkstation.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/handlers/NBTHandler.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/util/ItemTickManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/libs/limboapi-1.1.27-SNAPSHOT.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/patch_notes.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/rapidlocalhost/plugins/game-1.0-all.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/read_me.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/api/src/main/java/ltd/bui/infrium/api/hive/enums/ServerType.java" beforeDir="false" afterPath="$PROJECT_DIR$/api/src/main/java/ltd/bui/infrium/api/hive/enums/ServerType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/core/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/ltd/bui/infrium/core/SpongeInfriumProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/ltd/bui/infrium/core/SpongeInfriumProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/src/main/java/ltd/bui/infrium/core/player/SpongeInfriumPlayer.java" beforeDir="false" afterPath="$PROJECT_DIR$/core/src/main/java/ltd/bui/infrium/core/player/SpongeInfriumPlayer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/game/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/testing/ui/WorkbenchGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/testing/ui/WorkbenchGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/WeaponComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/WeaponComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/FrameAttachment.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/FrameAttachment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/IFrameAttachment.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/IFrameAttachment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/Stealth.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/attachments/Stealth.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/CoreComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/CoreComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/ICoreComponent.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/ICoreComponent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/ChargeCell.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/ChargeCell.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/CoreProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/CoreProcessor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/EnergyCore.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/EnergyCore.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/FrameBody.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/FrameBody.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/LensConduit.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/core/components/LensConduit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/gui/FrameBodyDataType.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/energy/components/gui/FrameBodyDataType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/gun/WeaponListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/gun/WeaponListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/gun/commands/GetWeaponCC.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/src/main/java/ltd/bui/infrium/game/components/weapon/gun/commands/GetWeaponCC.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/hive/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/hive/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lobby/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/lobby/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/proxy/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/proxy/src/main/java/ltd/bui/infrium/proxy/listener/ServerListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/proxy/src/main/java/ltd/bui/infrium/proxy/listener/ServerListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/bukkit.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/bukkit.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/commands.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/commands.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/config/paper-global.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/config/paper-global.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/config/paper-world-defaults.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/config/paper-world-defaults.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/ops.json" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/ops.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/paper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/paper.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/plugins/ICore/core.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/plugins/ICore/core.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/plugins/VoidGen/configuration.json" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/plugins/VoidGen/configuration.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/plugins/core-1.0-all.jar" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/plugins/core-1.0-all.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/server.properties" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/server.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/spigot.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/spigot.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/usercache.json" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/usercache.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/version_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/version_history.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/data/raids.dat" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/data/raids.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/data/scoreboard.dat" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/data/scoreboard.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/datapacks/bukkit/pack.mcmeta" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/datapacks/bukkit/pack.mcmeta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/level.dat" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/level.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/level.dat_old" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/level.dat_old" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/paper-world.yml" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/paper-world.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/region/r.-1.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/region/r.-1.-1.mca" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/region/r.-1.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/region/r.-1.0.mca" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/region/r.0.-1.mca" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/region/r.0.-1.mca" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/rapidlocalhost/world/region/r.0.0.mca" beforeDir="false" afterPath="$PROJECT_DIR$/rapidlocalhost/world/region/r.0.0.mca" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/settings.gradle" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/core">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/game">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/proxy">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/lobby">
+          <activation />
+        </task>
+        <projects_view />
+      </state>
+    </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;inksaq&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/inksaq/infrium.git&quot;,
+    &quot;accountId&quot;: &quot;0f5298c5-1063-421b-85d3-f119b71c7783&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="QODANA_PROBLEMS_VIEW_TAB" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
+  <component name="ProjectId" id="2sBj3DhAcIs01WR9h8tYfeDdqrp" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Gradle.Build infrium.executor": "Run",
+    "Gradle.RDev infrium:core [clean build shadowJar rapidDev].executor": "Run",
+    "Gradle.RDev infrium:game [clean build shadowJar rapidDev].executor": "Debug",
+    "Gradle.infrium Release [clean assemble shadowJar buildRelease].executor": "Run",
+    "Gradle.infrium [clean assemble shadowJar buildRelease].executor": "Run",
+    "Gradle.infrium [clean assemble shadowJar].executor": "Run",
+    "Gradle.infrium [lobby:clean lobby:build lobby:assemble].executor": "Run",
+    "Gradle.infrium:core [clean build assemble].executor": "Run",
+    "Gradle.infrium:core [clean build].executor": "Run",
+    "Gradle.infrium:core [clean package].executor": "Run",
+    "Gradle.infrium:game [clean assemble shadowJar copyJar].executor": "Run",
+    "Gradle.infrium:game [clean build shadowJar candiateRelease].executor": "Run",
+    "Gradle.infrium:game [clean build shadowJar copyJar].executor": "Run",
+    "Gradle.infrium:game [clean build shadowJar rapidDev].executor": "Run",
+    "Gradle.infrium:lobby [lobby:clean lobby:build lobby:assemble].executor": "Run",
+    "Gradle.infrium:proxy [clean assemble shadowJar candiateRelease].executor": "Run",
+    "JAR Application.R-DEV.executor": "Debug",
+    "Remote JVM Debug.Attach R-DEV.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/dev/infrium/game/src/main/java/ltd/bui/infrium/game/components/weapon/workstation",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="ReactorSettings">
+    <option name="notificationShown" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\dev\infrium\game\src\main\java\ltd\bui\infrium\game\components\weapon\workstation" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\dev\infrium\libs" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Gradle.infrium Release [clean assemble shadowJar buildRelease]">
+    <configuration name="RDev infrium:core [clean build shadowJar rapidDev]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/core" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="shadowJar" />
+            <option value="rapidDev" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="RDev infrium:game [clean build shadowJar rapidDev]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/game" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="shadowJar" />
+            <option value="rapidDev" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium Release [clean assemble shadowJar buildRelease]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="candidateRelease" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium [clean assemble shadowJar]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="assemble" />
+            <option value="shadowJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium [clean build assemble]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="assemble" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium:core [clean build candiateRelease]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/core" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="shadowJar" />
+            <option value="candiateRelease" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium:game [clean build shadowJar candiateRelease]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/game" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="shadowJar" />
+            <option value="candiateRelease" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium:game [clean build shadowJar copyJar]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/game" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="shadowJar" />
+            <option value="copyJar" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium:lobby [clean build candiateRelease ]" type="GradleRunConfiguration" factoryName="Gradle">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/lobby" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="build" />
+            <option value="candiateRelease" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="infrium:proxy [clean assemble shadowJar candiateRelease]" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/proxy" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" value="" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+            <option value="assemble" />
+            <option value="shadowJar" />
+            <option value="candiateRelease" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="R-DEV" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/rapidlocalhost/paper.jar" />
+      <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dserver_name=DEV-0 -Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true" />
+      <option name="PROGRAM_PARAMETERS" value="--port 25564 --nogui pause" />
+      <option name="WORKING_DIRECTORY" value="C:\dev\infrium\rapidlocalhost" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="openjdk-23" />
+      <option name="INPUT_FILE" value="$PROJECT_DIR$/rapidlocalhost/start.sh" />
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="RDev infrium:game [clean build shadowJar rapidDev]" run_configuration_type="GradleRunConfiguration" />
+      </method>
+    </configuration>
+    <configuration name="R-DEV" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/rapidlocalhost/paper.jar" />
+      <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dserver_name=R-DEV -Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true" />
+      <option name="PROGRAM_PARAMETERS" value="--port 25565 --nogui pause" />
+      <option name="WORKING_DIRECTORY" value="C:\dev\infrium\rapidlocalhost" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="REDIRECT_INPUT" value="true" />
+      <option name="INPUT_FILE" value="$PROJECT_DIR$/rapidlocalhost/start.sh" />
+      <method v="2" />
+    </configuration>
+    <configuration name="R-DEV" type="JarApplication">
+      <option name="JAR_PATH" value="$PROJECT_DIR$/rapidlocalhost/paper.jar" />
+      <option name="VM_PARAMETERS" value="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dserver_name=R-DEV -Xms1024M -Xmx2048M -XX:+UseG1GC -XX:+ParallelRefProcEnabled -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:+DisableExplicitGC -XX:+AlwaysPreTouch -XX:G1NewSizePercent=30 -XX:G1MaxNewSizePercent=40 -XX:G1HeapRegionSize=8M -XX:G1ReservePercent=20 -XX:G1HeapWastePercent=5 -XX:G1MixedGCCountTarget=4 -XX:InitiatingHeapOccupancyPercent=15 -XX:G1MixedGCLiveThresholdPercent=90 -XX:G1RSetUpdatingPauseTimePercent=5 -XX:SurvivorRatio=32 -XX:+PerfDisableSharedMem -XX:MaxTenuringThreshold=1 -Dusing.aikars.flags=https://mcflags.emc.gs -Daikars.new.flags=true" />
+      <option name="PROGRAM_PARAMETERS" value="--port 25565 --nogui pause" />
+      <option name="WORKING_DIRECTORY" value="C:\dev\infrium\rapidlocalhost" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
+      <option name="ALTERNATIVE_JRE_PATH" value="17" />
+      <option name="REDIRECT_INPUT" value="true" />
+      <option name="INPUT_FILE" value="$PROJECT_DIR$/rapidlocalhost/start.sh" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach R-DEV" type="Remote" singleton="false">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="5005" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2" />
+    </configuration>
+    <configuration name="Attach R-DEV" type="Remote" singleton="false">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="5005" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="infrium:game [clean assemble shadowJar copyJar]" run_configuration_type="GradleRunConfiguration" />
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="R-DEV" run_configuration_type="JarApplication" />
+      </method>
+    </configuration>
+    <configuration name="Attach R-DEV" type="Remote" singleton="false">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <option name="AUTO_RESTART" value="false" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="5005" />
+        <option name="LOCAL" value="false" />
+      </RunnerSettings>
+      <method v="2">
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="infrium:game [clean assemble shadowJar copyJar]" run_configuration_type="GradleRunConfiguration" />
+        <option name="RunConfigurationTask" enabled="true" run_configuration_name="R-DEV" run_configuration_type="JarApplication" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Gradle.infrium:game [clean build shadowJar copyJar]" />
+      <item itemvalue="Gradle.infrium [clean assemble shadowJar]" />
+      <item itemvalue="Gradle.infrium Release [clean assemble shadowJar buildRelease]" />
+      <item itemvalue="Gradle.infrium [clean build assemble]" />
+      <item itemvalue="Gradle.infrium:lobby [clean build candiateRelease ]" />
+      <item itemvalue="Gradle.infrium:core [clean build candiateRelease]" />
+      <item itemvalue="Gradle.RDev infrium:core [clean build shadowJar rapidDev]" />
+      <item itemvalue="Gradle.RDev infrium:game [clean build shadowJar rapidDev]" />
+      <item itemvalue="Gradle.infrium:game [clean build shadowJar candiateRelease]" />
+      <item itemvalue="Gradle.infrium:proxy [clean assemble shadowJar candiateRelease]" />
+      <item itemvalue="JAR Application.R-DEV" />
+      <item itemvalue="Remote JVM Debug.Attach R-DEV" />
+    </list>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.23654.153" />
+        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-IU-243.23654.153" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1d0da10d-5d67-4426-b632-0987aaeae2b6" name="Changes" comment="" />
+      <created>1737935661392</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1737935661392</updated>
+      <workItem from="1737935663667" duration="1428000" />
+      <workItem from="1738006358997" duration="9571000" />
+      <workItem from="1738019728811" duration="2525000" />
+      <workItem from="1738114179998" duration="12860000" />
+      <workItem from="1738128421407" duration="1918000" />
+      <workItem from="1738290714474" duration="8641000" />
+      <workItem from="1738375360090" duration="1372000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

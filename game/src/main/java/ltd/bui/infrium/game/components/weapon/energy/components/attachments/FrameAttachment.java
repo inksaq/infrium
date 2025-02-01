@@ -16,6 +16,7 @@ public abstract class FrameAttachment implements IFrameAttachment{
     @Getter @Setter
     protected FrameAttachmentType frameAttachmentType;
 
+
     public FrameAttachment(Rarity rarity, Grade grade, Tier tier, FrameAttachmentType frameAttachmentType) {
         this.rarity = rarity;
         this.grade = grade;
