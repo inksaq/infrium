@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/infrium.iml" filepath="$PROJECT_DIR$/.idea/modules/infrium.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/anarchists-qol/infrium.anarchists-qol.main.iml" filepath="$PROJECT_DIR$/.idea/modules/anarchists-qol/infrium.anarchists-qol.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api/infrium.api.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api/infrium.api.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/core/infrium.core.main.iml" filepath="$PROJECT_DIR$/.idea/modules/core/infrium.core.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/game/infrium.game.main.iml" filepath="$PROJECT_DIR$/.idea/modules/game/infrium.game.main.iml" />

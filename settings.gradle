@@ -15,4 +15,5 @@ include 'hive'
 include 'lobby'
 include 'game'
 //include 'core-sponge'
+include 'anarchists-qol'
 

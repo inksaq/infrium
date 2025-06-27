@@ -8,11 +8,11 @@ plugins {
     id 'java'
 }
 
-group 'ltd.bui.infrium'
-version '1.1'
+group 'com.infrium'
+version "${project.version}"
 
 repositories {
-    mavenCentral()
+
     mavenLocal()
     maven {
         url = "https://repo.papermc.io/repository/maven-public/"
@@ -25,7 +25,7 @@ repositories {
     maven { url = "https://oss.sonatype.org/content/repositories/central" }
     maven { url = "https://repo.codemc.io/repository/maven-public/" }
     maven { url = "https://repo.spongepowered.org/repository/maven-public/" }
-
+    mavenCentral()
 }
 
 dependencies {
@@ -44,6 +44,7 @@ dependencies {
     implementation('com.fasterxml.jackson.core:jackson-databind:2.14.2')
     implementation("com.fasterxml.jackson.module:jackson-module-afterburner:2.14.2")
 }
+
 
 jar.dependsOn shadowJar
 

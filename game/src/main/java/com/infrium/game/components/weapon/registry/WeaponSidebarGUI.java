@@ -1,0 +1,16 @@
+package com.infrium.game.components.weapon.registry;
+
+public class WeaponSidebarGUI {
+
+
+
+
+
+    public void displayWeaponHud() {
+        //todo display weapon hud
+    }
+
+    public void displayWeaponStats() {
+
+    }
+}

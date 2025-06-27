@@ -23,12 +23,15 @@ buildscript {
 plugins {
 	id 'java'
 	id 'com.github.johnrengelman.shadow' version '8.1.1'
+	id 'maven-publish'
 }
 
-group 'ltd.biu.infrium'
+group 'com.infrium'
 version '1.1'
 repositories{
+	mavenLocal()
 	mavenCentral()
+
 }
 
 dependencies {
@@ -45,6 +48,7 @@ dependencies {
 subprojects {
 	apply plugin: 'java'
 	apply plugin: 'com.github.johnrengelman.shadow'
+	apply plugin: 'maven-publish'
 
 	compileJava {
 		sourceCompatibility = JavaVersion.VERSION_21
@@ -72,7 +76,7 @@ subprojects {
 		compileOnly 'com.google.code.gson:gson:2.8.9' // google gson
 		compileOnly group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 		// apache common lang 3
-		compileOnly group: 'org.apache.commons', name: 'commons-text', version: '1.9'
+		compileOnly group: 'org.apache.commons', name: 'commons-text', version: '1.10.0'
 		// apache common text
 		compileOnly group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
 		// apache common collections
@@ -82,30 +86,75 @@ subprojects {
 	}
 
 	shadowJar {
-		relocate 'com.mongodb', 'ltd.bui.infrium.libs.com.mongodb'
-		relocate 'io.lettuce', 'ltd.bui.infrium.libs.io.lettuce'
-		relocate 'org.bson', 'ltd.bui.infrium.libs.org.bson'
-//		relocate("de.tr7zw.changeme.nbtapi", "ltd.bui.infrium.libs.de.trzw.changeme.nbtapi")
-		//relocate 'org.slf4j', 'ltd.bui.infrium.libs.org.slf4j'
-		relocate 'org.apache.commons.lang3', 'ltd.bui.infrium.libs.org.apache.commons.lang3'
-		relocate 'org.apache.commons.text', 'ltd.bui.infrium.libs.org.apache.commons.text'
-		relocate 'org.apache.commons.collections4', 'ltd.bui.infrium.libs.org.apache.commons.collections4'
-//		 relocate 'com.google.gson', 'ltd.bui.infrium.libs.com.google.gson'
-		relocate 'reactor', 'ltd.bui.infrium.libs.reactor'
-		relocate 'org.reactivestreams', 'ltd.bui.infrium.libs.org.reactivestreams'
-		relocate 'io.netty', 'ltd.bui.infrium.libs.io.netty'
-		relocate 'co.aikar.commands', 'ltd.bui.infrium.libs.acf'
-		relocate 'co.aikar.locales', 'ltd.bui.infrium.libs.locales'
+		relocate 'com.mongodb', 'com.infrium.libs.com.mongodb'
+		relocate 'io.lettuce', 'com.infrium.libs.io.lettuce'
+		relocate 'org.bson', 'com.infrium.libs.org.bson'
+//		relocate("de.tr7zw.changeme.nbtapi", "com.infrium.libs.de.trzw.changeme.nbtapi")
+		//relocate 'org.slf4j', 'com.infrium.libs.org.slf4j'
+		relocate 'org.apache.commons.lang3', 'com.infrium.libs.org.apache.commons.lang3'
+		relocate 'org.apache.commons.text', 'com.infrium.libs.org.apache.commons.text'
+		relocate 'org.apache.commons.collections4', 'com.infrium.libs.org.apache.commons.collections4'
+//		 relocate 'com.google.gson', 'com.infrium.libs.com.google.gson'
+		relocate 'reactor', 'com.infrium.libs.reactor'
+		relocate 'org.reactivestreams', 'com.infrium.libs.org.reactivestreams'
+		relocate 'io.netty', 'com.infrium.libs.io.netty'
+		relocate 'co.aikar.commands', 'com.infrium.libs.acf'
+		relocate 'co.aikar.locales', 'com.infrium.libs.locales'
 		//minimize()
 	}
-	jar.dependsOn shadowJar
+    // The error occurs because we're publishing both the default jar and shadowJar with 'all' classifier
 
-
-	tasks.register('buildRelease', Copy) {
-		jar.dependsOn(core:candidateRelease)
-		jar.dependsOn(game:candidateRelease)
-		jar.dependsOn(lobby:candidateRelease)
-		jar.dependsOn(proxy:candidateRelease)
+	jar {
+		enabled = true  // Ensure the jar task is enabled
 	}
+
+//	publishing {
+//		publications {
+//			mavenJava(MavenPublication) {
+//				from components.java
+//				if (project.name != 'api') {
+//					artifact shadowJar {
+//						archiveClassifier = null  // Remove classifier to avoid conflicts
+//					}
+//				}
+//			}
+//		}
+//		repositories {
+//			maven {
+//				name = "local"
+//				url = uri("${project.rootDir}/repo")
+//			}
+//		}
+//	}
+	tasks.register('buildRelease') {
+		dependsOn 'clean', 'build', 'shadowJar', 'candidateRelease'
+
+		doLast {
+			subprojects.each { subproject ->
+				def propertiesFile = new File("${subproject.projectDir}/gradle.properties")
+				if (propertiesFile.exists()) {
+					Properties props = new Properties()
+					propertiesFile.withInputStream { props.load(it) }
+
+					def currentVersion = props.getProperty('version', '1.0.0')
+					def versionParts = currentVersion.split('\\.')
+					def newPatch = (versionParts[2] as int) + 1
+					def newVersion = "${versionParts[0]}.${versionParts[1]}.${newPatch}"
+
+					props.setProperty('version', newVersion)
+					propertiesFile.withOutputStream { props.store(it, null) }
+
+					println "Updated ${subproject.name} version from ${currentVersion} to ${newVersion}"
+				}
+			}
+		}
+	}
+//	tasks.register('buildRelease', Copy) {
+//
+//		jar.dependsOn(core:candidateRelease)
+//		jar.dependsOn(game:candidateRelease)
+//		jar.dependsOn(lobby:candidateRelease)
+//		jar.dependsOn(proxy:candidateRelease)
+//	}
 
 }

@@ -1,5 +1,5 @@
 name: Settlements
-main: ltd.bui.infrium.game.Settlements
+main: com.infrium.game.Settlements
 version: '1.0'
 api-version: 1.13
 load: STARTUP

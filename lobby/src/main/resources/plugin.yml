@@ -1,5 +1,5 @@
 name: ILobby
-main: ltd.bui.infrium.lobby.InfriumLobby
+main: com.infrium.lobby.InfriumLobby
 version: '1.0'
 api-version: 1.13
 load: STARTUP
